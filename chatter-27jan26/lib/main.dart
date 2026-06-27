@@ -1,135 +1,99 @@
-import 'package:flutter/material.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:untitled/common/managers/firebase_notification_manager.dart';
+import 'package:untitled/common/managers/logger.dart';
+import 'package:untitled/common/managers/session_manager.dart';
+import 'package:untitled/common/managers/subscription_manager.dart';
+import 'package:untitled/common/widgets/functions.dart';
+import 'package:untitled/localization/allLanguages.dart';
+import 'package:untitled/screens/splash_screen/splash_screen_view.dart';
+import 'package:untitled/utilities/const.dart';
+
+import 'common/managers/ads/interstitial_manager.dart';
+import 'localization/languages.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  Loggers.success("Handling a background message: ${message.data}");
+  await Firebase.initializeApp();
+  FirebaseNotificationManager.shared.showNotification(message);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   await Firebase.initializeApp();
-  runApp(const LumoApp());
-}
+  // Set the background messaging handler early on, as a named top-level function
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await GetStorage.init();
+  SessionManager.shared;
+  InterstitialManager.shared;
+  await AppTrackingTransparency.requestTrackingAuthorization();
+  PackageInfo.fromPlatform();
+  SubscriptionManager.shared.initPlatformState();
+  MobileAds.instance.initialize();
+  (await AudioSession.instance).configure(const AudioSessionConfiguration.speech());
 
-class LumoApp extends StatelessWidget {
-  const LumoApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Lumo Social',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: const Color(0xff66fcf1),
-        scaffoldBackgroundColor: const Color(0xff0b0c10),
-      ),
-      home: const LumoLoginScreen(),
-    );
-  }
-}
-
-class LumoLoginScreen extends StatefulWidget {
-  const LumoLoginScreen({super.key});
-
-  @override
-  State<LumoLoginScreen> createState() => _LumoLoginScreenState();
-}
-
-class _LumoLoginScreenState extends State<LumoLoginScreen> {
-  final _identityController = TextEditingController();
-  bool _loading = false;
-  String _message = "";
-
-  Future<void> _handleRegisterUser() async {
-    setState(() {
-      _loading = true;
-      _message = "";
-    });
-
-    try {
-      final response = await http.post(
-        Uri.parse("https://social.equipmentmarket.ng/api/addUser"),
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": "123",
-        },
-        body: jsonEncode({
-          "identity": _identityController.text,
-          "login_type": 1,
-          "device_type": 0, // Android
-          "device_token": "android_token_placeholder",
-          "full_name": "Lumo Android User",
-        }),
-      );
-
-      final data = jsonDecode(response.body);
-      if (data['status'] == true || data['message'] == "User already exists") {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString("user_identity", _identityController.text);
-        
-        setState(() {
-          _message = "Connected to Lumo Social successfully!";
-        });
-      } else {
-        setState(() {
-          _message = data['message'] ?? "Connection failed";
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _message = "Network error connecting to backend";
-      });
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+  FlutterError.onError = (FlutterErrorDetails details) {
+    if (details.library == 'image resource service' && (details.exception.toString().contains('404') || details.exception.toString().contains('403'))) {
+      return;
     }
-  }
+
+    FlutterError.presentError(details);
+  };
+  // fvp.registerWith();
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Lumo Social",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                "Always be there, even when far away",
-                style: TextStyle(color: Colors.grey),
-              ),
-              const SizedBox(height: 48),
-              TextField(
-                controller: _identityController,
-                decoration: const InputDecoration(
-                  labelText: "Enter Username or Email",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _loading ? null : _handleRegisterUser,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  backgroundColor: const Color(0xff6366f1),
-                ),
-                child: _loading 
-                  ? const CircularProgressIndicator(color: Colors.white) 
-                  : const Text("Connect to Backend", style: TextStyle(fontSize: 16)),
-              ),
-              if (_message.isNotEmpty) ...[
-                const SizedBox(height: 24),
-                Text(_message, style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold)),
-              ]
-            ],
-          ),
-        ),
-      ),
+    Functions.changStatusBar(StatusBarStyle.black);
+    Lang lang = SessionManager.shared.getLang();
+
+    return GetMaterialApp(
+      translations: Languages(),
+      locale: lang.language.local,
+      builder: (context, child) {
+        return ScrollConfiguration(behavior: MyScrollBehavior(), child: child!);
+      },
+      fallbackLocale: LANGUAGES.first.language.local,
+      debugShowCheckedModeBanner: false,
+      title: appName,
+      theme: ThemeData(useMaterial3: false, highlightColor: Colors.transparent, splashColor: Colors.transparent),
+      home: const MyHomePage(),
     );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: SplashScreenView(),
+    );
+  }
+}
+
+class MyScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }

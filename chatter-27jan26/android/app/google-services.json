@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "283720524531",
+    "project_id": "chatter-2ee95",
+    "storage_bucket": "chatter-2ee95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283720524531:android:fae5558c0136113fea0d86",
+        "android_client_info": {
+          "package_name": "com.retrytech.chatter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "283720524531-e7d2st3uu9e8fde1p31k497jp5416mt0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.retrytech.chatter",
+            "certificate_hash": "1effcccf4cab8f2672784e5bc2a177cd5829b6fa"
+          }
+        },
+        {
+          "client_id": "283720524531-fqaf90fl117m7sitgp1m7i8eb4q92ea8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzkCr3sQaEpuwMgLT3XE7TXzXV5X1sMUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "283720524531-fqaf90fl117m7sitgp1m7i8eb4q92ea8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "283720524531-7u258o7l8jv0uhkcv2jsbk11qff55lf0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.retrytech.chatter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

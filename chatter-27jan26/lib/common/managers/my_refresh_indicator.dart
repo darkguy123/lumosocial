@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/utilities/const.dart';
 
 class MyRefreshIndicator extends StatelessWidget {
   final Future<void> Function() onRefresh;

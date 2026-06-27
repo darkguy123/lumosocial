@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/common/widgets/back_button.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/widgets/back_button.dart';
+import 'package:chatter/utilities/const.dart';
 
 import '../../../enums/reel_page_type.dart';
 import '../reels_screen_controller.dart';

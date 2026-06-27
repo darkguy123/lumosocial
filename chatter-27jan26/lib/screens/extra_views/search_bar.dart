@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 class MySearchBar extends StatelessWidget {
   final TextEditingController controller;

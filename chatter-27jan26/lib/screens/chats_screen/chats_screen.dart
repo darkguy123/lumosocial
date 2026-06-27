@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/common/widgets/no_data_view.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/chat.dart';
-import 'package:untitled/screens/chats_screen/chat_view/chat_card.dart';
-import 'package:untitled/screens/chats_screen/chats_screen_controller.dart';
-import 'package:untitled/screens/extra_views/logo_tag.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/common/widgets/no_data_view.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/chat.dart';
+import 'package:chatter/screens/chats_screen/chat_view/chat_card.dart';
+import 'package:chatter/screens/chats_screen/chats_screen_controller.dart';
+import 'package:chatter/screens/extra_views/logo_tag.dart';
+import 'package:chatter/utilities/const.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({Key? key}) : super(key: key);

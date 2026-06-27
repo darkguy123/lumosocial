@@ -1,18 +1,18 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/common/managers/ads/interstitial_manager.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/posts_model.dart';
-import 'package:untitled/models/reel_model.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/screens/add_post_screen/add_post_screen.dart';
-import 'package:untitled/screens/camera_screen/create_reel_screen.dart';
-import 'package:untitled/screens/story_screen/create_story_screen/create_story_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/common/managers/ads/interstitial_manager.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/posts_model.dart';
+import 'package:chatter/models/reel_model.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/screens/add_post_screen/add_post_screen.dart';
+import 'package:chatter/screens/camera_screen/create_reel_screen.dart';
+import 'package:chatter/screens/story_screen/create_story_screen/create_story_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 class FloatingBtnForCreating extends StatelessWidget {
   final Function(Post feed)? onPostBack;

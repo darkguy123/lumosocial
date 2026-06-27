@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:untitled/common/managers/my_debouncer.dart';
+import 'package:chatter/common/managers/my_debouncer.dart';
 
 /// return true is refresh success
 ///

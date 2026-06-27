@@ -1,6 +1,6 @@
-import 'package:untitled/common/api_service/room_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/models/room_model.dart';
+import 'package:chatter/common/api_service/room_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/models/room_model.dart';
 
 class SingleRoomController extends BaseController {
   Room? room;

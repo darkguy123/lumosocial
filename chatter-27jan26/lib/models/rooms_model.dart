@@ -1,4 +1,4 @@
-import 'package:untitled/models/room_model.dart';
+import 'package:chatter/models/room_model.dart';
 
 class RoomsModel {
   RoomsModel({

@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/utilities/const.dart';
 
 bool isSubscribe = false;
 bool isPurchaseConfig = false;

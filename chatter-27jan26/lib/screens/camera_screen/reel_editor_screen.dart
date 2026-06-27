@@ -1,15 +1,15 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/common/widgets/loader_widget.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/camera_screen/color_filter_pageview_list.dart';
-import 'package:untitled/screens/camera_screen/create_reel_screen.dart';
-import 'package:untitled/screens/camera_screen/create_reel_screen_controller.dart';
-import 'package:untitled/screens/camera_screen/widget/create_reel_top_view.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/common/widgets/loader_widget.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/camera_screen/color_filter_pageview_list.dart';
+import 'package:chatter/screens/camera_screen/create_reel_screen.dart';
+import 'package:chatter/screens/camera_screen/create_reel_screen_controller.dart';
+import 'package:chatter/screens/camera_screen/widget/create_reel_top_view.dart';
+import 'package:chatter/utilities/const.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart' show VisibilityDetector;
 

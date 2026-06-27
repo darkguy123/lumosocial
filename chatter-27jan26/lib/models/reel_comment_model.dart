@@ -1,4 +1,4 @@
-import 'package:untitled/models/reel_comments_model.dart';
+import 'package:chatter/models/reel_comments_model.dart';
 
 class ReelCommentModel {
   bool? status;

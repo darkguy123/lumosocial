@@ -1,6 +1,6 @@
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/models/registration.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/models/registration.dart';
 
 class FollowerFollowingController extends BaseController {
   final bool isForFollowing;

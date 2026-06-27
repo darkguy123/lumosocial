@@ -8,20 +8,20 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:untitled/common/api_service/notification_service.dart';
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/firebase_notification_manager.dart';
-import 'package:untitled/common/managers/logger.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/common/managers/subscription_manager.dart';
-import 'package:untitled/screens/block_by_admin_screen/block_by_admin_screen.dart';
-import 'package:untitled/screens/interests_screen/interests_screen.dart';
-import 'package:untitled/screens/login_screen/sign_in_with_email_screen.dart';
-import 'package:untitled/screens/profile_picture_screen/profile_picture_screen.dart';
-import 'package:untitled/screens/tabbar/tabbar_screen.dart';
-import 'package:untitled/screens/username_screen/username_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/api_service/notification_service.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/firebase_notification_manager.dart';
+import 'package:chatter/common/managers/logger.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/common/managers/subscription_manager.dart';
+import 'package:chatter/screens/block_by_admin_screen/block_by_admin_screen.dart';
+import 'package:chatter/screens/interests_screen/interests_screen.dart';
+import 'package:chatter/screens/login_screen/sign_in_with_email_screen.dart';
+import 'package:chatter/screens/profile_picture_screen/profile_picture_screen.dart';
+import 'package:chatter/screens/tabbar/tabbar_screen.dart';
+import 'package:chatter/screens/username_screen/username_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 class LoginController extends BaseController {
   @override

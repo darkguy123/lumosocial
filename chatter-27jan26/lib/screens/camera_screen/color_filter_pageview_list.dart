@@ -3,9 +3,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/utilities/const.dart';
-import 'package:untitled/utilities/filters.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/utilities/const.dart';
+import 'package:chatter/utilities/filters.dart';
 
 class ColorFilterPageViewList extends StatefulWidget {
   final Function(int intdex) onPageChanged;

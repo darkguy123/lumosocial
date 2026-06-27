@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/logger.dart';
-import 'package:untitled/models/registration.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/logger.dart';
+import 'package:chatter/models/registration.dart';
 
 import '../../common/api_service/user_service.dart';
 

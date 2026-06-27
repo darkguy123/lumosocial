@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
 
 class LogoTag extends StatelessWidget {
   final bool? isWhite;

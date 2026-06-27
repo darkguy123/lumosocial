@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:untitled/models/musics_model.dart';
-import 'package:untitled/utilities/filters.dart';
+import 'package:chatter/models/musics_model.dart';
+import 'package:chatter/utilities/filters.dart';
 
 class AddReelData {
   String? videoPath;

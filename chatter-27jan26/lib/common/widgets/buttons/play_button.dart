@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/utilities/const.dart';
 
 class PlayButton extends StatelessWidget {
   const PlayButton({super.key});

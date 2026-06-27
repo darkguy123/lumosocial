@@ -5,28 +5,67 @@ version: 1.0.0+1
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
+dependency_overrides:
+  package_info_plus: ^8.2.0
+
 dependencies:
   flutter:
     sdk: flutter
-
-  # Firebase Core and SDKs
-  firebase_core: ^2.15.0
-  firebase_messaging: ^14.6.0
-  firebase_auth: ^4.7.0
-
-  # HTTP Client for Next.js API Communication
-  http: ^1.1.0
-
-  # Agora Video & Audio streaming
-  agora_rtc_engine: ^6.2.0
-
-  # Shared preferences for session caching
-  shared_preferences: ^2.2.0
+  retrytech_plugin:
+    git:
+      url: https://gitlab.com/jeelkhokhariya59/retrytech_plugin.git
+      ref: master
+  get: ^4.7.2
+  http: ^1.5.0
+  intl: ^0.20.2
+  webview_flutter: ^4.13.0
+  dotted_border: ^3.1.0
+  image_picker: ^1.2.0
+  cached_network_image: ^3.4.1
+  detectable_text_field: ^3.0.2
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^7.0.1
+  firebase_core: ^4.2.0
+  firebase_auth: ^6.1.1
+  cloud_firestore: ^6.0.3
+  get_storage: ^2.1.1
+  video_compress: ^3.1.4
+  video_player: ^2.10.1
+  cupertino_icons: ^1.0.8
+  path_provider: ^2.1.5
+  photo_view: ^0.15.0
+  figma_squircle_updated: ^1.0.1
+  like_button: ^2.1.0
+  pinch_zoom: ^2.0.1
+  zoom_pinch_overlay: ^1.4.3
+  flutter_lints: ^6.0.0
+  purchases_flutter: ^9.7.0
+  firebase_messaging: ^16.0.3
+  flutter_local_notifications: ^19.4.2
+  google_mobile_ads: ^6.0.0
+  url_launcher: ^6.3.2
+  app_tracking_transparency: ^2.0.6+1
+  agora_rtc_engine: ^6.5.3
+  permission_handler: ^12.0.1
+  uuid: ^4.5.1
+  wakelock_plus: ^1.4.0
+  dismissible_page: ^1.0.2
+  flutter_keyboard_visibility: ^6.0.0
+  flutter_slidable: ^4.0.3
+  audio_waveforms: ^1.3.0
+  flutter_cache_manager: ^3.4.1
+  audio_session: ^0.2.2
+  proste_indexed_stack: ^0.2.4
+  visibility_detector: ^0.4.0+2
+  readmore: ^3.0.0
+  mime: ^2.0.0
+  flutter_native_video_trimmer: ^1.1.9
+  app_links: ^7.0.0
+  share_plus: ^12.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
   flutter_launcher_icons: ^0.13.1
 
 flutter_launcher_icons:
@@ -38,3 +77,37 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+    - android/app/
+  fonts:
+    - family: gilroy_black
+      fonts:
+        - asset: assets/fonts/Gilroy-Black.ttf
+    - family: gilroy_bold
+      fonts:
+        - asset: assets/fonts/Gilroy-Bold.ttf
+    - family: gilroy_heavy
+      fonts:
+        - asset: assets/fonts/Gilroy-Heavy.ttf
+    - family: gilroy_light
+      fonts:
+        - asset: assets/fonts/Gilroy-Light.ttf
+    - family: gilroy_medium
+      fonts:
+        - asset: assets/fonts/Gilroy-Medium.ttf
+    - family: gilroy_regular
+      fonts:
+        - asset: assets/fonts/Gilroy-Regular.ttf
+    - family: gilroy_semibold
+      fonts:
+        - asset: assets/fonts/Gilroy-SemiBold.ttf
+    - family: outfit_light
+      fonts:
+        - asset: assets/fonts/Outfit-Light.ttf
+    - family: outfit_medium
+      fonts:
+        - asset: assets/fonts/Outfit-Medium.ttf
+    - family: outfit_regular
+      fonts:
+        - asset: assets/fonts/Outfit-Regular.ttf

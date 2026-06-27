@@ -1,8 +1,8 @@
-import 'package:untitled/common/api_service/story_service.dart';
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/models/registration.dart';
+import 'package:chatter/common/api_service/story_service.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/models/registration.dart';
 
 class FeedStoriesController extends BaseController {
   List<User> storyUsers = [];

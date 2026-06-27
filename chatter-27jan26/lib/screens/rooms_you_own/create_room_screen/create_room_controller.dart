@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled/common/api_service/room_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/firebase_notification_manager.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/room_model.dart';
-import 'package:untitled/models/setting_model.dart';
-import 'package:untitled/screens/profile_picture_screen/profile_picture_controller.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/api_service/room_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/firebase_notification_manager.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/room_model.dart';
+import 'package:chatter/models/setting_model.dart';
+import 'package:chatter/screens/profile_picture_screen/profile_picture_controller.dart';
+import 'package:chatter/utilities/const.dart';
 
 class CreateRoomController extends ProfilePictureController {
   final String descriptionID = "descriptionID";

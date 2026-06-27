@@ -2,22 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/api_service/reel_service.dart';
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/haptic_manager.dart';
-import 'package:untitled/common/managers/logger.dart';
-import 'package:untitled/common/managers/my_debouncer.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/common/managers/share_manager.dart';
-import 'package:untitled/models/reel_model.dart';
-import 'package:untitled/models/reel_model_extension.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/screens/profile_screen/profile_screen.dart';
-import 'package:untitled/screens/reels_screen/comments/reel_comment_screen.dart';
-import 'package:untitled/screens/reels_screen/music/music_reels_screen.dart';
-import 'package:untitled/screens/report_screen/report_sheet.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/api_service/reel_service.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/haptic_manager.dart';
+import 'package:chatter/common/managers/logger.dart';
+import 'package:chatter/common/managers/my_debouncer.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/common/managers/share_manager.dart';
+import 'package:chatter/models/reel_model.dart';
+import 'package:chatter/models/reel_model_extension.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/screens/profile_screen/profile_screen.dart';
+import 'package:chatter/screens/reels_screen/comments/reel_comment_screen.dart';
+import 'package:chatter/screens/reels_screen/music/music_reels_screen.dart';
+import 'package:chatter/screens/report_screen/report_sheet.dart';
+import 'package:chatter/utilities/const.dart';
 
 class ReelController extends BaseController {
   Rx<Reel?> reel = Rx<Reel?>(null);

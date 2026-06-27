@@ -1,14 +1,14 @@
 import 'package:get/get.dart';
-import 'package:untitled/common/api_service/room_service.dart';
-import 'package:untitled/common/controller/cupertino_controller.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/room_member_model.dart';
-import 'package:untitled/models/room_model.dart';
-import 'package:untitled/screens/chats_screen/chatting_screen/chatting_controller.dart';
-import 'package:untitled/screens/sheets/confirmation_sheet.dart';
-import 'package:untitled/utilities/firebase_const.dart';
+import 'package:chatter/common/api_service/room_service.dart';
+import 'package:chatter/common/controller/cupertino_controller.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/room_member_model.dart';
+import 'package:chatter/models/room_model.dart';
+import 'package:chatter/screens/chats_screen/chatting_screen/chatting_controller.dart';
+import 'package:chatter/screens/sheets/confirmation_sheet.dart';
+import 'package:chatter/utilities/firebase_const.dart';
 
 class RoomMembersController extends CupertinoController {
   final ChattingController chattingController;

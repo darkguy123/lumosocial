@@ -1,6 +1,6 @@
-import 'package:untitled/common/api_service/common_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/models/faq_categories_model.dart';
+import 'package:chatter/common/api_service/common_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/models/faq_categories_model.dart';
 
 class FAQsController extends BaseController {
   List<FAQsCategory> categories = [];

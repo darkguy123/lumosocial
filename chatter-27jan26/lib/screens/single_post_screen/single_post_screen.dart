@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
-import 'package:untitled/common/widgets/no_data_view.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/screens/feed_screen/feed_screen.dart';
-import 'package:untitled/screens/single_post_screen/single_post_controller.dart';
+import 'package:chatter/common/widgets/no_data_view.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/screens/feed_screen/feed_screen.dart';
+import 'package:chatter/screens/single_post_screen/single_post_controller.dart';
 
 class SinglePostScreen extends StatelessWidget {
   final int postId;

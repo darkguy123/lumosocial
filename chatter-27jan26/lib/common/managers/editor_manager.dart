@@ -1,6 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:retrytech_plugin/retrytech_plugin.dart';
-import 'package:untitled/common/managers/logger.dart';
+import 'package:chatter/common/managers/logger.dart';
 
 class EditorManager {
   static var shared = EditorManager();

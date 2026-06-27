@@ -1,4 +1,4 @@
-import 'package:untitled/models/comments_model.dart';
+import 'package:chatter/models/comments_model.dart';
 
 class CommentModel {
   CommentModel({

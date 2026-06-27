@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/screens/splash_screen/splash_controller.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/screens/splash_screen/splash_controller.dart';
+import 'package:chatter/utilities/const.dart';
 
 import '../extra_views/logo_tag.dart';
 

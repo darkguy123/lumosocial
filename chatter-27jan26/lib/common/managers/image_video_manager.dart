@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/utilities/const.dart';
 import 'package:video_compress/video_compress.dart';
 
 class ImageVideoManager {

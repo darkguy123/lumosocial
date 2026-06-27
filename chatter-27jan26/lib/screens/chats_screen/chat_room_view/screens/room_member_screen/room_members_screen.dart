@@ -1,18 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/int_extension.dart';
-import 'package:untitled/common/managers/load_more_widget.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/room_member_model.dart';
-import 'package:untitled/models/room_model.dart';
-import 'package:untitled/screens/chats_screen/chat_room_view/screens/invite_someone_screen/invite_someone_screen.dart';
-import 'package:untitled/screens/chats_screen/chat_room_view/screens/room_member_screen/room_members_controller.dart';
-import 'package:untitled/screens/chats_screen/chatting_screen/chatting_controller.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/int_extension.dart';
+import 'package:chatter/common/managers/load_more_widget.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/room_member_model.dart';
+import 'package:chatter/models/room_model.dart';
+import 'package:chatter/screens/chats_screen/chat_room_view/screens/invite_someone_screen/invite_someone_screen.dart';
+import 'package:chatter/screens/chats_screen/chat_room_view/screens/room_member_screen/room_members_controller.dart';
+import 'package:chatter/screens/chats_screen/chatting_screen/chatting_controller.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/utilities/const.dart';
 
 class RoomMembersScreen extends StatelessWidget {
   final ChattingController chattingController;

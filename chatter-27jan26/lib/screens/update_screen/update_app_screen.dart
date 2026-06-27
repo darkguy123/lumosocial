@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/extra_views/buttons.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/extra_views/buttons.dart';
+import 'package:chatter/utilities/const.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateAppScreen extends StatelessWidget {

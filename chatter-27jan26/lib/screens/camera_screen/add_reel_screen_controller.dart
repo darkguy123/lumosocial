@@ -1,19 +1,19 @@
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled/common/api_service/reel_service.dart';
-import 'package:untitled/common/api_service/sight_engine_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/string_extension.dart';
-import 'package:untitled/common/managers/image_video_manager.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/enums/reel_page_type.dart';
-import 'package:untitled/models/add_reel_data.dart';
-import 'package:untitled/models/reel_model.dart';
-import 'package:untitled/models/setting_model.dart';
-import 'package:untitled/screens/reels_screen/reels_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/api_service/reel_service.dart';
+import 'package:chatter/common/api_service/sight_engine_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/string_extension.dart';
+import 'package:chatter/common/managers/image_video_manager.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/enums/reel_page_type.dart';
+import 'package:chatter/models/add_reel_data.dart';
+import 'package:chatter/models/reel_model.dart';
+import 'package:chatter/models/setting_model.dart';
+import 'package:chatter/screens/reels_screen/reels_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 class AddReelScreenController extends BaseController {
   late Rx<AddReelData> data;

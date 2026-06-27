@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/setting_model.dart';
-import 'package:untitled/screens/interests_screen/interests_controller.dart';
-import 'package:untitled/screens/interests_screen/interests_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/setting_model.dart';
+import 'package:chatter/screens/interests_screen/interests_controller.dart';
+import 'package:chatter/screens/interests_screen/interests_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 import '../extensions/font_extension.dart';
 

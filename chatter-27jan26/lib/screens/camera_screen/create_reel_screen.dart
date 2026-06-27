@@ -2,12 +2,12 @@ import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:retrytech_plugin/retrytech_plugin.dart';
-import 'package:untitled/common/widgets/black_gradient_shadow.dart';
-import 'package:untitled/models/musics_model.dart';
-import 'package:untitled/screens/camera_screen/create_reel_screen_controller.dart';
-import 'package:untitled/screens/camera_screen/widget/create_reel_bottom_view.dart';
-import 'package:untitled/screens/camera_screen/widget/create_reel_top_view.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/widgets/black_gradient_shadow.dart';
+import 'package:chatter/models/musics_model.dart';
+import 'package:chatter/screens/camera_screen/create_reel_screen_controller.dart';
+import 'package:chatter/screens/camera_screen/widget/create_reel_bottom_view.dart';
+import 'package:chatter/screens/camera_screen/widget/create_reel_top_view.dart';
+import 'package:chatter/utilities/const.dart';
 
 class CreateReelScreen extends StatelessWidget {
   final Music? music;

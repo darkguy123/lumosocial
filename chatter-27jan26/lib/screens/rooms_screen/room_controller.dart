@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/api_service/room_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/firebase_notification_manager.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/models/chat.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/room_model.dart';
-import 'package:untitled/screens/chats_screen/chatting_screen/chatting_view.dart';
-import 'package:untitled/utilities/firebase_const.dart';
+import 'package:chatter/common/api_service/room_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/firebase_notification_manager.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/models/chat.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/room_model.dart';
+import 'package:chatter/screens/chats_screen/chatting_screen/chatting_view.dart';
+import 'package:chatter/utilities/firebase_const.dart';
 
 class RoomController extends BaseController {
   Room room;

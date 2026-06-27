@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:untitled/common/api_service/api_service.dart';
-import 'package:untitled/common/api_service/room_service.dart';
-import 'package:untitled/common/managers/firebase_notification_manager.dart';
-import 'package:untitled/models/room_member_model.dart';
-import 'package:untitled/utilities/params.dart';
-import 'package:untitled/utilities/web_service.dart';
+import 'package:chatter/common/api_service/api_service.dart';
+import 'package:chatter/common/api_service/room_service.dart';
+import 'package:chatter/common/managers/firebase_notification_manager.dart';
+import 'package:chatter/models/room_member_model.dart';
+import 'package:chatter/utilities/params.dart';
+import 'package:chatter/utilities/web_service.dart';
 
 class NotificationService {
   static var shared = NotificationService();

@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/api_service/moderator_service.dart';
-import 'package:untitled/common/api_service/reel_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/reel_comments_model.dart';
-import 'package:untitled/models/reel_model.dart';
-import 'package:untitled/screens/reels_screen/reel/reel_page_controller.dart';
-import 'package:untitled/screens/sheets/confirmation_sheet.dart';
+import 'package:chatter/common/api_service/moderator_service.dart';
+import 'package:chatter/common/api_service/reel_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/reel_comments_model.dart';
+import 'package:chatter/models/reel_model.dart';
+import 'package:chatter/screens/reels_screen/reel/reel_page_controller.dart';
+import 'package:chatter/screens/sheets/confirmation_sheet.dart';
 
 class ReelCommentController extends BaseController {
   final ReelController reelController;

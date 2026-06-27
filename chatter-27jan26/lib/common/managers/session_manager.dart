@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:get_storage/get_storage.dart';
-import 'package:untitled/localization/allLanguages.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/setting_model.dart';
+import 'package:chatter/localization/allLanguages.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/setting_model.dart';
 
 class SessionManager {
   static var shared = SessionManager();

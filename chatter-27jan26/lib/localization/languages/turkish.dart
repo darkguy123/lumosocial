@@ -1,4 +1,4 @@
-import 'package:untitled/localization/languages.dart';
+import 'package:chatter/localization/languages.dart';
 
 const turkishStrings = {
   LKeys.textChatDedicated: 'Metin Sohbetine Özel',

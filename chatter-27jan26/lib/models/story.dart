@@ -1,7 +1,7 @@
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/library/story_view/story_view.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/library/story_view/story_view.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/utilities/const.dart';
 
 class StoryModel {
   StoryModel({

@@ -43,6 +43,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    ndkVersion = "28.2.13676358"
+
     kotlinOptions {
         jvmTarget = '1.8'
     }

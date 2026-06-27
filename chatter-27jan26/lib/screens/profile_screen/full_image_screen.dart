@@ -4,8 +4,8 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/utilities/const.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class FullImageScreen extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/models/registration.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/models/registration.dart';
 
 class MusicsModel {
   bool? status;

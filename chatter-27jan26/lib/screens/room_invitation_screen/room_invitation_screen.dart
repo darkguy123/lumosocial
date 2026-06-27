@@ -1,18 +1,18 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/int_extension.dart';
-import 'package:untitled/common/widgets/buttons/circle_button.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/common/widgets/no_data_view.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/invitations_model.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/screens/profile_screen/profile_screen.dart';
-import 'package:untitled/screens/room_invitation_screen/invitation_controller.dart';
-import 'package:untitled/screens/sheets/confirmation_sheet.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/int_extension.dart';
+import 'package:chatter/common/widgets/buttons/circle_button.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/common/widgets/no_data_view.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/invitations_model.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/screens/profile_screen/profile_screen.dart';
+import 'package:chatter/screens/room_invitation_screen/invitation_controller.dart';
+import 'package:chatter/screens/sheets/confirmation_sheet.dart';
+import 'package:chatter/utilities/const.dart';
 
 class RoomInvitationScreen extends StatelessWidget {
   const RoomInvitationScreen({Key? key}) : super(key: key);

@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled/common/managers/logger.dart';
-import 'package:untitled/models/status_message_model.dart';
+import 'package:chatter/common/managers/logger.dart';
+import 'package:chatter/models/status_message_model.dart';
 
 import 'api_service.dart';
 

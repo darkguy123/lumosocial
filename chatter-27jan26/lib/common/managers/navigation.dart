@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:untitled/common/widgets/functions.dart';
-import 'package:untitled/screens/sheets/web_sheet_view/web_sheet_view.dart';
+import 'package:chatter/common/widgets/functions.dart';
+import 'package:chatter/screens/sheets/web_sheet_view/web_sheet_view.dart';
 
 class Navigate {
   static void openURLSheet({required String title, required String url}) {

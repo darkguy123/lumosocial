@@ -1,17 +1,17 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/date_time_extension.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/int_extension.dart';
-import 'package:untitled/common/managers/context_menu_widget.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/chat.dart';
-import 'package:untitled/screens/chats_screen/chats_screen_controller.dart';
-import 'package:untitled/screens/chats_screen/chatting_screen/chatting_view.dart';
-import 'package:untitled/screens/extra_views/back_button.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/date_time_extension.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/int_extension.dart';
+import 'package:chatter/common/managers/context_menu_widget.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/chat.dart';
+import 'package:chatter/screens/chats_screen/chats_screen_controller.dart';
+import 'package:chatter/screens/chats_screen/chatting_screen/chatting_view.dart';
+import 'package:chatter/screens/extra_views/back_button.dart';
+import 'package:chatter/utilities/const.dart';
 
 class ChatCard extends StatelessWidget {
   final ChatUserRoom chatUserRoom;

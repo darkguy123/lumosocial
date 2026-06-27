@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/enums/reel_page_type.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/screens/reels_screen/reels_grid.dart';
-import 'package:untitled/screens/saved_reels_screen/saved_reels_screen_controller.dart';
+import 'package:chatter/enums/reel_page_type.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/screens/reels_screen/reels_grid.dart';
+import 'package:chatter/screens/saved_reels_screen/saved_reels_screen_controller.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class SavedReelsScreen extends StatelessWidget {

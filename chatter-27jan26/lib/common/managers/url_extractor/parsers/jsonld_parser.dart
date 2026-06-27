@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:html/dom.dart';
-import 'package:untitled/common/managers/url_extractor/utils/util.dart';
+import 'package:chatter/common/managers/url_extractor/utils/util.dart';
 
 import 'base_parser.dart';
 

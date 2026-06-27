@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/enums/reel_page_type.dart';
-import 'package:untitled/screens/reels_screen/reels_screen.dart';
-import 'package:untitled/screens/single_reel_screen/single_reel_screen_controller.dart';
+import 'package:chatter/enums/reel_page_type.dart';
+import 'package:chatter/screens/reels_screen/reels_screen.dart';
+import 'package:chatter/screens/single_reel_screen/single_reel_screen_controller.dart';
 
 class SingleReelScreen extends StatelessWidget {
   final int reelId;

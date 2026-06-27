@@ -1,17 +1,17 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled/common/api_service/api_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/common_response.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/setting_model.dart';
-import 'package:untitled/models/users_model.dart';
-import 'package:untitled/screens/login_screen/login_controller.dart';
-import 'package:untitled/utilities/const.dart';
-import 'package:untitled/utilities/params.dart';
-import 'package:untitled/utilities/web_service.dart';
+import 'package:chatter/common/api_service/api_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/common_response.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/setting_model.dart';
+import 'package:chatter/models/users_model.dart';
+import 'package:chatter/screens/login_screen/login_controller.dart';
+import 'package:chatter/utilities/const.dart';
+import 'package:chatter/utilities/params.dart';
+import 'package:chatter/utilities/web_service.dart';
 
 class UserService {
   static var shared = UserService();

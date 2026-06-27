@@ -1,7 +1,7 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/utilities/const.dart';
 
 class Menu extends StatelessWidget {
   final bool isFromPost;

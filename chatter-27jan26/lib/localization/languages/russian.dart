@@ -1,4 +1,4 @@
-import 'package:untitled/localization/languages.dart';
+import 'package:chatter/localization/languages.dart';
 
 const russianStrings = {
   LKeys.textChatDedicated: 'Текстовый чат',

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:untitled/common/api_service/post_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/feed_screen/feed_screen_controller.dart';
+import 'package:chatter/common/api_service/post_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/feed_screen/feed_screen_controller.dart';
 
 class SinglePostController extends FeedScreenController {
   int postId;

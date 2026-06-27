@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/tabbar/tabbar_screen.dart';
-import 'package:untitled/screens/username_screen/username_controller.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/tabbar/tabbar_screen.dart';
+import 'package:chatter/screens/username_screen/username_controller.dart';
+import 'package:chatter/utilities/const.dart';
 
 class ProfilePictureController extends UsernameController {
   final ImagePicker picker = ImagePicker();

@@ -1,4 +1,4 @@
-import 'package:untitled/localization/languages.dart';
+import 'package:chatter/localization/languages.dart';
 
 const danishStrings = {
   LKeys.textChatDedicated: 'Tekstchat dedikeret',

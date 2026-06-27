@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/screens/audio_space/create_audio_space_screen/create_audio_space_controller.dart';
-import 'package:untitled/screens/audio_space/models/audio_space.dart';
-import 'package:untitled/utilities/firebase_const.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/screens/audio_space/create_audio_space_screen/create_audio_space_controller.dart';
+import 'package:chatter/screens/audio_space/models/audio_space.dart';
+import 'package:chatter/utilities/firebase_const.dart';
 
 class AudioSpacesController extends BaseController {
   List<AudioSpace> spaces = [];

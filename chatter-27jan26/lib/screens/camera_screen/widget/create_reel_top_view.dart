@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/screens/camera_screen/create_reel_screen.dart';
-import 'package:untitled/screens/camera_screen/create_reel_screen_controller.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/screens/camera_screen/create_reel_screen.dart';
+import 'package:chatter/screens/camera_screen/create_reel_screen_controller.dart';
+import 'package:chatter/utilities/const.dart';
 
 class CreateReelTopView extends StatelessWidget {
   const CreateReelTopView({super.key});

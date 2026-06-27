@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/reels_screen/reels_screen_controller.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/reels_screen/reels_screen_controller.dart';
+import 'package:chatter/utilities/const.dart';
 
 import '../comments/reel_comment_screen.dart';
 

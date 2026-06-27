@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/screens/audio_space/audio_spaces_screen/audio_spaces_screen.dart';
-import 'package:untitled/screens/extra_views/logo_tag.dart';
-import 'package:untitled/screens/notification_screen/notification_screen.dart';
-import 'package:untitled/screens/random_screen/random_screen.dart';
-import 'package:untitled/screens/search_screen/search_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/screens/audio_space/audio_spaces_screen/audio_spaces_screen.dart';
+import 'package:chatter/screens/extra_views/logo_tag.dart';
+import 'package:chatter/screens/notification_screen/notification_screen.dart';
+import 'package:chatter/screens/random_screen/random_screen.dart';
+import 'package:chatter/screens/search_screen/search_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 class FeedScreenTopBar extends StatelessWidget {
   const FeedScreenTopBar({Key? key}) : super(key: key);

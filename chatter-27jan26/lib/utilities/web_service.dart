@@ -1,4 +1,4 @@
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/utilities/const.dart';
 
 class WebService {
   static Moderator moderator = Moderator();

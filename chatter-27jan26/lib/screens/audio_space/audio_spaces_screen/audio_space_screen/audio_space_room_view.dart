@@ -1,13 +1,13 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/image_extension.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/audio_space/models/audio_space_user.dart';
-import 'package:untitled/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/image_extension.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/audio_space/models/audio_space_user.dart';
+import 'package:chatter/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 import 'audio_space_controller.dart';
 

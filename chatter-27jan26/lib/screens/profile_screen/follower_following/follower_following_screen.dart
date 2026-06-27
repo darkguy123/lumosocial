@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/int_extension.dart';
-import 'package:untitled/common/managers/load_more_widget.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/screens/profile_screen/follower_following/follower_following_controller.dart';
-import 'package:untitled/screens/search_screen/search_screen.dart';
+import 'package:chatter/common/extensions/int_extension.dart';
+import 'package:chatter/common/managers/load_more_widget.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/screens/profile_screen/follower_following/follower_following_controller.dart';
+import 'package:chatter/screens/search_screen/search_screen.dart';
 
 class FollowerFollowingScreen extends StatelessWidget {
   final bool isForFollowing;

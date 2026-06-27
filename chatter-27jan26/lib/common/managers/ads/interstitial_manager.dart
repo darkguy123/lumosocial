@@ -1,6 +1,6 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:untitled/common/managers/logger.dart';
-import 'package:untitled/common/managers/session_manager.dart';
+import 'package:chatter/common/managers/logger.dart';
+import 'package:chatter/common/managers/session_manager.dart';
 
 class InterstitialManager {
   static var shared = InterstitialManager();

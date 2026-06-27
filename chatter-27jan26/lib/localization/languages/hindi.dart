@@ -1,4 +1,4 @@
-import 'package:untitled/localization/languages.dart';
+import 'package:chatter/localization/languages.dart';
 
 const hindiStrings = {
   LKeys.textChatDedicated: 'टेक्स्ट चैट समर्पित',

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/common/api_service/post_service.dart';
-import 'package:untitled/common/api_service/reel_service.dart';
-import 'package:untitled/common/api_service/room_service.dart';
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/posts_model.dart';
-import 'package:untitled/models/reel_model.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/room_model.dart';
-import 'package:untitled/models/setting_model.dart';
+import 'package:chatter/common/api_service/post_service.dart';
+import 'package:chatter/common/api_service/reel_service.dart';
+import 'package:chatter/common/api_service/room_service.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/posts_model.dart';
+import 'package:chatter/models/reel_model.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/room_model.dart';
+import 'package:chatter/models/setting_model.dart';
 
 class ReportController extends BaseController {
   final List<SettingCommon> reasons = SessionManager.shared.getSettings()?.reportReasons ?? [];

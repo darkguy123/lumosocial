@@ -1,7 +1,7 @@
-import 'package:untitled/models/posts_model.dart';
-import 'package:untitled/models/reel_model.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/room_model.dart';
+import 'package:chatter/models/posts_model.dart';
+import 'package:chatter/models/reel_model.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/room_model.dart';
 
 class UserNotificationModel {
   UserNotificationModel({

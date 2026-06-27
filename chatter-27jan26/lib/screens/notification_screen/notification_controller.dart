@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/common/api_service/common_service.dart';
-import 'package:untitled/common/controller/cupertino_controller.dart';
-import 'package:untitled/models/notification_model.dart';
-import 'package:untitled/models/user_notification_model.dart';
+import 'package:chatter/common/api_service/common_service.dart';
+import 'package:chatter/common/controller/cupertino_controller.dart';
+import 'package:chatter/models/notification_model.dart';
+import 'package:chatter/models/user_notification_model.dart';
 
 class NotificationScreenController extends CupertinoController {
   ScrollController scrollController = ScrollController();

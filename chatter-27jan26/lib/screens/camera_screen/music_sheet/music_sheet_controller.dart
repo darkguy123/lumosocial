@@ -2,15 +2,15 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/api_service/music_service.dart';
-import 'package:untitled/common/api_service/user_service.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/my_debouncer.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/models/music_categories_model.dart';
-import 'package:untitled/models/musics_model.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/api_service/music_service.dart';
+import 'package:chatter/common/api_service/user_service.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/my_debouncer.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/models/music_categories_model.dart';
+import 'package:chatter/models/musics_model.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/utilities/const.dart';
 
 class MusicSheetController extends BaseController {
   Rx<MusicSheetScreenType> selectedPage = MusicSheetScreenType.explore.obs;

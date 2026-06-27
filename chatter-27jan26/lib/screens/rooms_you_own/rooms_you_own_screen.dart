@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/extensions/int_extension.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/common/widgets/no_data_view.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/room_model.dart';
-import 'package:untitled/screens/chats_screen/chatting_screen/chatting_view.dart';
-import 'package:untitled/screens/extra_views/buttons.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
-import 'package:untitled/screens/rooms_you_own/rooms_you_own_controller.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/extensions/int_extension.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/common/widgets/no_data_view.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/room_model.dart';
+import 'package:chatter/screens/chats_screen/chatting_screen/chatting_view.dart';
+import 'package:chatter/screens/extra_views/buttons.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:chatter/screens/rooms_you_own/rooms_you_own_controller.dart';
+import 'package:chatter/utilities/const.dart';
 
 class RoomsYouOwnScreen extends StatelessWidget {
   const RoomsYouOwnScreen({Key? key}) : super(key: key);

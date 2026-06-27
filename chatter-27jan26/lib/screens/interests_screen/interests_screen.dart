@@ -1,12 +1,12 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/extra_views/buttons.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/screens/interests_screen/interests_controller.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/extra_views/buttons.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/screens/interests_screen/interests_controller.dart';
+import 'package:chatter/utilities/const.dart';
 
 class InterestScreen extends StatelessWidget {
   InterestScreen({Key? key}) : super(key: key);

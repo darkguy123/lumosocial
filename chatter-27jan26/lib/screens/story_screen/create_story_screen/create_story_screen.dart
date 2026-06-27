@@ -2,15 +2,15 @@ import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:retrytech_plugin/retrytech_plugin.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/widgets/black_gradient_shadow.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/screens/story_screen/create_story_screen/create_story_controller.dart';
-import 'package:untitled/screens/story_screen/create_story_screen/widget/create_story_bottom_view.dart';
-import 'package:untitled/screens/story_screen/create_story_screen/widget/create_story_top_view.dart';
-import 'package:untitled/screens/story_screen/story_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/widgets/black_gradient_shadow.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/screens/story_screen/create_story_screen/create_story_controller.dart';
+import 'package:chatter/screens/story_screen/create_story_screen/widget/create_story_bottom_view.dart';
+import 'package:chatter/screens/story_screen/create_story_screen/widget/create_story_top_view.dart';
+import 'package:chatter/screens/story_screen/story_screen.dart';
+import 'package:chatter/utilities/const.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class CreateStoryScreen extends StatelessWidget {

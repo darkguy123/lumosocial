@@ -1,4 +1,4 @@
-import 'package:untitled/localization/languages.dart';
+import 'package:chatter/localization/languages.dart';
 
 const portugueseStrings = {
   LKeys.textChatDedicated: 'Bate-papo de texto dedicado',

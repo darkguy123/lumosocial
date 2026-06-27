@@ -1,5 +1,5 @@
-import 'package:untitled/models/registration.dart';
-import 'package:untitled/models/room_model.dart';
+import 'package:chatter/models/registration.dart';
+import 'package:chatter/models/room_model.dart';
 
 class InvitationsModel {
   InvitationsModel({

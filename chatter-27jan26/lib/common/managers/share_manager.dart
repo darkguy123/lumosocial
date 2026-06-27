@@ -4,8 +4,8 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:untitled/common/managers/logger.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/managers/logger.dart';
+import 'package:chatter/utilities/const.dart';
 
 enum ShareKeys {
   user('user'),

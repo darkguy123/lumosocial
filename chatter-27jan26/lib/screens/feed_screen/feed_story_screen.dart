@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/managers/ads/interstitial_manager.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/feed_screen/feed_stories_controller.dart';
-import 'package:untitled/screens/story_screen/create_story_screen/create_story_screen.dart';
-import 'package:untitled/screens/story_screen/story_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/managers/ads/interstitial_manager.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/feed_screen/feed_stories_controller.dart';
+import 'package:chatter/screens/story_screen/create_story_screen/create_story_screen.dart';
+import 'package:chatter/screens/story_screen/story_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 class FeedStoryScreen extends StatelessWidget {
   final FeedStoriesController controller;

@@ -1,4 +1,4 @@
-import 'package:untitled/localization/languages.dart';
+import 'package:chatter/localization/languages.dart';
 
 const koreanStrings = {
   LKeys.textChatDedicated: '텍스트 채팅 전용',

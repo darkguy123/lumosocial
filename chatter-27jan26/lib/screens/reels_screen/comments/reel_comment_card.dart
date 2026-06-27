@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/date_time_extension.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/common/widgets/my_cached_image.dart';
-import 'package:untitled/models/reel_comments_model.dart';
-import 'package:untitled/screens/extra_views/back_button.dart';
-import 'package:untitled/screens/profile_screen/profile_screen.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/date_time_extension.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/common/widgets/my_cached_image.dart';
+import 'package:chatter/models/reel_comments_model.dart';
+import 'package:chatter/screens/extra_views/back_button.dart';
+import 'package:chatter/screens/profile_screen/profile_screen.dart';
+import 'package:chatter/utilities/const.dart';
 
 class ReelCommentCard extends StatelessWidget {
   final ReelComment comment;

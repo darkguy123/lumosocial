@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/enums/reel_page_type.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/models/setting_model.dart';
-import 'package:untitled/screens/extra_views/search_bar.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/screens/reels_screen/reels_grid.dart';
-import 'package:untitled/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
-import 'package:untitled/screens/search_reel_with_interest_screen/search_reel_with_interest_screen_controller.dart';
+import 'package:chatter/enums/reel_page_type.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/models/setting_model.dart';
+import 'package:chatter/screens/extra_views/search_bar.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/screens/reels_screen/reels_grid.dart';
+import 'package:chatter/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
+import 'package:chatter/screens/search_reel_with_interest_screen/search_reel_with_interest_screen_controller.dart';
 
 class SearchReelWithInterestScreen extends StatelessWidget {
   final Interest interest;

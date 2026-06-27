@@ -1,4 +1,4 @@
-import 'package:untitled/models/posts_model.dart';
+import 'package:chatter/models/posts_model.dart';
 
 class SingleFeedModel {
   SingleFeedModel({

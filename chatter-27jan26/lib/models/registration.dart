@@ -1,6 +1,6 @@
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/models/setting_model.dart';
-import 'package:untitled/models/story.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/models/setting_model.dart';
+import 'package:chatter/models/story.dart';
 
 class Registration {
   bool? status;

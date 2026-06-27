@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/utilities/const.dart';
 
 import 'circle_painter.dart';
 

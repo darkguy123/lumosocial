@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:untitled/common/controller/base_controller.dart';
-import 'package:untitled/common/managers/session_manager.dart';
-import 'package:untitled/localization/allLanguages.dart';
+import 'package:chatter/common/controller/base_controller.dart';
+import 'package:chatter/common/managers/session_manager.dart';
+import 'package:chatter/localization/allLanguages.dart';
 
 class LanguagesController extends BaseController {
   List<Lang> languages = LANGUAGES;

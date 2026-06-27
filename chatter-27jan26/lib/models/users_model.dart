@@ -1,4 +1,4 @@
-import 'package:untitled/models/registration.dart';
+import 'package:chatter/models/registration.dart';
 
 class UsersModel {
   UsersModel({

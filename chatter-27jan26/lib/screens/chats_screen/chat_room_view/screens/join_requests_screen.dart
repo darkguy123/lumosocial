@@ -1,13 +1,13 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:untitled/common/extensions/font_extension.dart';
-import 'package:untitled/common/widgets/no_data_view.dart';
-import 'package:untitled/localization/languages.dart';
-import 'package:untitled/screens/chats_screen/chat_room_view/screens/invite_someone_screen/invite_someone_screen.dart';
-import 'package:untitled/screens/chats_screen/chatting_screen/chatting_controller.dart';
-import 'package:untitled/screens/extra_views/top_bar.dart';
-import 'package:untitled/utilities/const.dart';
+import 'package:chatter/common/extensions/font_extension.dart';
+import 'package:chatter/common/widgets/no_data_view.dart';
+import 'package:chatter/localization/languages.dart';
+import 'package:chatter/screens/chats_screen/chat_room_view/screens/invite_someone_screen/invite_someone_screen.dart';
+import 'package:chatter/screens/chats_screen/chatting_screen/chatting_controller.dart';
+import 'package:chatter/screens/extra_views/top_bar.dart';
+import 'package:chatter/utilities/const.dart';
 
 class JoinRequestsScreen extends StatelessWidget {
   final ChattingController controller;

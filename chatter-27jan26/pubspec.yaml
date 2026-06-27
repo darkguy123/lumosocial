@@ -1,0 +1,32 @@
+name: chatter
+description: A new Flutter project.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase Core and SDKs
+  firebase_core: ^2.15.0
+  firebase_messaging: ^14.6.0
+  firebase_auth: ^4.7.0
+
+  # HTTP Client for Next.js API Communication
+  http: ^1.1.0
+
+  # Agora Video & Audio streaming
+  agora_rtc_engine: ^6.2.0
+
+  # Shared preferences for session caching
+  shared_preferences: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true

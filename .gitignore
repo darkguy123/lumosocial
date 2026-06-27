@@ -1,0 +1,42 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom
+.buildlog
+.history
+.project
+.directory
+
+# Flutter/Dart build files
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Android build files
+**/android/app/src/main/flutter_assets/
+**/android/app/src/main/jniLibs/
+**/android/app/libs/
+**/android/.gradle/
+**/android/build/
+**/android/local.properties
+**/android/key.properties
+*.so
+*.ap_
+*.apk
+*.aab
+*.dex
+*.class
+
+# Symbol files
+*.pdb
+*.dsp
+*.dsw
+*.ncb
+*.opt
+*.plg
+*.aps

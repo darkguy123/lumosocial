@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "283720524531",
-    "project_id": "chatter-2ee95",
-    "storage_bucket": "chatter-2ee95.appspot.com"
+    "project_number": "906920301374",
+    "project_id": "studio-5037435253-9d44b",
+    "storage_bucket": "studio-5037435253-9d44b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:283720524531:android:fae5558c0136113fea0d86",
+        "mobilesdk_app_id": "1:906920301374:android:fae5558c0136113fea0d86",
         "android_client_info": {
           "package_name": "com.retrytech.chatter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "283720524531-e7d2st3uu9e8fde1p31k497jp5416mt0.apps.googleusercontent.com",
+          "client_id": "906920301374-e7d2st3uu9e8fde1p31k497jp5416mt0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.retrytech.chatter",
@@ -22,24 +22,24 @@
           }
         },
         {
-          "client_id": "283720524531-fqaf90fl117m7sitgp1m7i8eb4q92ea8.apps.googleusercontent.com",
+          "client_id": "906920301374-fqaf90fl117m7sitgp1m7i8eb4q92ea8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAzkCr3sQaEpuwMgLT3XE7TXzXV5X1sMUE"
+          "current_key": "AIzaSyD1kJ0XqiEi1N146M10XF7yzgarRovPzTk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "283720524531-fqaf90fl117m7sitgp1m7i8eb4q92ea8.apps.googleusercontent.com",
+              "client_id": "906920301374-fqaf90fl117m7sitgp1m7i8eb4q92ea8.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "283720524531-7u258o7l8jv0uhkcv2jsbk11qff55lf0.apps.googleusercontent.com",
+              "client_id": "906920301374-7u258o7l8jv0uhkcv2jsbk11qff55lf0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.retrytech.chatter"

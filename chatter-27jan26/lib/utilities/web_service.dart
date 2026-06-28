@@ -1,4 +1,4 @@
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class WebService {
   static Moderator moderator = Moderator();

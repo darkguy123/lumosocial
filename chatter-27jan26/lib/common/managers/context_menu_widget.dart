@@ -1,7 +1,7 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class Menu {
   final List<MenuAction> children;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/screens/follow_button/follow_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/screens/follow_button/follow_controller.dart';
 
 import '../../models/registration.dart';
 

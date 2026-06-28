@@ -1,4 +1,4 @@
-import 'package:chatter/models/reel_model.dart';
+import 'package:lumosocial/models/reel_model.dart';
 
 class ReelsModel {
   bool? status;

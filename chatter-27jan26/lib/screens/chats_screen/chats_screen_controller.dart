@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/controller/cupertino_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/chat.dart';
-import 'package:chatter/screens/sheets/confirmation_sheet.dart';
-import 'package:chatter/utilities/firebase_const.dart';
+import 'package:lumosocial/common/controller/cupertino_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/chat.dart';
+import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/utilities/firebase_const.dart';
 
 class ChatsScreensController extends CupertinoController {
   List<ChatUserRoom> chats = [];

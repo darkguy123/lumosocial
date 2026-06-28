@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/sheets/confirmation_sheet.dart';
-import 'package:chatter/utilities/firebase_const.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/utilities/firebase_const.dart';
 
 class BlockUserController extends BaseController {
   void blockUser(User? user, Function() completion) {

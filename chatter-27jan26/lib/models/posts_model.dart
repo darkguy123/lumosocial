@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:chatter/common/managers/url_extractor/parsers/base_parser.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/screens/add_post_screen/add_post_controller.dart';
+import 'package:lumosocial/common/managers/url_extractor/parsers/base_parser.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/screens/add_post_screen/add_post_controller.dart';
 
 class PostsModel {
   bool? status;

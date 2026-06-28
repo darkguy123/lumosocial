@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/logger.dart';
-import 'package:chatter/models/registration.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/models/registration.dart';
 
 import '../../common/api_service/user_service.dart';
 

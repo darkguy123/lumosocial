@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:chatter/common/managers/logger.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/utilities/const.dart';
-import 'package:chatter/utilities/params.dart';
+import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/utilities/params.dart';
 
 class FirebaseNotificationManager {
   static var shared = FirebaseNotificationManager();

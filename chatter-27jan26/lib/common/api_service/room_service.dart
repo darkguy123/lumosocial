@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:chatter/common/api_service/api_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/common_response.dart';
-import 'package:chatter/models/invitations_model.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/room_member_model.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/models/rooms_model.dart';
-import 'package:chatter/models/users_model.dart';
-import 'package:chatter/utilities/const.dart';
-import 'package:chatter/utilities/params.dart';
-import 'package:chatter/utilities/web_service.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/common_response.dart';
+import 'package:lumosocial/models/invitations_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/room_member_model.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/models/rooms_model.dart';
+import 'package:lumosocial/models/users_model.dart';
+import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/utilities/params.dart';
+import 'package:lumosocial/utilities/web_service.dart';
 
 import '../managers/session_manager.dart';
 

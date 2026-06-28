@@ -3,14 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/reel_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/logger.dart';
-import 'package:chatter/common/managers/my_debouncer.dart';
-import 'package:chatter/enums/reel_page_type.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/reels_screen/reel/reel_page_controller.dart';
+import 'package:lumosocial/common/api_service/reel_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/common/managers/my_debouncer.dart';
+import 'package:lumosocial/enums/reel_page_type.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/reels_screen/reel/reel_page_controller.dart';
 import 'package:video_player/video_player.dart';
 
 class ReelsScreenController extends BaseController {

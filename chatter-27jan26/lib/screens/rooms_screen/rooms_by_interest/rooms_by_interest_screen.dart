@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/managers/load_more_widget.dart';
-import 'package:chatter/common/widgets/no_data_view.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/setting_model.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/rooms_screen/room_card.dart';
-import 'package:chatter/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
-import 'package:chatter/screens/rooms_screen/rooms_by_interest/rooms_by_interest_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/managers/load_more_widget.dart';
+import 'package:lumosocial/common/widgets/no_data_view.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/setting_model.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/rooms_screen/room_card.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_by_interest/rooms_by_interest_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class RoomsByInterestScreen extends StatelessWidget {
   final Interest interest;

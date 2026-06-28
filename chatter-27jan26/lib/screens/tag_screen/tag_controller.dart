@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/post_service.dart';
-import 'package:chatter/common/api_service/reel_service.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/screens/feed_screen/feed_screen_controller.dart';
+import 'package:lumosocial/common/api_service/post_service.dart';
+import 'package:lumosocial/common/api_service/reel_service.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/screens/feed_screen/feed_screen_controller.dart';
 
 class TagController extends FeedScreenController {
   String tag;

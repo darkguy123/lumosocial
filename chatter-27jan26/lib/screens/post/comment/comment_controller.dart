@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/moderator_service.dart';
-import 'package:chatter/common/api_service/post_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/comments_model.dart';
-import 'package:chatter/models/posts_model.dart';
-import 'package:chatter/screens/post/post_controller.dart';
-import 'package:chatter/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/common/api_service/moderator_service.dart';
+import 'package:lumosocial/common/api_service/post_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/comments_model.dart';
+import 'package:lumosocial/models/posts_model.dart';
+import 'package:lumosocial/screens/post/post_controller.dart';
+import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
 
 class CommentController extends BaseController {
   final Post post;

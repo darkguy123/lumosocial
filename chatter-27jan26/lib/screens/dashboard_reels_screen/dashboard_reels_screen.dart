@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/enums/reel_page_type.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/dashboard_reels_screen/dashboard_reels_controller.dart';
-import 'package:chatter/screens/reels_screen/reels_screen.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/enums/reel_page_type.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/dashboard_reels_screen/dashboard_reels_controller.dart';
+import 'package:lumosocial/screens/reels_screen/reels_screen.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class DashboardReelsScreen extends StatelessWidget {
   const DashboardReelsScreen({super.key});

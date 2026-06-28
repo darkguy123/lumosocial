@@ -1,6 +1,6 @@
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/chats_screen/chatting_screen/block_user_controller.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/chats_screen/chatting_screen/block_user_controller.dart';
 
 class BlockListController extends BlockUserController {
   List<User> users = [];

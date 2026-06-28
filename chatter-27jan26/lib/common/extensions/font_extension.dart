@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 const TextStyle kGilroyHeavy = TextStyle(
   fontFamily: "gilroy_heavy",

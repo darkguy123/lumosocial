@@ -1,6 +1,6 @@
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/models/registration.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/models/registration.dart';
 
 class FollowerFollowingController extends BaseController {
   final bool isForFollowing;

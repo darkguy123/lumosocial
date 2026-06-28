@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:chatter/common/managers/logger.dart';
+import 'package:lumosocial/common/managers/logger.dart';
 
 class CancelToken {
   bool _isCancelled = false;

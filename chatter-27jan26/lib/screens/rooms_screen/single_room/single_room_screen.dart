@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/rooms_screen/room_card.dart';
-import 'package:chatter/screens/rooms_screen/single_room/single_room_controller.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/rooms_screen/room_card.dart';
+import 'package:lumosocial/screens/rooms_screen/single_room/single_room_controller.dart';
 
 class SingleRoomScreen extends StatelessWidget {
   final int roomId;

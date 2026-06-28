@@ -8,20 +8,20 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:chatter/common/api_service/notification_service.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/firebase_notification_manager.dart';
-import 'package:chatter/common/managers/logger.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/common/managers/subscription_manager.dart';
-import 'package:chatter/screens/block_by_admin_screen/block_by_admin_screen.dart';
-import 'package:chatter/screens/interests_screen/interests_screen.dart';
-import 'package:chatter/screens/login_screen/sign_in_with_email_screen.dart';
-import 'package:chatter/screens/profile_picture_screen/profile_picture_screen.dart';
-import 'package:chatter/screens/tabbar/tabbar_screen.dart';
-import 'package:chatter/screens/username_screen/username_screen.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/api_service/notification_service.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/firebase_notification_manager.dart';
+import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/common/managers/subscription_manager.dart';
+import 'package:lumosocial/screens/block_by_admin_screen/block_by_admin_screen.dart';
+import 'package:lumosocial/screens/interests_screen/interests_screen.dart';
+import 'package:lumosocial/screens/login_screen/sign_in_with_email_screen.dart';
+import 'package:lumosocial/screens/profile_picture_screen/profile_picture_screen.dart';
+import 'package:lumosocial/screens/tabbar/tabbar_screen.dart';
+import 'package:lumosocial/screens/username_screen/username_screen.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class LoginController extends BaseController {
   @override

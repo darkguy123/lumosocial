@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/tabbar/tabbar_screen.dart';
-import 'package:chatter/screens/username_screen/username_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/tabbar/tabbar_screen.dart';
+import 'package:lumosocial/screens/username_screen/username_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class ProfilePictureController extends UsernameController {
   final ImagePicker picker = ImagePicker();

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/post/post_liked_users_controller.dart';
-import 'package:chatter/screens/search_screen/search_screen.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/post/post_liked_users_controller.dart';
+import 'package:lumosocial/screens/search_screen/search_screen.dart';
 
 class PostLikedUsersScreen extends StatelessWidget {
   final int postId;

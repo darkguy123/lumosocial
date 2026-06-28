@@ -1,16 +1,16 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/common_response.dart';
-import 'package:chatter/models/reel_comment_model.dart';
-import 'package:chatter/models/reel_comments_model.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/models/reels_model.dart';
-import 'package:chatter/utilities/const.dart';
-import 'package:chatter/utilities/params.dart';
-import 'package:chatter/utilities/web_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/common_response.dart';
+import 'package:lumosocial/models/reel_comment_model.dart';
+import 'package:lumosocial/models/reel_comments_model.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/models/reels_model.dart';
+import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/utilities/params.dart';
+import 'package:lumosocial/utilities/web_service.dart';
 
 import 'new_api_service.dart';
 

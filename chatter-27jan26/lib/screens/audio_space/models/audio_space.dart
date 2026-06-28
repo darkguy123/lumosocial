@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/setting_model.dart';
-import 'package:chatter/screens/audio_space/create_audio_space_screen/create_audio_space_controller.dart';
-import 'package:chatter/screens/audio_space/models/audio_space_user.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/setting_model.dart';
+import 'package:lumosocial/screens/audio_space/create_audio_space_screen/create_audio_space_controller.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space_user.dart';
 
 class AudioSpace {
   String? id;

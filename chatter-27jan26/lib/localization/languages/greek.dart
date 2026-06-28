@@ -1,4 +1,4 @@
-import 'package:chatter/localization/languages.dart';
+import 'package:lumosocial/localization/languages.dart';
 
 const greekStrings = {
   LKeys.textChatDedicated: 'Συνομιλία κειμένου Αφιερωμένη',

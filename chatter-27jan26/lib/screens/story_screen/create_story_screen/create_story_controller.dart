@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:retrytech_plugin/retrytech_plugin.dart';
-import 'package:chatter/common/api_service/sight_engine_service.dart';
-import 'package:chatter/common/api_service/story_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/editor_manager.dart';
-import 'package:chatter/common/managers/image_video_manager.dart';
-import 'package:chatter/common/managers/logger.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/story_screen/create_story_screen/story_editor_screen.dart';
-import 'package:chatter/screens/story_screen/create_story_screen/widget/story_media_picker.dart';
-import 'package:chatter/utilities/filters.dart';
+import 'package:lumosocial/common/api_service/sight_engine_service.dart';
+import 'package:lumosocial/common/api_service/story_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/editor_manager.dart';
+import 'package:lumosocial/common/managers/image_video_manager.dart';
+import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/story_screen/create_story_screen/story_editor_screen.dart';
+import 'package:lumosocial/screens/story_screen/create_story_screen/widget/story_media_picker.dart';
+import 'package:lumosocial/utilities/filters.dart';
 import 'package:video_player/video_player.dart';
 
 class CreateStoryController extends BaseController {

@@ -1,8 +1,8 @@
-import 'package:chatter/common/api_service/new_api_service.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/common_response.dart';
-import 'package:chatter/utilities/params.dart';
-import 'package:chatter/utilities/web_service.dart';
+import 'package:lumosocial/common/api_service/new_api_service.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/common_response.dart';
+import 'package:lumosocial/utilities/params.dart';
+import 'package:lumosocial/utilities/web_service.dart';
 
 import 'api_service.dart';
 

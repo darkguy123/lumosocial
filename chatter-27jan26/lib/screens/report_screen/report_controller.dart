@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:chatter/common/api_service/post_service.dart';
-import 'package:chatter/common/api_service/reel_service.dart';
-import 'package:chatter/common/api_service/room_service.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/posts_model.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/models/setting_model.dart';
+import 'package:lumosocial/common/api_service/post_service.dart';
+import 'package:lumosocial/common/api_service/reel_service.dart';
+import 'package:lumosocial/common/api_service/room_service.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/posts_model.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/models/setting_model.dart';
 
 class ReportController extends BaseController {
   final List<SettingCommon> reasons = SessionManager.shared.getSettings()?.reportReasons ?? [];

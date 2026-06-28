@@ -1,7 +1,7 @@
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/library/story_view/story_view.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/library/story_view/story_view.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class StoryModel {
   StoryModel({

@@ -1,18 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/int_extension.dart';
-import 'package:chatter/common/managers/load_more_widget.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/room_member_model.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/screens/chats_screen/chat_room_view/screens/invite_someone_screen/invite_someone_screen.dart';
-import 'package:chatter/screens/chats_screen/chat_room_view/screens/room_member_screen/room_members_controller.dart';
-import 'package:chatter/screens/chats_screen/chatting_screen/chatting_controller.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/int_extension.dart';
+import 'package:lumosocial/common/managers/load_more_widget.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/room_member_model.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/screens/chats_screen/chat_room_view/screens/invite_someone_screen/invite_someone_screen.dart';
+import 'package:lumosocial/screens/chats_screen/chat_room_view/screens/room_member_screen/room_members_controller.dart';
+import 'package:lumosocial/screens/chats_screen/chatting_screen/chatting_controller.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class RoomMembersScreen extends StatelessWidget {
   final ChattingController chattingController;

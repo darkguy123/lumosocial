@@ -1,6 +1,6 @@
-import 'package:chatter/common/api_service/room_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/models/room_model.dart';
+import 'package:lumosocial/common/api_service/room_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/models/room_model.dart';
 
 class RoomsYouOwnController extends BaseController {
   List<Room> rooms = [];

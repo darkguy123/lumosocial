@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/room_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/room_model.dart';
+import 'package:lumosocial/common/api_service/room_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/room_model.dart';
 
 class InviteSomeoneController extends BaseController {
   final Room? room;

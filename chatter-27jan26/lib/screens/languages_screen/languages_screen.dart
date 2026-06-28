@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/localization/allLanguages.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/languages_screen/languages_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/localization/allLanguages.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/languages_screen/languages_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class LanguagesScreen extends StatelessWidget {
   const LanguagesScreen({super.key});

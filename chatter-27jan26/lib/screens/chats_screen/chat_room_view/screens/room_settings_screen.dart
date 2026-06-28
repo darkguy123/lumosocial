@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
 
 class RoomSettingScreen extends StatelessWidget {
   final Room? room;

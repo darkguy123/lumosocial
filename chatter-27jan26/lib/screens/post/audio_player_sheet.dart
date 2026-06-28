@@ -5,10 +5,10 @@ import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
-import 'package:chatter/screens/add_post_screen/record_audio/record_audio_screen.dart';
-import 'package:chatter/screens/post/post_card.dart';
-import 'package:chatter/screens/post/post_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/screens/add_post_screen/record_audio/record_audio_screen.dart';
+import 'package:lumosocial/screens/post/post_card.dart';
+import 'package:lumosocial/screens/post/post_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class AudioPlayerSheet extends StatefulWidget {
   final PostController controller;

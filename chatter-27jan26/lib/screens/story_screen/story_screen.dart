@@ -1,18 +1,18 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/date_time_extension.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/managers/logger.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/common/widgets/menu.dart';
-import 'package:chatter/common/widgets/my_cached_image.dart';
-import 'package:chatter/library/story_view/story_view.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/extra_views/back_button.dart';
-import 'package:chatter/screens/story_screen/story_screen_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/date_time_extension.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/common/widgets/menu.dart';
+import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/library/story_view/story_view.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/extra_views/back_button.dart';
+import 'package:lumosocial/screens/story_screen/story_screen_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class StoryScreen extends StatelessWidget {
   final List<User> users;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/post_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/my_debouncer.dart';
-import 'package:chatter/models/posts_model.dart';
-import 'package:chatter/models/setting_model.dart';
+import 'package:lumosocial/common/api_service/post_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/my_debouncer.dart';
+import 'package:lumosocial/models/posts_model.dart';
+import 'package:lumosocial/models/setting_model.dart';
 
 class SearchPostWithInterestScreenController extends BaseController {
   TextEditingController textEditingController = TextEditingController();

@@ -6,12 +6,12 @@ import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/back_button.dart';
-import 'package:chatter/screens/extra_views/buttons.dart';
-import 'package:chatter/screens/sheets/confirmation_sheet.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/back_button.dart';
+import 'package:lumosocial/screens/extra_views/buttons.dart';
+import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 var audioSize = Size(Get.width - 86, 50);
 

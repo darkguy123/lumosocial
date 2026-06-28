@@ -5,10 +5,10 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/logger.dart';
-import 'package:chatter/common/managers/my_debouncer.dart';
-import 'package:chatter/models/musics_model.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/common/managers/my_debouncer.dart';
+import 'package:lumosocial/models/musics_model.dart';
 
 class MusicTrimScreenController extends BaseController {
   int videoDurationInMilliSec;

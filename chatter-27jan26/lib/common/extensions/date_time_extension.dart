@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:chatter/localization/languages.dart';
+import 'package:lumosocial/localization/languages.dart';
 
 extension DateTimeExtension on DateTime {
   String timeAgo({bool numericDates = false}) {

@@ -4,12 +4,12 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/widgets/my_cached_image.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/buttons.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/profile_picture_screen/profile_picture_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/buttons.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/profile_picture_screen/profile_picture_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class ProfilePictureScreen extends StatelessWidget {
   const ProfilePictureScreen({Key? key}) : super(key: key);

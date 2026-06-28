@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/image_extension.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/login_screen/login_screen.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/login_screen/login_screen.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 import '../extra_views/buttons.dart';
 

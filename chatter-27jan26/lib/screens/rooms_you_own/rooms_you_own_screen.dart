@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/int_extension.dart';
-import 'package:chatter/common/widgets/my_cached_image.dart';
-import 'package:chatter/common/widgets/no_data_view.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/screens/chats_screen/chatting_screen/chatting_view.dart';
-import 'package:chatter/screens/extra_views/buttons.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
-import 'package:chatter/screens/rooms_you_own/rooms_you_own_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/int_extension.dart';
+import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/common/widgets/no_data_view.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/screens/chats_screen/chatting_screen/chatting_view.dart';
+import 'package:lumosocial/screens/extra_views/buttons.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:lumosocial/screens/rooms_you_own/rooms_you_own_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class RoomsYouOwnScreen extends StatelessWidget {
   const RoomsYouOwnScreen({Key? key}) : super(key: key);

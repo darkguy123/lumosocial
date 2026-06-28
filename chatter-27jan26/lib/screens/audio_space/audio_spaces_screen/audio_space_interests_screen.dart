@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/setting_model.dart';
-import 'package:chatter/screens/audio_space/audio_spaces_screen/audio_spaces_screen.dart';
-import 'package:chatter/screens/audio_space/models/audio_space.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/setting_model.dart';
+import 'package:lumosocial/screens/audio_space/audio_spaces_screen/audio_spaces_screen.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 import 'audio_spaces_controller.dart';
 

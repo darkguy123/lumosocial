@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class BackButton extends StatelessWidget {
   const BackButton({Key? key}) : super(key: key);

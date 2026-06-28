@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/post_service.dart';
-import 'package:chatter/models/posts_model.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/screens/chats_screen/chatting_screen/block_user_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/api_service/post_service.dart';
+import 'package:lumosocial/models/posts_model.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/screens/chats_screen/chatting_screen/block_user_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class FeedScreenController extends BlockUserController {
   // List<Feed> posts = [];

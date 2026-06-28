@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/screens/sheets/confirmation_sheet.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/utilities/const.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BaseController extends GetxController {

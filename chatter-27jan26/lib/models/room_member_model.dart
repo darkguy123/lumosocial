@@ -1,4 +1,4 @@
-import 'package:chatter/models/registration.dart';
+import 'package:lumosocial/models/registration.dart';
 
 class RoomMemberModel {
   RoomMemberModel({

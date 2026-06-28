@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:chatter/common/api_service/room_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/invitations_model.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/screens/rooms_screen/room_controller.dart';
+import 'package:lumosocial/common/api_service/room_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/invitations_model.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/screens/rooms_screen/room_controller.dart';
 
 class InvitationController extends BaseController {
   List<Invitation> invitations = [];

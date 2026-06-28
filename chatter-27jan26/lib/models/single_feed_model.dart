@@ -1,4 +1,4 @@
-import 'package:chatter/models/posts_model.dart';
+import 'package:lumosocial/models/posts_model.dart';
 
 class SingleFeedModel {
   SingleFeedModel({

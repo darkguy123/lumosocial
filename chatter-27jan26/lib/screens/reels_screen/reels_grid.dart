@@ -1,20 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/int_extension.dart';
-import 'package:chatter/common/managers/context_menu_widget.dart';
-import 'package:chatter/common/managers/load_more_widget.dart';
-import 'package:chatter/common/widgets/loader_widget.dart';
-import 'package:chatter/common/widgets/my_cached_image.dart';
-import 'package:chatter/common/widgets/no_data_view.dart';
-import 'package:chatter/enums/reel_page_type.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/musics_model.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/reels_screen/reels_screen.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/int_extension.dart';
+import 'package:lumosocial/common/managers/context_menu_widget.dart';
+import 'package:lumosocial/common/managers/load_more_widget.dart';
+import 'package:lumosocial/common/widgets/loader_widget.dart';
+import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/common/widgets/no_data_view.dart';
+import 'package:lumosocial/enums/reel_page_type.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/musics_model.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/reels_screen/reels_screen.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class ReelsGrid extends StatelessWidget {
   final RxList<Reel> reels;

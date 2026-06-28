@@ -1,18 +1,18 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/date_time_extension.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/int_extension.dart';
-import 'package:chatter/common/widgets/my_cached_image.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/room_model.dart';
-import 'package:chatter/screens/extra_views/back_button.dart';
-import 'package:chatter/screens/extra_views/buttons.dart';
-import 'package:chatter/screens/profile_screen/profile_screen.dart';
-import 'package:chatter/screens/rooms_screen/room_card.dart';
-import 'package:chatter/screens/rooms_screen/room_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/date_time_extension.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/int_extension.dart';
+import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/room_model.dart';
+import 'package:lumosocial/screens/extra_views/back_button.dart';
+import 'package:lumosocial/screens/extra_views/buttons.dart';
+import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
+import 'package:lumosocial/screens/rooms_screen/room_card.dart';
+import 'package:lumosocial/screens/rooms_screen/room_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class RoomSheet extends StatelessWidget {
   const RoomSheet({Key? key, this.isFromInfo = false, required this.room, required this.controller}) : super(key: key);

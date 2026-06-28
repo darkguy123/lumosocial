@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/firebase_notification_manager.dart';
-import 'package:chatter/common/managers/share_manager.dart';
-import 'package:chatter/screens/profile_screen/profile_screen.dart';
-import 'package:chatter/screens/rooms_screen/single_room/single_room_screen.dart';
-import 'package:chatter/screens/single_post_screen/single_post_screen.dart';
-import 'package:chatter/screens/single_reel_screen/single_reel_screen.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/firebase_notification_manager.dart';
+import 'package:lumosocial/common/managers/share_manager.dart';
+import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
+import 'package:lumosocial/screens/rooms_screen/single_room/single_room_screen.dart';
+import 'package:lumosocial/screens/single_post_screen/single_post_screen.dart';
+import 'package:lumosocial/screens/single_reel_screen/single_reel_screen.dart';
 
 class TabBarController extends BaseController {
   int selectedTab = 0;

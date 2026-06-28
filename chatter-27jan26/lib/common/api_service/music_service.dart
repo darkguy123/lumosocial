@@ -1,10 +1,10 @@
-import 'package:chatter/common/api_service/api_service.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/music_categories_model.dart';
-import 'package:chatter/models/musics_model.dart';
-import 'package:chatter/utilities/const.dart';
-import 'package:chatter/utilities/params.dart';
-import 'package:chatter/utilities/web_service.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/music_categories_model.dart';
+import 'package:lumosocial/models/musics_model.dart';
+import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/utilities/params.dart';
+import 'package:lumosocial/utilities/web_service.dart';
 
 class MusicService {
   static var shared = MusicService();

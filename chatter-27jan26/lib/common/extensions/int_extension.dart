@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:chatter/common/managers/session_manager.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
 
 extension Optional on int {
   String makeToString() {

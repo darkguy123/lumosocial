@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/image_extension.dart';
-import 'package:chatter/common/widgets/buttons/circle_button.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
+import 'package:lumosocial/common/widgets/buttons/circle_button.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class XmarkButton extends StatelessWidget {
   final Function onTap;

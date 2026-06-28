@@ -1,5 +1,5 @@
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/setting_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/setting_model.dart';
 
 import '../common/managers/session_manager.dart';
 

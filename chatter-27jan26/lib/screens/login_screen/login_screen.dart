@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/image_extension.dart';
-import 'package:chatter/common/managers/navigation.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/logo_tag.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/login_screen/login_button.dart';
-import 'package:chatter/screens/login_screen/login_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
+import 'package:lumosocial/common/managers/navigation.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/logo_tag.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/login_screen/login_button.dart';
+import 'package:lumosocial/screens/login_screen/login_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);

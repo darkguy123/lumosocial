@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/moderator_service.dart';
-import 'package:chatter/common/api_service/reel_service.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/common/managers/share_manager.dart';
-import 'package:chatter/common/widgets/functions.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/feed_screen/feed_screen_controller.dart';
-import 'package:chatter/screens/follow_button/follow_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/api_service/moderator_service.dart';
+import 'package:lumosocial/common/api_service/reel_service.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/common/managers/share_manager.dart';
+import 'package:lumosocial/common/widgets/functions.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/feed_screen/feed_screen_controller.dart';
+import 'package:lumosocial/screens/follow_button/follow_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 import '../sheets/confirmation_sheet.dart';
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/widgets/no_data_view.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/setting_model.dart';
-import 'package:chatter/screens/extra_views/search_bar.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/post/post_card.dart';
-import 'package:chatter/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
-import 'package:chatter/screens/search_post_with_interest_screen/search_post_with_interest_screen_controller.dart';
+import 'package:lumosocial/common/widgets/no_data_view.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/setting_model.dart';
+import 'package:lumosocial/screens/extra_views/search_bar.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/post/post_card.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
+import 'package:lumosocial/screens/search_post_with_interest_screen/search_post_with_interest_screen_controller.dart';
 
 class SearchPostWithInterestScreen extends StatelessWidget {
   final Interest interest;

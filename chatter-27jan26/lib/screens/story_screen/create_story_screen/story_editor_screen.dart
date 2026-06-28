@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/image_extension.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/camera_screen/color_filter_pageview_list.dart';
-import 'package:chatter/screens/camera_screen/create_reel_screen.dart';
-import 'package:chatter/screens/camera_screen/reel_editor_screen.dart';
-import 'package:chatter/screens/post/video_player_sheet.dart';
-import 'package:chatter/screens/reels_screen/reel/reel_page.dart';
-import 'package:chatter/screens/story_screen/create_story_screen/create_story_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/camera_screen/color_filter_pageview_list.dart';
+import 'package:lumosocial/screens/camera_screen/create_reel_screen.dart';
+import 'package:lumosocial/screens/camera_screen/reel_editor_screen.dart';
+import 'package:lumosocial/screens/post/video_player_sheet.dart';
+import 'package:lumosocial/screens/reels_screen/reel/reel_page.dart';
+import 'package:lumosocial/screens/story_screen/create_story_screen/create_story_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 import 'package:visibility_detector/visibility_detector.dart' show VisibilityDetector;
 
 class StoryEditorScreen extends StatelessWidget {

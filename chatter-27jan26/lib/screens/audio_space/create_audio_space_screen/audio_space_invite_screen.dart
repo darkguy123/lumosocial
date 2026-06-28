@@ -1,17 +1,17 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/managers/load_more_widget.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/audio_space/models/audio_space_user.dart';
-import 'package:chatter/screens/extra_views/buttons.dart';
-import 'package:chatter/screens/extra_views/search_bar.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/search_screen/search_controller.dart';
-import 'package:chatter/screens/search_screen/search_screen.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/managers/load_more_widget.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space_user.dart';
+import 'package:lumosocial/screens/extra_views/buttons.dart';
+import 'package:lumosocial/screens/extra_views/search_bar.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/search_screen/search_controller.dart';
+import 'package:lumosocial/screens/search_screen/search_screen.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class AudioSpaceInviteScreen extends StatelessWidget {
   final List<AudioSpaceUser> audioSpaceUsers;

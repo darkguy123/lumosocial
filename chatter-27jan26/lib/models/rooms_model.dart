@@ -1,4 +1,4 @@
-import 'package:chatter/models/room_model.dart';
+import 'package:lumosocial/models/room_model.dart';
 
 class RoomsModel {
   RoomsModel({

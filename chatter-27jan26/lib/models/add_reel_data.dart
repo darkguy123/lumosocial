@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:chatter/models/musics_model.dart';
-import 'package:chatter/utilities/filters.dart';
+import 'package:lumosocial/models/musics_model.dart';
+import 'package:lumosocial/utilities/filters.dart';
 
 class AddReelData {
   String? videoPath;

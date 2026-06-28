@@ -1,13 +1,13 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/image_extension.dart';
-import 'package:chatter/common/widgets/my_cached_image.dart';
-import 'package:chatter/common/widgets/no_data_view.dart';
-import 'package:chatter/models/musics_model.dart';
-import 'package:chatter/screens/camera_screen/music_sheet/music_sheet_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
+import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/common/widgets/no_data_view.dart';
+import 'package:lumosocial/models/musics_model.dart';
+import 'package:lumosocial/screens/camera_screen/music_sheet/music_sheet_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class MusicExplorePage extends StatelessWidget {
   final MusicSheetController controller;

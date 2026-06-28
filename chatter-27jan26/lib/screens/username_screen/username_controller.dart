@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/interests_screen/interests_controller.dart';
-import 'package:chatter/screens/profile_picture_screen/profile_picture_screen.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/interests_screen/interests_controller.dart';
+import 'package:lumosocial/screens/profile_picture_screen/profile_picture_screen.dart';
 
 class UsernameController extends InterestsController {
   TextEditingController textController = TextEditingController();

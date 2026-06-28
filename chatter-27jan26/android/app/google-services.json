@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:906920301374:android:fae5558c0136113fea0d86",
         "android_client_info": {
-          "package_name": "com.retrytech.chatter"
+          "package_name": "com.lumosocial.app"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "906920301374-e7d2st3uu9e8fde1p31k497jp5416mt0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.retrytech.chatter",
+            "package_name": "com.lumosocial.app",
             "certificate_hash": "1effcccf4cab8f2672784e5bc2a177cd5829b6fa"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "906920301374-7u258o7l8jv0uhkcv2jsbk11qff55lf0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.retrytech.chatter"
+                "bundle_id": "com.lumosocial.app"
               }
             }
           ]

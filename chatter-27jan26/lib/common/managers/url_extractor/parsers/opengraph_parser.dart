@@ -1,5 +1,5 @@
 import 'package:html/dom.dart';
-import 'package:chatter/common/managers/url_extractor/utils/util.dart';
+import 'package:lumosocial/common/managers/url_extractor/utils/util.dart';
 
 import 'base_parser.dart';
 

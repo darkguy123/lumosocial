@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/enums/reel_page_type.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/feed_screen/feed_screen.dart';
-import 'package:chatter/screens/reels_screen/reels_grid.dart';
-import 'package:chatter/screens/tag_screen/tag_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/enums/reel_page_type.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/feed_screen/feed_screen.dart';
+import 'package:lumosocial/screens/reels_screen/reels_grid.dart';
+import 'package:lumosocial/screens/tag_screen/tag_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class TagScreen extends StatelessWidget {
   final String tag;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:chatter/screens/extra_views/logo_tag.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/screens/extra_views/logo_tag.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class RoomScreenTopBar extends StatelessWidget {
   const RoomScreenTopBar({Key? key}) : super(key: key);

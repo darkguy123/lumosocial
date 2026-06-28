@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:chatter/screens/audio_space/models/audio_space_user.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space_user.dart';
 
 class AudioSpaceMessage {
   String? id;

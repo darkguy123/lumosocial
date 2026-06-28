@@ -1,20 +1,20 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/image_extension.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/common/widgets/my_cached_image.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/audio_space/audio_spaces_screen/audio_space_screen/audio_space_screen.dart';
-import 'package:chatter/screens/audio_space/audio_spaces_screen/audio_spaces_controller.dart';
-import 'package:chatter/screens/audio_space/models/audio_space.dart';
-import 'package:chatter/screens/audio_space/models/audio_space_user.dart';
-import 'package:chatter/screens/extra_views/buttons.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/audio_space/audio_spaces_screen/audio_space_screen/audio_space_screen.dart';
+import 'package:lumosocial/screens/audio_space/audio_spaces_screen/audio_spaces_controller.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space_user.dart';
+import 'package:lumosocial/screens/extra_views/buttons.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 import '../create_audio_space_screen/create_audio_space_screen.dart';
 

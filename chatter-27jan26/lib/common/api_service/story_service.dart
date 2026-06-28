@@ -1,12 +1,12 @@
 import 'package:image_picker/image_picker.dart';
-import 'package:chatter/common/api_service/api_service.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/common_response.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/story.dart';
-import 'package:chatter/models/users_model.dart';
-import 'package:chatter/utilities/params.dart';
-import 'package:chatter/utilities/web_service.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/common_response.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/story.dart';
+import 'package:lumosocial/models/users_model.dart';
+import 'package:lumosocial/utilities/params.dart';
+import 'package:lumosocial/utilities/web_service.dart';
 
 class StoryService {
   static var shared = StoryService();

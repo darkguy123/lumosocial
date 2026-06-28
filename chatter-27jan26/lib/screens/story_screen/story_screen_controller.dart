@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/story_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/library/story_view/story_view.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/story.dart';
-import 'package:chatter/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/common/api_service/story_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/library/story_view/story_view.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/story.dart';
+import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
 
 class StoryScreenController extends BaseController {
   StoryController storyController = StoryController();

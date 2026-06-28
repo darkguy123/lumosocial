@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/managers/my_refresh_indicator.dart';
-import 'package:chatter/common/widgets/no_data_view.dart';
-import 'package:chatter/enums/reel_page_type.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/musics_model.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/reels_screen/reel/reel_page.dart';
-import 'package:chatter/screens/reels_screen/reels_screen_controller.dart';
-import 'package:chatter/screens/reels_screen/widget/reels_text_field.dart';
-import 'package:chatter/screens/reels_screen/widget/reels_top_bar.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/managers/my_refresh_indicator.dart';
+import 'package:lumosocial/common/widgets/no_data_view.dart';
+import 'package:lumosocial/enums/reel_page_type.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/musics_model.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/reels_screen/reel/reel_page.dart';
+import 'package:lumosocial/screens/reels_screen/reels_screen_controller.dart';
+import 'package:lumosocial/screens/reels_screen/widget/reels_text_field.dart';
+import 'package:lumosocial/screens/reels_screen/widget/reels_top_bar.dart';
+import 'package:lumosocial/utilities/const.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ReelsScreen extends StatefulWidget {

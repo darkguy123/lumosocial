@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:chatter/common/widgets/functions.dart';
-import 'package:chatter/screens/extra_views/top_bar.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/widgets/functions.dart';
+import 'package:lumosocial/screens/extra_views/top_bar.dart';
+import 'package:lumosocial/utilities/const.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebSheetScreen extends StatefulWidget {

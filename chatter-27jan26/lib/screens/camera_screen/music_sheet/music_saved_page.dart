@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/list_extension.dart';
-import 'package:chatter/common/widgets/no_data_view.dart';
-import 'package:chatter/screens/camera_screen/music_sheet/music_explore_page.dart';
-import 'package:chatter/screens/camera_screen/music_sheet/music_sheet_controller.dart';
+import 'package:lumosocial/common/extensions/list_extension.dart';
+import 'package:lumosocial/common/widgets/no_data_view.dart';
+import 'package:lumosocial/screens/camera_screen/music_sheet/music_explore_page.dart';
+import 'package:lumosocial/screens/camera_screen/music_sheet/music_sheet_controller.dart';
 
 class MusicSavedPage extends StatelessWidget {
   final MusicSheetController controller;

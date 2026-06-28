@@ -1,11 +1,11 @@
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/image_extension.dart';
-import 'package:chatter/common/managers/haptic_manager.dart';
-import 'package:chatter/screens/camera_screen/create_reel_screen.dart';
-import 'package:chatter/screens/story_screen/create_story_screen/create_story_controller.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
+import 'package:lumosocial/common/managers/haptic_manager.dart';
+import 'package:lumosocial/screens/camera_screen/create_reel_screen.dart';
+import 'package:lumosocial/screens/story_screen/create_story_screen/create_story_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class CreateStoryBottomView extends StatelessWidget {
   const CreateStoryBottomView({super.key});

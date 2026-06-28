@@ -1,5 +1,5 @@
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/room_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/room_model.dart';
 
 class InvitationsModel {
   InvitationsModel({

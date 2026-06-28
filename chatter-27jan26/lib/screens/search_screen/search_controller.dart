@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/post_service.dart';
-import 'package:chatter/common/api_service/reel_service.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/cupertino_controller.dart';
-import 'package:chatter/common/managers/my_debouncer.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/models/chat.dart';
-import 'package:chatter/models/posts_model.dart';
-import 'package:chatter/models/reel_model.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/models/search_hashtags_model.dart';
-import 'package:chatter/screens/audio_space/models/audio_space_user.dart';
+import 'package:lumosocial/common/api_service/post_service.dart';
+import 'package:lumosocial/common/api_service/reel_service.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/cupertino_controller.dart';
+import 'package:lumosocial/common/managers/my_debouncer.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/models/chat.dart';
+import 'package:lumosocial/models/posts_model.dart';
+import 'package:lumosocial/models/reel_model.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/models/search_hashtags_model.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space_user.dart';
 
 class SearchScreenController extends CupertinoController {
   List<User> users = [];

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class DoubleClickLikeAnimator extends StatefulWidget {
   final Widget child;

@@ -1,4 +1,4 @@
-import 'package:chatter/localization/languages.dart';
+import 'package:lumosocial/localization/languages.dart';
 
 const vietnameseStrings = {
   LKeys.textChatDedicated: 'Trò chuyện bằng văn bản dành riêng',

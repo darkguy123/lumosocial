@@ -3,9 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:chatter/models/registration.dart';
-import 'package:chatter/screens/audio_space/models/audio_space_user.dart';
-import 'package:chatter/utilities/firebase_const.dart';
+import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/screens/audio_space/models/audio_space_user.dart';
+import 'package:lumosocial/utilities/firebase_const.dart';
 
 class ChatUserRoom {
   bool? _iBlocked;

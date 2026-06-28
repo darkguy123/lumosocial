@@ -1,4 +1,4 @@
-import 'package:chatter/localization/languages.dart';
+import 'package:lumosocial/localization/languages.dart';
 
 const dutchStrings = {
   LKeys.textChatDedicated: 'Tekstchat speciaal',

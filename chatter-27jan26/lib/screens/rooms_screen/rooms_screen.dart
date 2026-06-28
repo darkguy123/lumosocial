@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/screens/rooms_screen/room_card.dart';
-import 'package:chatter/screens/rooms_screen/room_screen_top_bar.dart';
-import 'package:chatter/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
-import 'package:chatter/screens/rooms_screen/rooms_by_interest/rooms_by_interest_controller.dart';
+import 'package:lumosocial/screens/rooms_screen/room_card.dart';
+import 'package:lumosocial/screens/rooms_screen/room_screen_top_bar.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_by_interest/rooms_by_interest_controller.dart';
 
 class RoomsScreen extends StatelessWidget {
   const RoomsScreen({Key? key}) : super(key: key);

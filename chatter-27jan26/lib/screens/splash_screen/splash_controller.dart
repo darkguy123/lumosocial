@@ -3,18 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:chatter/common/api_service/common_service.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/screens/block_by_admin_screen/block_by_admin_screen.dart';
-import 'package:chatter/screens/interests_screen/interests_screen.dart';
-import 'package:chatter/screens/maintenance_screen/maintenance_screen.dart';
-import 'package:chatter/screens/on_boarding_screen/on_boarding_screen.dart';
-import 'package:chatter/screens/profile_picture_screen/profile_picture_screen.dart';
-import 'package:chatter/screens/tabbar/tabbar_screen.dart';
-import 'package:chatter/screens/update_screen/update_app_screen.dart';
-import 'package:chatter/screens/username_screen/username_screen.dart';
+import 'package:lumosocial/common/api_service/common_service.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/screens/block_by_admin_screen/block_by_admin_screen.dart';
+import 'package:lumosocial/screens/interests_screen/interests_screen.dart';
+import 'package:lumosocial/screens/maintenance_screen/maintenance_screen.dart';
+import 'package:lumosocial/screens/on_boarding_screen/on_boarding_screen.dart';
+import 'package:lumosocial/screens/profile_picture_screen/profile_picture_screen.dart';
+import 'package:lumosocial/screens/tabbar/tabbar_screen.dart';
+import 'package:lumosocial/screens/update_screen/update_app_screen.dart';
+import 'package:lumosocial/screens/username_screen/username_screen.dart';
 
 class SplashController extends BaseController {
   @override

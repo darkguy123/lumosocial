@@ -1,5 +1,5 @@
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/registration.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/registration.dart';
 
 class MusicsModel {
   bool? status;

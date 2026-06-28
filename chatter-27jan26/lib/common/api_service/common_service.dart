@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:chatter/common/api_service/api_service.dart';
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/agora_token_model.dart';
-import 'package:chatter/models/agora_users_model.dart';
-import 'package:chatter/models/faq_categories_model.dart';
-import 'package:chatter/models/notification_model.dart';
-import 'package:chatter/models/setting_model.dart';
-import 'package:chatter/models/user_notification_model.dart';
-import 'package:chatter/utilities/const.dart';
-import 'package:chatter/utilities/params.dart';
-import 'package:chatter/utilities/web_service.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/agora_token_model.dart';
+import 'package:lumosocial/models/agora_users_model.dart';
+import 'package:lumosocial/models/faq_categories_model.dart';
+import 'package:lumosocial/models/notification_model.dart';
+import 'package:lumosocial/models/setting_model.dart';
+import 'package:lumosocial/models/user_notification_model.dart';
+import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/utilities/params.dart';
+import 'package:lumosocial/utilities/web_service.dart';
 
 class CommonService {
   static var shared = CommonService();

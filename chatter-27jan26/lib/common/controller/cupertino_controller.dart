@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chatter/common/controller/base_controller.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
 
 class CupertinoController extends BaseController {
   PageController controller = PageController();

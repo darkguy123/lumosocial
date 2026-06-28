@@ -1,6 +1,6 @@
-import 'package:chatter/common/managers/session_manager.dart';
-import 'package:chatter/models/setting_model.dart';
-import 'package:chatter/models/story.dart';
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/setting_model.dart';
+import 'package:lumosocial/models/story.dart';
 
 class Registration {
   bool? status;

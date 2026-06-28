@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:chatter/models/chat.dart';
-import 'package:chatter/screens/post/video_player_sheet.dart';
-import 'package:chatter/utilities/const.dart';
-import 'package:chatter/utilities/firebase_const.dart';
+import 'package:lumosocial/models/chat.dart';
+import 'package:lumosocial/screens/post/video_player_sheet.dart';
+import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/utilities/firebase_const.dart';
 import 'package:video_player/video_player.dart';
 
 class ContentFullScreen extends StatefulWidget {

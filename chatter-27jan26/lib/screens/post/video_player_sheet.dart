@@ -2,13 +2,13 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/extensions/duration_extension.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/models/chat.dart';
-import 'package:chatter/screens/post/post_card.dart';
-import 'package:chatter/screens/post/post_controller.dart';
-import 'package:chatter/utilities/const.dart';
-import 'package:chatter/utilities/firebase_const.dart';
+import 'package:lumosocial/common/extensions/duration_extension.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/models/chat.dart';
+import 'package:lumosocial/screens/post/post_card.dart';
+import 'package:lumosocial/screens/post/post_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/utilities/firebase_const.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerSheet extends StatefulWidget {

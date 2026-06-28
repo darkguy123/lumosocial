@@ -2,15 +2,15 @@ import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chatter/common/api_service/user_service.dart';
-import 'package:chatter/common/controller/base_controller.dart';
-import 'package:chatter/common/extensions/font_extension.dart';
-import 'package:chatter/common/extensions/string_extension.dart';
-import 'package:chatter/localization/languages.dart';
-import 'package:chatter/screens/extra_views/logo_tag.dart';
-import 'package:chatter/screens/login_screen/login_controller.dart';
-import 'package:chatter/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
-import 'package:chatter/utilities/const.dart';
+import 'package:lumosocial/common/api_service/user_service.dart';
+import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/common/extensions/string_extension.dart';
+import 'package:lumosocial/localization/languages.dart';
+import 'package:lumosocial/screens/extra_views/logo_tag.dart';
+import 'package:lumosocial/screens/login_screen/login_controller.dart';
+import 'package:lumosocial/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:lumosocial/utilities/const.dart';
 
 class SignInWithEmailScreen extends StatefulWidget {
   final Function(String? fullName, String identity) onSubmit;

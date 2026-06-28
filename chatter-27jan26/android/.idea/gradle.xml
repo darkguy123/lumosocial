@@ -4,9 +4,57 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="/opt/homebrew/share/flutter/packages/flutter_tools/gradle" name="gradle">
+                <projects>
+                  <project path="/opt/homebrew/share/flutter/packages/flutter_tools/gradle" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="homebrew-17" />
+        <option name="modules">
+          <set>
+            <option value="$USER_HOME$/.pub-cache/git/retrytech_plugin-17967839692148f5da2c37123cab2cab876857b0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/agora_rtc_engine-6.5.4/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/app_links-7.2.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audio_session-0.2.3/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audio_waveforms-1.3.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/cloud_firestore-6.6.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_auth-6.5.4/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_core-4.11.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/firebase_messaging-16.4.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_keyboard_visibility-6.0.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_local_notifications-19.5.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_native_video_trimmer-1.1.9/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.35/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/google_mobile_ads-6.0.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/google_sign_in_android-7.2.13/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+19/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/iris_method_channel-2.2.5/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/jni-1.0.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/jni_flutter-1.0.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus-8.3.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/permission_handler_android-13.0.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/purchases_flutter-9.16.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/share_plus-12.0.2/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/sign_in_with_apple-7.0.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/sqflite_android-2.4.3/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.32/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/video_compress-3.1.4/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/video_player_android-2.9.7/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/wakelock_plus-1.5.2/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/webview_flutter_android-4.13.0/android" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="/opt/homebrew/share/flutter/packages/flutter_tools/gradle" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>

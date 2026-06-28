@@ -51,7 +51,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <data android:host="chatter.retrytech.site" />
+                <data android:host="social.equipmentmarket.ng" />
 
             </intent-filter>
 

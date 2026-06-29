@@ -11,9 +11,7 @@ class ScannerScreen extends StatefulWidget {
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
-  final MobileScannerController cameraController = MobileScannerController(
-    detectionSpeed: DetectionSpeed.normal,
-  );
+  final MobileScannerController cameraController = MobileScannerController();
   bool _isScanned = false;
 
   @override
@@ -41,38 +39,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        actions: [
-          IconButton(
-            color: Colors.white,
-            icon: ValueListenableBuilder(
-              valueListenable: cameraController.torchState,
-              builder: (context, state, child) {
-                switch (state) {
-                  case TorchState.off:
-                    return const Icon(Icons.flash_off_rounded, color: Colors.grey);
-                  case TorchState.on:
-                    return const Icon(Icons.flash_on_rounded, color: Color(0xFF00FF87));
-                }
-              },
-            ),
-            onPressed: () => cameraController.toggleTorch(),
-          ),
-          IconButton(
-            color: Colors.white,
-            icon: ValueListenableBuilder(
-              valueListenable: cameraController.cameraFacingState,
-              builder: (context, state, child) {
-                switch (state) {
-                  case CameraFacing.front:
-                    return const Icon(Icons.camera_front_rounded);
-                  case CameraFacing.back:
-                    return const Icon(Icons.camera_rear_rounded);
-                }
-              },
-            ),
-            onPressed: () => cameraController.switchCamera(),
-          ),
-        ],
       ),
       body: Stack(
         children: [

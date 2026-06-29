@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/common/managers/session_manager.dart';
-import 'package:lumosocial/models/users_model.dart';
+import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/web_service.dart';
 

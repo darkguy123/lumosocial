@@ -4,6 +4,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/screens/wallet_screen/wallet_controller.dart';
 import 'package:lumosocial/screens/wallet_screen/scanner_screen.dart';
@@ -109,7 +110,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
                             "Lumo Coin Balance",
@@ -154,7 +155,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       ),
                       const SizedBox(height: 20),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             displayValueText,
@@ -707,7 +708,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   const SizedBox(height: 25),
                   // Amount details
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.between,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Amount to Send", style: TextStyle(color: Colors.white54, fontSize: 14)),
                       Text("${amount.toStringAsFixed(2)} Lc", style: const TextStyle(color: Color(0xFF00FF87), fontWeight: FontWeight.bold, fontSize: 16)),
@@ -715,7 +716,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                   const SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.between,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Remaining Balance", style: TextStyle(color: Colors.white54, fontSize: 14)),
                       Text("${(controller.balance.value - amount).toStringAsFixed(2)} Lc", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),

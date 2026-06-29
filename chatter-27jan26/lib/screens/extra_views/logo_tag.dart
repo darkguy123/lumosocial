@@ -10,6 +10,10 @@ class LogoTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool useWhite = isWhite ?? (Theme.of(context).brightness == Brightness.dark);
-    return Image.asset(useWhite ? MyImages.logoWhite : MyImages.logoBlack, height: (width ?? 100) * 0.1975683891, width: width);
+    return Image.asset(
+      useWhite ? MyImages.logoWhite : MyImages.logoBlack,
+      width: width,
+      fit: BoxFit.contain,
+    );
   }
 }

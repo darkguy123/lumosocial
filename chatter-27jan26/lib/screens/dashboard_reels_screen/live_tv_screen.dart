@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
@@ -62,7 +64,7 @@ class LiveTvController extends GetxController {
             final logoMatch = RegExp(r'tvg-logo="([^"]+)"').firstMatch(line);
             currentLogo = logoMatch?.group(1) ?? '';
 
-            // Extract name (usually after tvg-name="..." or final comma)
+            // Extract name
             final nameMatch = RegExp(r'tvg-name="([^"]+)"').firstMatch(line);
             if (nameMatch != null) {
               currentName = nameMatch.group(1) ?? 'Unknown Channel';
@@ -126,6 +128,34 @@ class LiveTvController extends GetxController {
     }
   }
 
+  void playPrevious() {
+    if (allChannels.isEmpty || selectedChannel.value == null) return;
+    int index = allChannels.indexOf(selectedChannel.value!);
+    if (index > 0) {
+      int prevIndex = index - 1;
+      int targetPage = prevIndex ~/ itemsPerPage;
+      if (targetPage != currentPage.value) {
+        currentPage.value = targetPage;
+        updatePagination();
+      }
+      playChannel(allChannels[prevIndex]);
+    }
+  }
+
+  void playNext() {
+    if (allChannels.isEmpty || selectedChannel.value == null) return;
+    int index = allChannels.indexOf(selectedChannel.value!);
+    if (index < allChannels.length - 1) {
+      int nextIndex = index + 1;
+      int targetPage = nextIndex ~/ itemsPerPage;
+      if (targetPage != currentPage.value) {
+        currentPage.value = targetPage;
+        updatePagination();
+      }
+      playChannel(allChannels[nextIndex]);
+    }
+  }
+
   Future<void> playChannel(IPTVChannel channel) async {
     selectedChannel.value = channel;
     isVideoLoading.value = true;
@@ -152,7 +182,6 @@ class LiveTvController extends GetxController {
   }
 
   Future<void> checkChannelsLiveStatus() async {
-    // Check live status of current paginated list asynchronously
     for (var channel in paginatedChannels) {
       try {
         final response = await http.head(Uri.parse(channel.url)).timeout(const Duration(seconds: 2));
@@ -164,13 +193,34 @@ class LiveTvController extends GetxController {
   }
 }
 
-class LiveTvScreen extends StatelessWidget {
+class LiveTvScreen extends StatefulWidget {
   const LiveTvScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(LiveTvController());
+  State<LiveTvScreen> createState() => _LiveTvScreenState();
+}
 
+class _LiveTvScreenState extends State<LiveTvScreen> {
+  final LiveTvController controller = Get.put(LiveTvController());
+  var _showInlineControls = false.obs;
+  Timer? _inlineControlsTimer;
+
+  void _triggerInlineControls() {
+    _showInlineControls.value = true;
+    _inlineControlsTimer?.cancel();
+    _inlineControlsTimer = Timer(const Duration(seconds: 3), () {
+      _showInlineControls.value = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    _inlineControlsTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: cBlack,
       body: SafeArea(
@@ -202,15 +252,10 @@ class LiveTvScreen extends StatelessWidget {
                         controller.videoPlayerController!.value.isInitialized &&
                         !controller.hasVideoError.value)
                       GestureDetector(
-                        onTap: () {
-                          if (controller.videoPlayerController!.value.isPlaying) {
-                            controller.videoPlayerController!.pause();
-                            controller.isVideoPlaying.value = false;
-                          } else {
-                            controller.videoPlayerController!.play();
-                            controller.isVideoPlaying.value = true;
-                          }
+                        onDoubleTap: () {
+                          Get.to(() => FullscreenLiveTvPlayer(controller: controller));
                         },
+                        onTap: _triggerInlineControls,
                         child: AspectRatio(
                           aspectRatio: controller.videoPlayerController!.value.aspectRatio,
                           child: VideoPlayer(controller.videoPlayerController!),
@@ -231,12 +276,58 @@ class LiveTvScreen extends StatelessWidget {
                     else
                       const Center(child: Text('Select a channel to play', style: TextStyle(color: cWhite))),
 
-                    // Video Play/Pause Overlay indicator
-                    if (controller.videoPlayerController != null &&
-                        !controller.isVideoPlaying.value &&
-                        !controller.isVideoLoading.value &&
-                        !controller.hasVideoError.value)
-                      const Icon(Icons.play_circle_outline, color: cWhite, size: 60),
+                    // Floating Controls Overlay
+                    Obx(() {
+                      if (_showInlineControls.value &&
+                          controller.videoPlayerController != null &&
+                          controller.videoPlayerController!.value.isInitialized &&
+                          !controller.hasVideoError.value) {
+                        return Positioned.fill(
+                          child: Container(
+                            color: Colors.black45,
+                            child: Stack(
+                              children: [
+                                // Play / Pause Indicator
+                                Center(
+                                  child: IconButton(
+                                    icon: Icon(
+                                      controller.isVideoPlaying.value
+                                          ? Icons.pause_circle_outline_rounded
+                                          : Icons.play_circle_outline_rounded,
+                                      color: Colors.white,
+                                      size: 55,
+                                    ),
+                                    onPressed: () {
+                                      _triggerInlineControls();
+                                      if (controller.videoPlayerController!.value.isPlaying) {
+                                        controller.videoPlayerController!.pause();
+                                        controller.isVideoPlaying.value = false;
+                                      } else {
+                                        controller.videoPlayerController!.play();
+                                        controller.isVideoPlaying.value = true;
+                                      }
+                                    },
+                                  ),
+                                ),
+                                // Fullscreen Toggle Button (bottom right)
+                                Positioned(
+                                  bottom: 10,
+                                  right: 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.fullscreen_rounded, color: Colors.white, size: 28),
+                                    onPressed: () {
+                                      _showInlineControls.value = false;
+                                      Get.to(() => FullscreenLiveTvPlayer(controller: controller));
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
 
                     if (controller.isVideoLoading.value)
                       Center(child: CircularProgressIndicator(color: cPrimary)),
@@ -301,7 +392,6 @@ class LiveTvScreen extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            // Channel Logo
                             ClipRRect(
                               borderRadius: BorderRadius.circular(4),
                               child: channel.logo.isNotEmpty
@@ -325,8 +415,6 @@ class LiveTvScreen extends StatelessWidget {
                                     ),
                             ),
                             const SizedBox(width: 8),
-
-                            // Channel Name & Status Indicator
                             Expanded(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -398,6 +486,138 @@ class LiveTvScreen extends StatelessWidget {
             ],
           );
         }),
+      ),
+    );
+  }
+}
+
+class FullscreenLiveTvPlayer extends StatefulWidget {
+  final LiveTvController controller;
+  const FullscreenLiveTvPlayer({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  State<FullscreenLiveTvPlayer> createState() => _FullscreenLiveTvPlayerState();
+}
+
+class _FullscreenLiveTvPlayerState extends State<FullscreenLiveTvPlayer> {
+  var _showControls = false.obs;
+  Timer? _controlsTimer;
+
+  void _triggerControls() {
+    _showControls.value = true;
+    _controlsTimer?.cancel();
+    _controlsTimer = Timer(const Duration(seconds: 4), () {
+      _showControls.value = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Rotate to landscape and hide system status bars
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+
+  @override
+  void dispose() {
+    // Restore orientations and system status bars
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    _controlsTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // Main Video Player View
+          Center(
+            child: widget.controller.videoPlayerController != null &&
+                    widget.controller.videoPlayerController!.value.isInitialized &&
+                    !widget.controller.hasVideoError.value
+                ? GestureDetector(
+                    onDoubleTap: () => Get.back(),
+                    onTap: _triggerControls,
+                    child: AspectRatio(
+                      aspectRatio: widget.controller.videoPlayerController!.value.aspectRatio,
+                      child: VideoPlayer(widget.controller.videoPlayerController!),
+                    ),
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(color: cWhite),
+                  ),
+          ),
+
+          // Interactive Overlay Controls
+          Obx(() {
+            if (_showControls.value) {
+              return Positioned.fill(
+                child: Container(
+                  color: Colors.black45,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Next/Prev Channel arrows at left/right edges
+                      Positioned(
+                        left: 20,
+                        child: IconButton(
+                          icon: const Icon(Icons.chevron_left_rounded, color: Colors.white, size: 50),
+                          onPressed: () {
+                            _triggerControls();
+                            widget.controller.playPrevious();
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        right: 20,
+                        child: IconButton(
+                          icon: const Icon(Icons.chevron_right_rounded, color: Colors.white, size: 50),
+                          onPressed: () {
+                            _triggerControls();
+                            widget.controller.playNext();
+                          },
+                        ),
+                      ),
+
+                      // Exit Fullscreen (Close Button) top-right
+                      Positioned(
+                        top: 20,
+                        right: 20,
+                        child: IconButton(
+                          icon: const Icon(Icons.fullscreen_exit_rounded, color: Colors.white, size: 36),
+                          onPressed: () => Get.back(),
+                        ),
+                      ),
+
+                      // Channel name in fullscreen at top-center
+                      Positioned(
+                        top: 25,
+                        child: Text(
+                          widget.controller.selectedChannel.value?.name ?? '',
+                          style: MyTextStyle.gilroyBold(color: Colors.white, size: 16).copyWith(
+                            shadows: [
+                              const BoxShadow(color: Colors.black, blurRadius: 10),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
+        ],
       ),
     );
   }

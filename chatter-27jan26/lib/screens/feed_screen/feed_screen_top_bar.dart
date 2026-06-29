@@ -23,7 +23,7 @@ class FeedScreenTopBar extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const LogoTag(width: 80),
+            const LogoTag(width: 105),
             Row(
               children: [
                 InkWell(

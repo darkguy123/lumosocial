@@ -104,6 +104,8 @@ class WebService {
   static const String walletDetails = "${apiURL}wallet/details";
   static const String walletSend = "${apiURL}wallet/send";
   static const String walletSearchUsers = "${apiURL}wallet/searchUsers";
+  static const String walletSetPin = "${apiURL}wallet/setPin";
+  static const String walletVerifyPin = "${apiURL}wallet/verifyPin";
 }
 
 class Moderator {

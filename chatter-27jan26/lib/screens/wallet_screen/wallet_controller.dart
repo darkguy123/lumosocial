@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/common/managers/session_manager.dart';
 import 'package:lumosocial/models/registration.dart';
@@ -8,12 +9,16 @@ import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/web_service.dart';
 
 class WalletController extends GetxController {
+  final box = GetStorage();
+
   var isLoading = false.obs;
   var isSending = false.obs;
 
   var balance = 0.0.obs;
   var todayEarnings = 0.0.obs;
   var transactions = <dynamic>[].obs;
+  var hasPin = false.obs;
+  var useBiometrics = false.obs;
   
   // Exchange rates (Base: RWF, 1 Lc = 1 RWF)
   var usdRate = 0.00073.obs;
@@ -26,7 +31,13 @@ class WalletController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    useBiometrics.value = box.read('use_biometrics') ?? false;
     fetchWalletDetails();
+  }
+
+  void toggleBiometrics(bool value) {
+    useBiometrics.value = value;
+    box.write('use_biometrics', value);
   }
 
   void fetchWalletDetails() {
@@ -42,6 +53,7 @@ class WalletController extends GetxController {
           final data = response['data'] ?? {};
           balance.value = double.tryParse(data['balance'].toString()) ?? 0.0;
           todayEarnings.value = double.tryParse(data['today_earnings'].toString()) ?? 0.0;
+          hasPin.value = data['has_pin'] == true;
           transactions.value = data['transactions'] ?? [];
           
           final rates = data['rates'] ?? {};
@@ -70,6 +82,50 @@ class WalletController extends GetxController {
         }
       },
     );
+  }
+
+  Future<bool> setTransactionPin(String pin) async {
+    final userId = SessionManager.shared.getUserID();
+    final completer = Completer<bool>();
+    
+    ApiService.shared.call(
+      url: WebService.walletSetPin,
+      param: {'user_id': userId, 'pin': pin},
+      completion: (response) {
+        if (response['status'] == true) {
+          hasPin.value = true;
+          completer.complete(true);
+        } else {
+          completer.complete(false);
+          Get.snackbar(
+            "Error",
+            response['message'] ?? "Failed to set Transaction PIN.",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      },
+    );
+    return completer.future;
+  }
+
+  Future<bool> verifyTransactionPin(String pin) async {
+    final userId = SessionManager.shared.getUserID();
+    final completer = Completer<bool>();
+    
+    ApiService.shared.call(
+      url: WebService.walletVerifyPin,
+      param: {'user_id': userId, 'pin': pin},
+      completion: (response) {
+        if (response['status'] == true) {
+          completer.complete(true);
+        } else {
+          completer.complete(false);
+        }
+      },
+    );
+    return completer.future;
   }
 
   Future<bool> sendCoins({

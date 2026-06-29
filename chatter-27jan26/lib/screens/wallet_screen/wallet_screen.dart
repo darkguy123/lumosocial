@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:local_auth/local_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lumosocial/common/managers/session_manager.dart';
 import 'package:lumosocial/models/registration.dart';
@@ -18,7 +20,6 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   final WalletController controller = Get.put(WalletController());
-  String _selectedCurrency = 'RWF'; // Default currency view conversion
 
   @override
   Widget build(BuildContext context) {
@@ -27,177 +28,161 @@ class _WalletScreenState extends State<WalletScreen> {
       appBar: AppBar(
         backgroundColor: cBlack,
         elevation: 0,
+        title: const Text(
+          "Lumo Wallet",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Gilroy-Bold',
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.account_balance_wallet_rounded,
-              color: Color(0xFF00FF87),
-              shadows: [
-                BoxShadow(
-                  color: Color(0xFF00FF87),
-                  blurRadius: 15,
-                ),
-              ],
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              "Lumo Wallet",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Gilroy-Bold',
-              ),
-            ),
-          ],
-        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: Colors.white),
-            onPressed: () => controller.fetchWalletDetails(),
+            icon: const Icon(Icons.qr_code_scanner_rounded, color: Color(0xFF00FF87)),
+            onPressed: _scanQrCode,
           ),
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value && controller.balance.value == 0) {
-          return const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)),
-            ),
-          );
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator(color: cPrimary));
         }
 
-        double balanceVal = controller.balance.value;
-        String displayValueText = "";
-        if (_selectedCurrency == 'RWF') {
-          displayValueText = "${balanceVal.toStringAsFixed(2)} RWF";
-        } else if (_selectedCurrency == 'USD') {
-          double usdVal = balanceVal * controller.usdRate.value;
-          displayValueText = "\$${usdVal.toStringAsFixed(2)} USD";
-        } else if (_selectedCurrency == 'NGN') {
-          double ngnVal = balanceVal * controller.ngnRate.value;
-          displayValueText = "₦${ngnVal.toStringAsFixed(2)} NGN";
-        }
+        final exchangeRatesText = "1 Lc = 1 RWF\n"
+            "≈ \$${(controller.balance.value * controller.usdRate.value).toStringAsFixed(4)} USD\n"
+            "≈ ₦${(controller.balance.value * controller.ngnRate.value).toStringAsFixed(2)} NGN";
 
-        return SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+        final displayValueText = "≈ ₦${(controller.balance.value * controller.ngnRate.value).toStringAsFixed(2)} NGN";
+
+        return RefreshIndicator(
+          color: const Color(0xFF00FF87),
+          backgroundColor: const Color(0xFF1E1E1E),
+          onRefresh: () async {
+            controller.fetchWalletDetails();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Apple Pay Style Balance Card
+                // Apple Pay/Paypal Premium Wallet Card
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF151515),
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: const Color(0xFF00FF87).withValues(alpha: 0.8), width: 1.5),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF0D0D0D), Color(0xFF1A1A1A)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: const Color(0xFF00FF87).withValues(alpha: 0.15),
+                      width: 1.5,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF00FF87).withValues(alpha: 0.1),
-                        blurRadius: 25,
-                        spreadRadius: 2,
+                        color: const Color(0xFF00FF87).withValues(alpha: 0.05),
+                        blurRadius: 30,
+                        spreadRadius: 5,
                       ),
                     ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Lumo Coin Balance",
-                            style: TextStyle(
-                              color: Colors.white54,
-                              fontSize: 14,
-                              fontFamily: 'Gilroy-Medium',
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: _scanQrCode,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF00FF87).withValues(alpha: 0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.qr_code_scanner_rounded,
-                                color: Color(0xFF00FF87),
-                                size: 22,
+                  child: Padding(
+                    padding: const EdgeInsets.all(28.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Lumo Coin Balance",
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 13,
+                                fontFamily: 'Gilroy-Medium',
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      Text(
-                        "${balanceVal.toStringAsFixed(2)} Lc",
-                        style: const TextStyle(
-                          color: Color(0xFF00FF87),
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Gilroy-Bold',
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0xFF00FF87),
-                              blurRadius: 20,
+                            Image.asset(
+                              MyImages.walletIcon,
+                              width: 32,
+                              height: 32,
                             ),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            displayValueText,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Gilroy-SemiBold',
-                            ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "${controller.balance.value.toStringAsFixed(2)} Lc",
+                          style: const TextStyle(
+                            color: Color(0xFF00FF87),
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Gilroy-Bold',
                           ),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedCurrency,
-                              dropdownColor: const Color(0xFF1E1E1E),
-                              icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white),
-                              items: ['RWF', 'NGN', 'USD'].map((String currency) {
-                                return DropdownMenuItem<String>(
-                                  value: currency,
-                                  child: Text(
-                                    currency,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (String? val) {
-                                if (val != null) {
-                                  setState(() {
-                                    _selectedCurrency = val;
-                                  });
-                                }
-                              },
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              displayValueText,
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 12,
+                                fontFamily: 'Gilroy-Regular',
+                              ),
                             ),
+                            Text(
+                              "1 Lc = 1 RWF",
+                              style: TextStyle(
+                                color: const Color(0xFF00FF87).withValues(alpha: 0.7),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Gilroy-Bold',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Exchange Rates Details Box
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.03),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.info_outline_rounded, color: Color(0xFF00FF87), size: 24),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: Text(
+                          exchangeRatesText,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                            height: 1.5,
+                            fontFamily: 'Gilroy-Medium',
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 25),
+
                 // Send / Receive Action Buttons
                 Row(
                   children: [
@@ -249,7 +234,76 @@ class _WalletScreenState extends State<WalletScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 25),
+
+                // Biometrics Settings Row
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.fingerprint_rounded, color: Color(0xFF00FF87), size: 24),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Biometric Authorization",
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                "Use Face ID / Fingerprint for transfers",
+                                style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Switch(
+                        value: controller.useBiometrics.value,
+                        activeColor: const Color(0xFF00FF87),
+                        activeTrackColor: const Color(0xFF00FF87).withValues(alpha: 0.2),
+                        onChanged: (value) async {
+                          if (value) {
+                            final LocalAuthentication localAuth = LocalAuthentication();
+                            bool canAuth = await localAuth.canCheckBiometrics || await localAuth.isDeviceSupported();
+                            if (canAuth) {
+                              bool authenticated = await localAuth.authenticate(
+                                localizedReason: 'Authenticate to enable biometric transfers',
+                                options: const AuthenticationOptions(
+                                  biometricOnly: true,
+                                  stickyAuth: true,
+                                ),
+                              );
+                              if (authenticated) {
+                                controller.toggleBiometrics(true);
+                              }
+                            } else {
+                              Get.snackbar(
+                                "Not Supported",
+                                "Biometric authentication is not supported on this device.",
+                                backgroundColor: Colors.orange,
+                                colorText: Colors.black,
+                              );
+                            }
+                          } else {
+                            controller.toggleBiometrics(false);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 35),
+
                 // Transactions Header
                 const Text(
                   "Transactions History",
@@ -261,6 +315,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
+
                 // Transactions list
                 controller.transactions.isEmpty
                     ? Center(
@@ -269,10 +324,10 @@ class _WalletScreenState extends State<WalletScreen> {
                           child: Column(
                             children: [
                               Icon(
-                                Icons.receipt_long_rounded,
-                                size: 50,
-                                color: Colors.white.withValues(alpha: 0.2),
-                              ),
+                                  Icons.receipt_long_rounded,
+                                  size: 50,
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                ),
                               const SizedBox(height: 10),
                               Text(
                                 "No transaction history yet",
@@ -430,7 +485,6 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // User info card inside modal
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -452,7 +506,6 @@ class _WalletScreenState extends State<WalletScreen> {
                 ],
               ),
               const SizedBox(height: 30),
-              // QR Code container
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -493,10 +546,13 @@ class _WalletScreenState extends State<WalletScreen> {
     int currentStep = 1;
     final TextEditingController amountController = TextEditingController();
     final TextEditingController recipientController = TextEditingController(text: prefilledRecipient);
-    final TextEditingController passwordController = TextEditingController();
+    
+    // PIN controllers
+    final TextEditingController pinController = TextEditingController();
+    final TextEditingController confirmPinController = TextEditingController();
 
     if (prefilledRecipient != null) {
-      currentStep = 2; // Jump to recipient verification if scanned
+      currentStep = 2; // Jump to amount setting if scanned
     }
 
     showModalBottomSheet(
@@ -508,7 +564,6 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
       builder: (context) {
         return StatefulBuilder(builder: (context, setModalState) {
-          // Suggestion list callback
           void onSearchTextChanged(String text) {
             controller.searchUsers(text);
             setModalState(() {});
@@ -518,8 +573,8 @@ class _WalletScreenState extends State<WalletScreen> {
             padding: EdgeInsets.only(
               left: 24,
               right: 24,
-              top: 30,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 30,
+              top: 25,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 25,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -535,15 +590,19 @@ class _WalletScreenState extends State<WalletScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
+
+                // Title based on steps
                 Text(
                   currentStep == 1
-                      ? "Enter Amount"
+                      ? "Search Recipient"
                       : currentStep == 2
-                          ? "Select Recipient"
+                          ? "Enter Amount"
                           : currentStep == 3
                               ? "Confirm Transfer"
-                              : "Enter Password",
+                              : controller.hasPin.value
+                                  ? "Enter PIN"
+                                  : "Setup PIN",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -553,110 +612,74 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // STEP 1: Enter Amount
+                // STEP 1: Search Recipient
                 if (currentStep == 1) ...[
-                  Text(
-                    "Available Balance: ${controller.balance.value.toStringAsFixed(2)} Lc",
-                    style: const TextStyle(color: Colors.white54, fontSize: 14),
-                  ),
-                  const SizedBox(height: 15),
-                  TextField(
-                    controller: amountController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                    decoration: InputDecoration(
-                      hintText: "0.00",
-                      hintStyle: const TextStyle(color: Colors.white24),
-                      prefixText: "Lc ",
-                      prefixStyle: const TextStyle(color: Color(0xFF00FF87), fontSize: 24, fontWeight: FontWeight.bold),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: const Color(0xFF00FF87).withValues(alpha: 0.3)),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF00FF87)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00FF87),
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      ),
-                      onPressed: () {
-                        double enteredAmt = double.tryParse(amountController.text) ?? 0.0;
-                        if (enteredAmt <= 0) {
-                          Get.snackbar("Invalid Amount", "Please enter an amount greater than 0.", backgroundColor: Colors.orange);
-                          return;
-                        }
-                        if (enteredAmt > controller.balance.value) {
-                          Get.snackbar("Insufficient Funds", "You do not have enough coins.", backgroundColor: Colors.orange);
-                          return;
-                        }
-                        amount = enteredAmt;
-                        setModalState(() {
-                          currentStep = 2;
-                        });
-                      },
-                      child: const Text("Next", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    ),
-                  ),
-                ],
-
-                // STEP 2: Enter Recipient
-                if (currentStep == 2) ...[
                   TextField(
                     controller: recipientController,
                     onChanged: onSearchTextChanged,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
-                      labelText: "Recipient Username or Email",
+                      labelText: "Enter username or email",
                       labelStyle: TextStyle(color: Colors.white54),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white24),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF00FF87)),
-                      ),
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                      prefixIcon: Icon(Icons.search_rounded, color: Colors.white54),
                     ),
                   ),
                   const SizedBox(height: 15),
+                  // Suggested users list
                   if (controller.isSearching.value)
-                    const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87))))
+                    const Center(child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(color: Color(0xFF00FF87)),
+                    ))
                   else if (controller.suggestedUsers.isNotEmpty)
-                    Container(
-                      constraints: const BoxConstraints(maxHeight: 150),
+                    SizedBox(
+                      height: 180,
                       child: ListView.builder(
-                        shrinkWrap: true,
                         itemCount: controller.suggestedUsers.length,
                         itemBuilder: (context, index) {
                           final user = controller.suggestedUsers[index];
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: user.profile != null && user.profile!.isNotEmpty
-                                  ? CachedNetworkImageProvider(user.profile!)
-                                  : null,
-                              child: user.profile == null || user.profile!.isEmpty
-                                  ? const Icon(Icons.person, color: Colors.white)
-                                  : null,
+                              backgroundImage: user.profile != null ? CachedNetworkImageProvider(user.profile!) : null,
+                              child: user.profile == null ? const Icon(Icons.person) : null,
                             ),
-                            title: Text(user.username ?? '', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                            subtitle: Text(user.fullName ?? '', style: const TextStyle(color: Colors.white54)),
+                            title: Text(user.fullName ?? '', style: const TextStyle(color: Colors.white)),
+                            subtitle: Text("@${user.username ?? ''}", style: const TextStyle(color: Colors.white54)),
                             onTap: () {
                               selectedUser = user;
-                              recipient = user.username ?? '';
-                              recipientController.text = recipient;
-                              controller.suggestedUsers.clear();
-                              setModalState(() {});
+                              recipient = user.username ?? "";
+                              setModalState(() {
+                                currentStep = 2;
+                              });
                             },
                           );
                         },
                       ),
+                    )
+                  else if (recipientController.text.length >= 3)
+                    const Center(child: Text("No users found", style: TextStyle(color: Colors.white30))),
+                ],
+
+                // STEP 2: Enter Amount
+                if (currentStep == 2) ...[
+                  TextField(
+                    controller: amountController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))],
+                    style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                    decoration: InputDecoration(
+                      labelText: "Amount (Lc)",
+                      labelStyle: const TextStyle(color: Colors.white54, fontSize: 14),
+                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                      suffixText: "Lc",
+                      suffixStyle: const TextStyle(color: Color(0xFF00FF87), fontSize: 18, fontWeight: FontWeight.bold),
+                      helperText: "Available: ${controller.balance.value.toStringAsFixed(2)} Lc",
+                      helperStyle: const TextStyle(color: Colors.white38),
                     ),
+                  ),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
@@ -668,11 +691,25 @@ class _WalletScreenState extends State<WalletScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                       onPressed: () {
-                        if (recipientController.text.trim().isEmpty) {
-                          Get.snackbar("Error", "Please select or type a recipient.", backgroundColor: Colors.orange);
+                        amount = double.tryParse(amountController.text) ?? 0.0;
+                        if (amount <= 0) {
+                          Get.snackbar("Invalid Amount", "Please enter a valid transfer amount.", backgroundColor: Colors.orange);
                           return;
                         }
-                        recipient = recipientController.text.trim();
+                        if (amount > controller.balance.value) {
+                          Get.snackbar("Insufficient Balance", "You do not have enough coins.", backgroundColor: Colors.red, colorText: Colors.white);
+                          return;
+                        }
+                        
+                        // Validate username
+                        if (recipient.isEmpty) {
+                          recipient = recipientController.text.trim();
+                        }
+                        if (recipient.toLowerCase() == (SessionManager.shared.getUser()?.username ?? '').toLowerCase()) {
+                          Get.snackbar("Transfer Error", "You cannot send coins to yourself.", backgroundColor: Colors.red, colorText: Colors.white);
+                          return;
+                        }
+
                         setModalState(() {
                           currentStep = 3;
                         });
@@ -682,31 +719,25 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                 ],
 
-                // STEP 3: Confirm Transfer
+                // STEP 3: Confirm Transfer Details
                 if (currentStep == 3) ...[
+                  const SizedBox(height: 10),
                   Center(
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 35,
-                          backgroundColor: const Color(0xFF1E1E1E),
-                          backgroundImage: selectedUser != null && selectedUser!.profile != null && selectedUser!.profile!.isNotEmpty
-                              ? CachedNetworkImageProvider(selectedUser!.profile!)
-                              : null,
-                          child: selectedUser == null || selectedUser!.profile == null || selectedUser!.profile!.isEmpty
-                              ? const Icon(Icons.person, size: 35, color: Colors.white)
-                              : null,
-                        ),
-                        const SizedBox(height: 10),
                         Text(
-                          "@$recipient",
-                          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                          "${amount.toStringAsFixed(2)} Lc",
+                          style: const TextStyle(color: Color(0xFF00FF87), fontWeight: FontWeight.bold, fontSize: 32),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          "to @$recipient",
+                          style: const TextStyle(color: Colors.white70, fontSize: 16),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 25),
-                  // Amount details
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -722,65 +753,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       Text("${(controller.balance.value - amount).toStringAsFixed(2)} Lc", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
                     ],
                   ),
-                  const SizedBox(height: 30),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00FF87),
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      ),
-                      onPressed: () {
-                        // Check if email/password login user to ask for password verification
-                        bool hasPassword = false;
-                        final fbUser = fb.FirebaseAuth.instance.currentUser;
-                        if (fbUser != null) {
-                          for (final userInfo in fbUser.providerData) {
-                            if (userInfo.providerId == 'password') {
-                              hasPassword = true;
-                            }
-                          }
-                        }
-                        
-                        if (hasPassword) {
-                          setModalState(() {
-                            currentStep = 4;
-                          });
-                        } else {
-                          // Social logins bypass password auth
-                          _executeTransfer(recipient, amount);
-                        }
-                      },
-                      child: const Text("Send Now", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    ),
-                  ),
-                ],
-
-                // STEP 4: Password Verification
-                if (currentStep == 4) ...[
-                  const Text(
-                    "Please authenticate this transaction with your profile password.",
-                    style: TextStyle(color: Colors.white54, fontSize: 14),
-                  ),
-                  const SizedBox(height: 15),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
-                      labelText: "Password",
-                      labelStyle: TextStyle(color: Colors.white54),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white24),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF00FF87)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 35),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -791,41 +764,167 @@ class _WalletScreenState extends State<WalletScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                       onPressed: () async {
-                        String pass = passwordController.text.trim();
-                        if (pass.isEmpty) {
-                          Get.snackbar("Error", "Password is required.", backgroundColor: Colors.orange);
-                          return;
-                        }
-
-                        // Authenticate Firebase Auth locally
-                        Get.dialog(
-                          const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
-                          barrierDismissible: false,
-                        );
-
-                        try {
-                          final email = fb.FirebaseAuth.instance.currentUser?.email;
-                          if (email != null) {
-                            final credential = fb.EmailAuthProvider.credential(email: email, password: pass);
-                            await fb.FirebaseAuth.instance.currentUser?.reauthenticateWithCredential(credential);
+                        // Optional Biometric Auth Check
+                        if (controller.useBiometrics.value) {
+                          final LocalAuthentication localAuth = LocalAuthentication();
+                          bool canAuth = await localAuth.canCheckBiometrics || await localAuth.isDeviceSupported();
+                          if (canAuth) {
+                            bool authenticated = await localAuth.authenticate(
+                              localizedReason: 'Authorize transfer of $amount Lc to @$recipient',
+                              options: const AuthenticationOptions(
+                                biometricOnly: true,
+                                stickyAuth: true,
+                              ),
+                            );
+                            if (authenticated) {
+                              _executeTransfer(recipient, amount);
+                              return;
+                            }
                           }
-                          Get.back(); // close loading dialog
-                          
-                          // Execute transfer
-                          _executeTransfer(recipient, amount);
-                        } catch (e) {
-                          Get.back(); // close loading dialog
-                          Get.snackbar(
-                            "Authentication Failed",
-                            "Incorrect profile password. Please try again.",
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white,
-                          );
                         }
+
+                        // PIN Validation Flow (Fallback)
+                        setModalState(() {
+                          currentStep = 4;
+                        });
                       },
-                      child: const Text("Confirm & Authorize", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      child: const Text("Send Now", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     ),
                   ),
+                ],
+
+                // STEP 4: Setup or Enter PIN
+                if (currentStep == 4) ...[
+                  if (controller.hasPin.value) ...[
+                    // Enter PIN Flow
+                    const Text(
+                      "Please enter your 4-digit Transaction PIN to authorize this transfer.",
+                      style: TextStyle(color: Colors.white54, fontSize: 14),
+                    ),
+                    const SizedBox(height: 15),
+                    TextField(
+                      controller: pinController,
+                      obscureText: true,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 4,
+                      style: const TextStyle(color: Colors.white, fontSize: 20, letterSpacing: 10),
+                      decoration: const InputDecoration(
+                        labelText: "Transaction PIN",
+                        labelStyle: TextStyle(color: Colors.white54, letterSpacing: 0),
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00FF87),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        onPressed: () async {
+                          String pin = pinController.text.trim();
+                          if (pin.length != 4) {
+                            Get.snackbar("Invalid PIN", "Please enter a valid 4-digit PIN.", backgroundColor: Colors.orange);
+                            return;
+                          }
+
+                          Get.dialog(
+                            const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
+                            barrierDismissible: false,
+                          );
+
+                          bool verified = await controller.verifyTransactionPin(pin);
+                          Get.back(); // close loader
+
+                          if (verified) {
+                            _executeTransfer(recipient, amount);
+                          } else {
+                            Get.snackbar("Authentication Failed", "Incorrect Transaction PIN.", backgroundColor: Colors.red, colorText: Colors.white);
+                          }
+                        },
+                        child: const Text("Confirm & Authorize", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                    ),
+                  ] else ...[
+                    // Setup PIN Flow
+                    const Text(
+                      "Setup a 4-digit Transaction PIN to keep your transfers secure.",
+                      style: TextStyle(color: Colors.white54, fontSize: 14),
+                    ),
+                    const SizedBox(height: 15),
+                    TextField(
+                      controller: pinController,
+                      obscureText: true,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 4,
+                      style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 8),
+                      decoration: const InputDecoration(
+                        labelText: "Enter 4-digit PIN",
+                        labelStyle: TextStyle(color: Colors.white54, letterSpacing: 0),
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: confirmPinController,
+                      obscureText: true,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 4,
+                      style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 8),
+                      decoration: const InputDecoration(
+                        labelText: "Confirm 4-digit PIN",
+                        labelStyle: TextStyle(color: Colors.white54, letterSpacing: 0),
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00FF87),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        onPressed: () async {
+                          String pin = pinController.text.trim();
+                          String confirm = confirmPinController.text.trim();
+
+                          if (pin.length != 4 || confirm.length != 4) {
+                            Get.snackbar("Invalid PIN", "PIN must be exactly 4 digits.", backgroundColor: Colors.orange);
+                            return;
+                          }
+                          if (pin != confirm) {
+                            Get.snackbar("PIN Mismatch", "The PINs you entered do not match.", backgroundColor: Colors.orange);
+                            return;
+                          }
+
+                          Get.dialog(
+                            const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
+                            barrierDismissible: false,
+                          );
+
+                          bool success = await controller.setTransactionPin(pin);
+                          Get.back(); // close loader
+
+                          if (success) {
+                            _executeTransfer(recipient, amount);
+                          }
+                        },
+                        child: const Text("Set PIN & Transfer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                    ),
+                  ],
                 ],
               ],
             ),

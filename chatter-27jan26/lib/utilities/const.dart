@@ -35,6 +35,9 @@ const List<int> secondsForMakingReel = [15, 30];
 
 extension O on String {
   String addBaseURL() {
+    if (startsWith("http://") || startsWith("https://")) {
+      return this;
+    }
     return itemBaseURL + this;
   }
 }

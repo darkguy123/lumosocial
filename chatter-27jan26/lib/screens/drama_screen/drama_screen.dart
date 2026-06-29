@@ -57,7 +57,7 @@ class _DramaScreenState extends State<DramaScreen> {
 
     ApiService.shared.call(
       url: WebService.dramaList,
-      param: {},
+      param: {'user_id': SessionManager.shared.getUserID()},
       completion: (response) {
         setState(() {
           _isLoading = false;
@@ -318,6 +318,33 @@ class _DramaScreenState extends State<DramaScreen> {
                                               drama['thumbnail'] ?? '',
                                               fit: BoxFit.cover,
                                             ),
+                                            if (drama['has_new_episode'] == true)
+                                              Positioned(
+                                                top: 10,
+                                                right: 10,
+                                                child: Container(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF00FF87),
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black.withValues(alpha: 0.3),
+                                                        blurRadius: 4,
+                                                        offset: const Offset(0, 2),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: const Text(
+                                                    "New episode",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             // Gradient overlay
                                             Container(
                                               decoration: const BoxDecoration(

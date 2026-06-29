@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart' show DefaultCa
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:retrytech_plugin/retrytech_plugin.dart';
+import 'package:lumosocial/common/api_service/music_service.dart';
 import 'package:lumosocial/common/api_service/sight_engine_service.dart';
 import 'package:lumosocial/common/controller/base_controller.dart';
 import 'package:lumosocial/common/managers/editor_manager.dart';
@@ -275,10 +276,19 @@ class CreateReelScreenController extends BaseController with GetSingleTickerProv
         );
     if (music != null) {
       startLoading();
-      var value = await DefaultCacheManager().getSingleFile(music.sound?.addBaseURL() ?? '');
-      stopLoading();
-      await Future.delayed(Duration(milliseconds: 300));
-      await _showTrimSheet(downloadedURL: value.path, music: music, startAt: 0);
+      try {
+        String audioUrl = music.sound?.addBaseURL() ?? '';
+        if (music.id == null && music.sound != null) {
+          audioUrl = await MusicService.resolveYouTubeAudioUrl(music.sound!);
+        }
+        var value = await DefaultCacheManager().getSingleFile(audioUrl);
+        stopLoading();
+        await Future.delayed(Duration(milliseconds: 300));
+        await _showTrimSheet(downloadedURL: value.path, music: music, startAt: 0);
+      } catch (e) {
+        stopLoading();
+        debugPrint("YouTube download error: $e");
+      }
     }
   }
 

@@ -6,8 +6,21 @@ import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/params.dart';
 import 'package:lumosocial/utilities/web_service.dart';
 
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
 class MusicService {
   static var shared = MusicService();
+
+  static Future<String> resolveYouTubeAudioUrl(String videoId) async {
+    final yt = YoutubeExplode();
+    try {
+      final manifest = await yt.videos.streamsClient.getManifest(videoId);
+      final audioStreamInfo = manifest.audioOnly.withHighestBitrate();
+      return audioStreamInfo.url.toString();
+    } finally {
+      yt.close();
+    }
+  }
 
   Future<List<Music>> fetchMusicWithSearch(String query, int start) async {
     var param = {Param.keyword: query, Param.start: start, Param.limit: Limits.pagination};

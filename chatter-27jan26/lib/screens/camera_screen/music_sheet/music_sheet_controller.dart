@@ -98,14 +98,34 @@ class MusicSheetController extends BaseController {
     }
     selectedMusicToPlay.value = music;
     playerStatus.value = PlayerStatus.loading;
-    DefaultCacheManager().getSingleFile(music.sound?.addBaseURL() ?? '').then((value) async {
-      await playerController.preparePlayer(path: value.path);
-      play();
-      playerController.setFinishMode(finishMode: FinishMode.pause);
-      playerController.onPlayerStateChanged.listen((event) {
-        playerStatus.value = event.isPlaying ? PlayerStatus.playing : PlayerStatus.paused;
+    
+    if (music.id == null && music.sound != null) {
+      MusicService.resolveYouTubeAudioUrl(music.sound!).then((streamUrl) {
+        DefaultCacheManager().getSingleFile(streamUrl).then((value) async {
+          await playerController.preparePlayer(path: value.path);
+          play();
+          playerController.setFinishMode(finishMode: FinishMode.pause);
+          playerController.onPlayerStateChanged.listen((event) {
+            playerStatus.value = event.isPlaying ? PlayerStatus.playing : PlayerStatus.paused;
+          });
+        }).catchError((err) {
+          playerStatus.value = PlayerStatus.paused;
+        });
+      }).catchError((err) {
+        playerStatus.value = PlayerStatus.paused;
       });
-    });
+    } else {
+      DefaultCacheManager().getSingleFile(music.sound?.addBaseURL() ?? '').then((value) async {
+        await playerController.preparePlayer(path: value.path);
+        play();
+        playerController.setFinishMode(finishMode: FinishMode.pause);
+        playerController.onPlayerStateChanged.listen((event) {
+          playerStatus.value = event.isPlaying ? PlayerStatus.playing : PlayerStatus.paused;
+        });
+      }).catchError((err) {
+        playerStatus.value = PlayerStatus.paused;
+      });
+    }
   }
 
   void playPause() {

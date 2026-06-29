@@ -63,8 +63,9 @@ class DashboardReelsController extends BaseController {
 }
 
 enum DashboardReelPageType {
+  following(0),
   forYou(1),
-  following(0);
+  liveTv(2);
 
   final int value;
 
@@ -76,6 +77,8 @@ enum DashboardReelPageType {
         return LKeys.forYou;
       case DashboardReelPageType.following:
         return LKeys.following;
+      case DashboardReelPageType.liveTv:
+        return "Live TV";
     }
   }
 }

@@ -5,6 +5,7 @@ import 'package:lumosocial/enums/reel_page_type.dart';
 import 'package:lumosocial/localization/languages.dart';
 import 'package:lumosocial/screens/dashboard_reels_screen/dashboard_reels_controller.dart';
 import 'package:lumosocial/screens/reels_screen/reels_screen.dart';
+import 'package:lumosocial/screens/dashboard_reels_screen/live_tv_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class DashboardReelsScreen extends StatelessWidget {
@@ -14,7 +15,6 @@ class DashboardReelsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     DashboardReelsController controller = Get.put(DashboardReelsController());
     Widget topTag(DashboardReelPageType type) {
-      final isRTL = Directionality.of(context) == TextDirection.rtl;
       return Obx(
         () => Expanded(
           child: InkWell(
@@ -23,14 +23,12 @@ class DashboardReelsScreen extends StatelessWidget {
             },
             child: Container(
               height: 50,
-              alignment: isRTL ? (type == DashboardReelPageType.forYou ? Alignment.centerRight : Alignment.centerLeft) : (type == DashboardReelPageType.forYou ? Alignment.centerLeft : Alignment.centerRight),
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Container(
-                child: Text(
-                  type.title.tr,
-                  style: (type == controller.selectedPageType.value ? MyTextStyle.gilroyBold(color: cWhite, size: 18) : MyTextStyle.gilroyRegular(color: cWhite, size: 18)).copyWith(
-                    shadows: [BoxShadow(color: cBlack.withValues(alpha: 0.3), blurRadius: 50)],
-                  ),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                type.title.tr,
+                style: (type == controller.selectedPageType.value ? MyTextStyle.gilroyBold(color: cWhite, size: 16) : MyTextStyle.gilroyRegular(color: cWhite, size: 16)).copyWith(
+                  shadows: [BoxShadow(color: cBlack.withValues(alpha: 0.3), blurRadius: 50)],
                 ),
               ),
             ),
@@ -47,7 +45,7 @@ class DashboardReelsScreen extends StatelessWidget {
           PageView(
             controller: controller.pageController,
             onPageChanged: controller.onChangePage,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               ReelsScreen(
                 reels: controller.reelsOfFollowings,
@@ -65,7 +63,8 @@ class DashboardReelsScreen extends StatelessWidget {
                 isLoading: controller.isLoading,
                 onFetchMoreData: controller.fetchReels,
                 onRefresh: controller.refreshReels,
-              )
+              ),
+              const LiveTvScreen(),
             ],
           ),
           SafeArea(
@@ -79,6 +78,12 @@ class DashboardReelsScreen extends StatelessWidget {
                   color: cWhite,
                 ),
                 topTag(DashboardReelPageType.forYou),
+                Container(
+                  height: 15,
+                  width: 1,
+                  color: cWhite,
+                ),
+                topTag(DashboardReelPageType.liveTv),
               ],
             ),
           )

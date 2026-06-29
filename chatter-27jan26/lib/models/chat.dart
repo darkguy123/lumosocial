@@ -252,7 +252,7 @@ class ChatMessage {
     String? msgType,
     num? senderId,
     List<String>? notDeletedIdentities,
-    int? storyId,
+    num? storyId,
     num? dramaId,
     num? episodeId,
     String? dramaTitle,

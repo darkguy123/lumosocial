@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:lumosocial/screens/video_cropper/video_cropper_screen.dart';
+import 'package:lumosocial/common/extensions/string_extension.dart';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/cupertino.dart';
@@ -93,7 +95,21 @@ class CreateReelScreenController extends BaseController with GetSingleTickerProv
   Future<void> pickVideoFromGallery() async {
     try {
       XFile? media = await ImagePicker().pickVideo(source: ImageSource.gallery);
-      if (media != null) _handleReel(media, shouldConvert: false);
+      if (media != null) {
+        int durationSec = await media.path.getVideoDurationInSecond;
+        if (durationSec > 300) {
+          final trimmedPath = await Get.to(() => VideoCropperScreen(
+            videoPath: media!.path,
+            maxDurationSeconds: 300.0,
+          ));
+          if (trimmedPath != null && trimmedPath is String) {
+            media = XFile(trimmedPath);
+          } else {
+            return; // Cancelled
+          }
+        }
+        _handleReel(media, shouldConvert: false);
+      }
     } catch (e) {
       Loggers.error('Error picking video: $e');
     }

@@ -12,12 +12,14 @@ class IPTVChannel {
   final String name;
   final String url;
   final String logo;
+  final String category;
   final RxBool isLive;
 
   IPTVChannel({
     required this.name,
     required this.url,
     required this.logo,
+    required this.category,
   }) : isLive = true.obs;
 }
 
@@ -33,6 +35,12 @@ class LiveTvController extends GetxController {
   var isVideoLoading = false.obs;
   var isVideoPlaying = false.obs;
   var hasVideoError = false.obs;
+
+  // Category and Search variables
+  var categories = <String>[].obs;
+  var selectedCategory = 'All'.obs;
+  var showSearch = false.obs;
+  var searchSuggestions = <IPTVChannel>[].obs;
 
   @override
   void onInit() {
@@ -53,9 +61,11 @@ class LiveTvController extends GetxController {
       if (response.statusCode == 200) {
         final lines = const LineSplitter().convert(response.body);
         List<IPTVChannel> parsedChannels = [];
+        Set<String> uniqueCategories = {'All'};
 
         String currentName = '';
         String currentLogo = '';
+        String currentCategory = 'General';
 
         for (var i = 0; i < lines.length; i++) {
           final line = lines[i].trim();
@@ -63,6 +73,13 @@ class LiveTvController extends GetxController {
             // Extract logo
             final logoMatch = RegExp(r'tvg-logo="([^"]+)"').firstMatch(line);
             currentLogo = logoMatch?.group(1) ?? '';
+
+            // Extract category (group-title)
+            final groupMatch = RegExp(r'group-title="([^"]+)"').firstMatch(line);
+            currentCategory = groupMatch?.group(1) ?? 'General';
+            if (currentCategory.isNotEmpty) {
+              uniqueCategories.add(currentCategory);
+            }
 
             // Extract name
             final nameMatch = RegExp(r'tvg-name="([^"]+)"').firstMatch(line);
@@ -82,14 +99,17 @@ class LiveTvController extends GetxController {
                 name: currentName,
                 url: line,
                 logo: currentLogo,
+                category: currentCategory,
               ));
             }
             currentName = '';
             currentLogo = '';
+            currentCategory = 'General';
           }
         }
 
         allChannels.value = parsedChannels;
+        categories.value = uniqueCategories.toList()..sort();
         updatePagination();
 
         if (paginatedChannels.isNotEmpty) {
@@ -103,15 +123,41 @@ class LiveTvController extends GetxController {
     }
   }
 
+  List<IPTVChannel> get filteredChannels {
+    if (selectedCategory.value == 'All') {
+      return allChannels;
+    }
+    return allChannels.where((c) => c.category == selectedCategory.value).toList();
+  }
+
   void updatePagination() {
+    final list = filteredChannels;
     final start = currentPage.value * itemsPerPage;
-    if (start < allChannels.length) {
-      final end = (start + itemsPerPage < allChannels.length) ? start + itemsPerPage : allChannels.length;
-      paginatedChannels.value = allChannels.sublist(start, end);
+    if (start < list.length) {
+      final end = (start + itemsPerPage < list.length) ? start + itemsPerPage : list.length;
+      paginatedChannels.value = list.sublist(start, end);
       checkChannelsLiveStatus();
     } else {
       paginatedChannels.clear();
     }
+  }
+
+  void selectCategory(String category) {
+    selectedCategory.value = category;
+    currentPage.value = 0;
+    updatePagination();
+  }
+
+  void searchChannels(String query) {
+    if (query.trim().isEmpty) {
+      searchSuggestions.clear();
+      return;
+    }
+    final results = allChannels
+        .where((c) => c.name.toLowerCase().contains(query.toLowerCase()))
+        .take(3)
+        .toList();
+    searchSuggestions.value = results;
   }
 
   void nextPage() {
@@ -337,7 +383,7 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
 
               // Active channel indicator banner
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 color: Colors.grey[900],
                 width: double.infinity,
                 child: Row(
@@ -359,9 +405,129 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    IconButton(
+                      icon: Icon(
+                        controller.showSearch.value ? Icons.close_rounded : Icons.search_rounded,
+                        color: const Color(0xFF00FF87),
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        controller.showSearch.value = !controller.showSearch.value;
+                        if (!controller.showSearch.value) {
+                          controller.searchSuggestions.clear();
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
+
+              // Search input and suggestions
+              Obx(() {
+                if (!controller.showSearch.value) return const SizedBox.shrink();
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  color: Colors.black,
+                  child: Column(
+                    children: [
+                      TextField(
+                        style: const TextStyle(color: Colors.white),
+                        onChanged: (text) => controller.searchChannels(text),
+                        decoration: InputDecoration(
+                          hintText: "Search channels...",
+                          hintStyle: const TextStyle(color: Colors.white30),
+                          prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF00FF87)),
+                          filled: true,
+                          fillColor: Colors.grey[900],
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      if (controller.searchSuggestions.isNotEmpty)
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[900],
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.white10),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: controller.searchSuggestions.length,
+                            itemBuilder: (context, index) {
+                              final ch = controller.searchSuggestions[index];
+                              return ListTile(
+                                dense: true,
+                                leading: ch.logo.isNotEmpty
+                                    ? Image.network(ch.logo, width: 24, height: 24, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.tv, color: Colors.white))
+                                    : const Icon(Icons.tv, color: Colors.white),
+                                title: Text(ch.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                subtitle: Text(ch.category, style: const TextStyle(color: Colors.white54, fontSize: 10)),
+                                onTap: () {
+                                  controller.playChannel(ch);
+                                  controller.showSearch.value = false;
+                                  controller.searchSuggestions.clear();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }),
+
+              // Categories Filter Row
+              Obx(() {
+                if (controller.categories.isEmpty) return const SizedBox.shrink();
+                return Container(
+                  height: 36,
+                  margin: const EdgeInsets.symmetric(vertical: 6),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: controller.categories.length,
+                    itemBuilder: (context, index) {
+                      final cat = controller.categories[index];
+                      final isSelected = controller.selectedCategory.value == cat;
+                      return GestureDetector(
+                        onTap: () => controller.selectCategory(cat),
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: isSelected ? const Color(0xFF00FF87) : Colors.grey[900],
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: isSelected ? Colors.transparent : Colors.white10),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                getCategoryIcon(cat),
+                                size: 14,
+                                color: isSelected ? Colors.black : const Color(0xFF00FF87),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                cat,
+                                style: MyTextStyle.gilroyBold(
+                                  color: isSelected ? Colors.black : Colors.white,
+                                  size: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }),
 
               // Bottom Channels List Section
               Expanded(
@@ -620,5 +786,25 @@ class _FullscreenLiveTvPlayerState extends State<FullscreenLiveTvPlayer> {
         ],
       ),
     );
+  }
+}
+
+IconData getCategoryIcon(String category) {
+  switch (category.toLowerCase()) {
+    case 'news':
+      return Icons.newspaper_rounded;
+    case 'sports':
+      return Icons.sports_soccer_rounded;
+    case 'music':
+      return Icons.music_note_rounded;
+    case 'movies':
+    case 'entertainment':
+      return Icons.movie_filter_rounded;
+    case 'documentary':
+      return Icons.travel_explore_rounded;
+    case 'kids':
+      return Icons.child_care_rounded;
+    default:
+      return Icons.tv_rounded;
   }
 }

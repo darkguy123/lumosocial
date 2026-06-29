@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:lumosocial/screens/video_cropper/video_cropper_screen.dart';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
@@ -80,25 +81,35 @@ class AddPostController extends BaseController {
       if (file != null) {
         startLoading();
         int videoDurationSec = await file.path.getVideoDurationInSecond;
-        var limit = (SessionManager.shared.getSettings()?.minuteLimitInChoosingVideoForPost ?? 0);
-        if (videoDurationSec > (limit * 60)) {
+        
+        if (videoDurationSec > 240) {
           stopLoading();
-          showSnackBar('${LKeys.weAreOnlyAllow.tr} $limit ${LKeys.minute.tr}', type: SnackBarType.error);
-        } else {
-          await SightEngineService.shared.checkVideoInSightEngine(
-              xFile: file,
-              duration: videoDurationSec,
-              completion: () async {
-                videoFile = file;
-                videoPlayerController = VideoPlayerController.file(File(videoFile!.path));
-                await videoPlayerController?.initialize();
-                update(['player']);
-                update();
-                videoPlayerController?.addListener(() {
-                  update(['player']);
-                });
-              });
+          final trimmedPath = await Get.to(() => VideoCropperScreen(
+            videoPath: file!.path,
+            maxDurationSeconds: 240.0,
+          ));
+          if (trimmedPath != null && trimmedPath is String) {
+            file = XFile(trimmedPath);
+            startLoading();
+            videoDurationSec = await file.path.getVideoDurationInSecond;
+          } else {
+            return; // Cancelled
+          }
         }
+
+        await SightEngineService.shared.checkVideoInSightEngine(
+            xFile: file,
+            duration: videoDurationSec,
+            completion: () async {
+              videoFile = file;
+              videoPlayerController = VideoPlayerController.file(File(videoFile!.path));
+              await videoPlayerController?.initialize();
+              update(['player']);
+              update();
+              videoPlayerController?.addListener(() {
+                update(['player']);
+              });
+            });
 
         stopLoading();
       }

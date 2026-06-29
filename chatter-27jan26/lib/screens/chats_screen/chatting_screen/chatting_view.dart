@@ -1,4 +1,7 @@
 import 'package:detectable_text_field/widgets/detectable_text_field.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:lumosocial/screens/wallet_screen/wallet_controller.dart';
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -131,6 +134,17 @@ class ChattingView extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 4),
               child: Row(
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      _openSendCoinsDirectSheet(Get.context!, controller);
+                    },
+                    child: const Icon(
+                      Icons.monetization_on_rounded,
+                      color: Color(0xFF00FF87),
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
                   contentButton(iconData: Icons.add_circle_rounded, source: ImageSource.gallery, controller: controller),
                   const SizedBox(width: 5),
                   contentButton(iconData: Icons.camera_alt_rounded, source: ImageSource.camera, controller: controller),
@@ -375,5 +389,392 @@ class ChattingView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _openSendCoinsDirectSheet(BuildContext context, ChattingController chatController) {
+    final walletController = Get.put(WalletController());
+    walletController.fetchWalletDetails(); // Ensure we have the latest balance
+
+    double amount = 0.0;
+    int currentStep = 1;
+
+    final TextEditingController amountController = TextEditingController();
+    final TextEditingController pinController = TextEditingController();
+    final TextEditingController confirmPinController = TextEditingController();
+
+    final recipientUser = chatController.user;
+    final recipientUsername = recipientUser?.username ?? "User";
+    final recipientProfile = recipientUser?.profile ?? "";
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF151515),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setModalState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 25,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 25,
+            ),
+            child: Obx(() {
+              if (walletController.isLoading.value) {
+                return const SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: CircularProgressIndicator(color: Color(0xFF00FF87)),
+                  ),
+                );
+              }
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 50,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+
+                  Text(
+                    currentStep == 1
+                        ? "Send Coins"
+                        : currentStep == 2
+                            ? "Confirm Transfer"
+                            : walletController.hasPin.value
+                                ? "Enter PIN"
+                                : "Setup PIN",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Gilroy-Bold',
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // STEP 1: Balance Card & Amount Input
+                  if (currentStep == 1) ...[
+                    // Balance Card
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF1E1E1E), Color(0xFF2D2D2D)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Available Balance",
+                            style: TextStyle(color: Colors.white54, fontSize: 12),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "${walletController.balance.value.toStringAsFixed(2)} Lc",
+                            style: const TextStyle(
+                              color: Color(0xFF00FF87),
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    TextField(
+                      controller: amountController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))],
+                      style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                      decoration: InputDecoration(
+                        labelText: "Amount to send to @$recipientUsername",
+                        labelStyle: const TextStyle(color: Colors.white54, fontSize: 14),
+                        enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                        suffixText: "Lc",
+                        suffixStyle: const TextStyle(color: Color(0xFF00FF87), fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00FF87),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        onPressed: () {
+                          amount = double.tryParse(amountController.text) ?? 0.0;
+                          if (amount <= 0) {
+                            Get.snackbar("Invalid Amount", "Please enter a valid amount.", backgroundColor: Colors.orange);
+                            return;
+                          }
+                          if (amount > walletController.balance.value) {
+                            Get.snackbar("Insufficient Balance", "You do not have enough coins.", backgroundColor: Colors.red, colorText: Colors.white);
+                            return;
+                          }
+                          setModalState(() {
+                            currentStep = 2;
+                          });
+                        },
+                        child: const Text("Continue", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                    ),
+                  ],
+
+                  // STEP 2: Confirmation
+                  if (currentStep == 2) ...[
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            "you are sending ${amount.toStringAsFixed(2)} Lc",
+                            style: const TextStyle(color: Color(0xFF00FF87), fontWeight: FontWeight.bold, fontSize: 22),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            "New balance: ${(walletController.balance.value - amount).toStringAsFixed(2)} Lc",
+                            style: const TextStyle(color: Colors.white54, fontSize: 13),
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "to @$recipientUsername",
+                                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(width: 8),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: recipientProfile.isNotEmpty
+                                    ? Image.network(recipientProfile, width: 30, height: 30, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const CircleAvatar(radius: 15, child: Icon(Icons.person)))
+                                    : const CircleAvatar(radius: 15, child: Icon(Icons.person)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 35),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00FF87),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        onPressed: () async {
+                          // Biometric Auth
+                          if (walletController.useBiometrics.value) {
+                            final LocalAuthentication localAuth = LocalAuthentication();
+                            bool canAuth = await localAuth.canCheckBiometrics || await localAuth.isDeviceSupported();
+                            if (canAuth) {
+                              bool authenticated = await localAuth.authenticate(
+                                localizedReason: 'Authorize transfer of $amount Lc to @$recipientUsername',
+                                options: const AuthenticationOptions(
+                                  biometricOnly: true,
+                                  stickyAuth: true,
+                                ),
+                              );
+                              if (authenticated) {
+                                _executeDirectTransfer(recipientUsername, amount, walletController);
+                                return;
+                              }
+                            }
+                          }
+                          // PIN Validation Flow (Fallback)
+                          setModalState(() {
+                            currentStep = 3;
+                          });
+                        },
+                        child: const Text("Complete", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                    ),
+                  ],
+
+                  // STEP 3: Setup or Enter PIN
+                  if (currentStep == 3) ...[
+                    if (walletController.hasPin.value) ...[
+                      const Text(
+                        "Please enter your 4-digit Transaction PIN to authorize this transfer.",
+                        style: TextStyle(color: Colors.white54, fontSize: 14),
+                      ),
+                      const SizedBox(height: 15),
+                      TextField(
+                        controller: pinController,
+                        obscureText: true,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        maxLength: 4,
+                        style: const TextStyle(color: Colors.white, fontSize: 20, letterSpacing: 10),
+                        decoration: const InputDecoration(
+                          labelText: "Transaction PIN",
+                          labelStyle: TextStyle(color: Colors.white54, letterSpacing: 0),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00FF87),
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          ),
+                          onPressed: () async {
+                            String pin = pinController.text.trim();
+                            if (pin.length != 4) {
+                              Get.snackbar("Invalid PIN", "Please enter a valid 4-digit PIN.", backgroundColor: Colors.orange);
+                              return;
+                            }
+
+                            Get.dialog(
+                              const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
+                              barrierDismissible: false,
+                            );
+
+                            bool verified = await walletController.verifyTransactionPin(pin);
+                            Get.back(); // close loader
+
+                            if (verified) {
+                              _executeDirectTransfer(recipientUsername, amount, walletController);
+                            } else {
+                              Get.snackbar("Authentication Failed", "Incorrect Transaction PIN.", backgroundColor: Colors.red, colorText: Colors.white);
+                            }
+                          },
+                          child: const Text("Confirm & Authorize", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        ),
+                      ),
+                    ] else ...[
+                      const Text(
+                        "Setup a 4-digit Transaction PIN to keep your transfers secure.",
+                        style: TextStyle(color: Colors.white54, fontSize: 14),
+                      ),
+                      const SizedBox(height: 15),
+                      TextField(
+                        controller: pinController,
+                        obscureText: true,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        maxLength: 4,
+                        style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 8),
+                        decoration: const InputDecoration(
+                          labelText: "Enter 4-digit PIN",
+                          labelStyle: TextStyle(color: Colors.white54, letterSpacing: 0),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: confirmPinController,
+                        obscureText: true,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        maxLength: 4,
+                        style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 8),
+                        decoration: const InputDecoration(
+                          labelText: "Confirm 4-digit PIN",
+                          labelStyle: TextStyle(color: Colors.white54, letterSpacing: 0),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00FF87),
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          ),
+                          onPressed: () async {
+                            String pin = pinController.text.trim();
+                            String confirm = confirmPinController.text.trim();
+
+                            if (pin.length != 4 || confirm.length != 4) {
+                              Get.snackbar("Invalid PIN", "PIN must be exactly 4 digits.", backgroundColor: Colors.orange);
+                              return;
+                            }
+                            if (pin != confirm) {
+                              Get.snackbar("PIN Mismatch", "The PINs you entered do not match.", backgroundColor: Colors.orange);
+                              return;
+                            }
+
+                            Get.dialog(
+                              const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
+                              barrierDismissible: false,
+                            );
+
+                            bool success = await walletController.setTransactionPin(pin);
+                            Get.back(); // close loader
+
+                            if (success) {
+                              _executeDirectTransfer(recipientUsername, amount, walletController);
+                            }
+                          },
+                          child: const Text("Set PIN & Transfer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        ),
+                      ),
+                    ],
+                  ],
+                ],
+              );
+            }),
+          );
+        });
+      },
+    );
+  }
+
+  void _executeDirectTransfer(String recipient, double amount, WalletController walletController) {
+    Get.dialog(
+      const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
+      barrierDismissible: false,
+    );
+
+    walletController.sendCoins(recipientIdentity: recipient, amount: amount).then((success) {
+      Get.back(); // close loading dialog
+      if (success) {
+        Get.back(); // close send modal sheet
+        Get.snackbar(
+          "Transfer Successful",
+          "You have sent $amount Lc to @$recipient successfully.",
+          backgroundColor: const Color(0xFF00FF87),
+          colorText: Colors.black,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    });
   }
 }

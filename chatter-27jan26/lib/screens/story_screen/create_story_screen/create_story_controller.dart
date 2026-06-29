@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:lumosocial/screens/video_cropper/video_cropper_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,19 +79,27 @@ class CreateStoryController extends BaseController {
   /// Pick video from gallery
   Future<void> pickVideoFromGallery() async {
     XFile? file = await ImagePicker().pickVideo(source: ImageSource.gallery);
-    VideoPlayerController testLengthController = new VideoPlayerController.file(File(file?.path ?? '')); //Your file here
+    if (file == null) return;
+    VideoPlayerController testLengthController = VideoPlayerController.file(File(file.path));
     await testLengthController.initialize();
-    var limit = (SessionManager.shared.getSettings()?.minuteLimitInChoosingVideoForStory ?? 0);
-    if (testLengthController.value.duration.inSeconds > limit * 60) {
-      BaseController.share.showSnackBar('${LKeys.weAreOnlyAllow.tr} $limit ${LKeys.minute.tr}', type: SnackBarType.error);
-    } else {
-      if (file != null) {
-        Get.back();
-        storyType.value = StoryType.video;
-        _handleReel(file, shouldConvert: false);
+    int durationSec = testLengthController.value.duration.inSeconds;
+    testLengthController.dispose();
+
+    if (durationSec > 60) {
+      final trimmedPath = await Get.to(() => VideoCropperScreen(
+        videoPath: file!.path,
+        maxDurationSeconds: 60.0,
+      ));
+      if (trimmedPath != null && trimmedPath is String) {
+        file = XFile(trimmedPath);
+      } else {
+        return; // Cancelled
       }
     }
-    testLengthController.dispose();
+
+    Get.back();
+    storyType.value = StoryType.video;
+    _handleReel(file, shouldConvert: false);
   }
 
   Future<void> pickImageFromGallery() async {

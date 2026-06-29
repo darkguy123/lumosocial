@@ -130,7 +130,7 @@ class ChatsScreen extends StatelessWidget {
                               MyImages.meeting,
                               width: imageSize,
                               height: imageSize,
-                              color: Colors.white,
+                              color: const Color(0xFF00FF87),
                             ),
                           ),
                           const Spacer(),

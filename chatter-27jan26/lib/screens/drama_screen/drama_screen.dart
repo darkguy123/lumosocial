@@ -19,6 +19,30 @@ class _DramaScreenState extends State<DramaScreen> {
   List<dynamic> _suggestions = [];
   bool _isLoading = false;
   bool _isSearching = false;
+  String _selectedCategory = 'All';
+
+  List<dynamic> get _filteredDramas {
+    if (_selectedCategory == 'All') return _dramas;
+    return _dramas.where((drama) {
+      final title = (drama['title'] ?? '').toString().toLowerCase();
+      final desc = (drama['description'] ?? '').toString().toLowerCase();
+      
+      switch (_selectedCategory) {
+        case 'Romance':
+          return title.contains('love') || title.contains('romance') || title.contains('marry') || title.contains('wife') || title.contains('husband') || desc.contains('love') || desc.contains('marry') || desc.contains('romance');
+        case 'Drama':
+          return title.contains('secret') || title.contains('betray') || title.contains('family') || title.contains('life') || desc.contains('secret') || desc.contains('life');
+        case 'Action':
+          return title.contains('fight') || title.contains('war') || title.contains('agent') || title.contains('danger') || title.contains('kill') || desc.contains('agent') || desc.contains('fight');
+        case 'Comedy':
+          return title.contains('funny') || title.contains('laugh') || title.contains('comedy') || desc.contains('funny') || desc.contains('laugh');
+        case 'Thriller':
+          return title.contains('mystery') || title.contains('thriller') || title.contains('dark') || title.contains('crime') || desc.contains('mystery') || desc.contains('thriller');
+        default:
+          return true;
+      }
+    }).toList();
+  }
 
   @override
   void initState() {
@@ -225,6 +249,22 @@ class _DramaScreenState extends State<DramaScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  // Scrollable Horizontal Categories
+                  SizedBox(
+                    height: 32,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        _buildCategoryChip('All', Icons.all_inclusive_rounded),
+                        _buildCategoryChip('Romance', Icons.favorite_rounded),
+                        _buildCategoryChip('Drama', Icons.theater_comedy_rounded),
+                        _buildCategoryChip('Action', Icons.flash_on_rounded),
+                        _buildCategoryChip('Comedy', Icons.emoji_emotions_rounded),
+                        _buildCategoryChip('Thriller', Icons.gavel_rounded),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -236,7 +276,7 @@ class _DramaScreenState extends State<DramaScreen> {
                   // Main Drama Grid/List
                   _isLoading
                       ? const Center(child: CircularProgressIndicator(color: Color(0xFF00FF87)))
-                      : _dramas.isEmpty
+                      : _filteredDramas.isEmpty
                           ? const Center(
                               child: Text(
                                 "No drama series available.",
@@ -257,9 +297,9 @@ class _DramaScreenState extends State<DramaScreen> {
                                   mainAxisSpacing: 16,
                                   childAspectRatio: 0.65,
                                 ),
-                                itemCount: _dramas.length,
+                                itemCount: _filteredDramas.length,
                                 itemBuilder: (context, index) {
-                                  final drama = _dramas[index];
+                                  final drama = _filteredDramas[index];
                                   return GestureDetector(
                                     onTap: () {
                                       Get.to(() => DramaDetailsScreen(dramaId: int.parse(drama['id'].toString())));
@@ -379,6 +419,45 @@ class _DramaScreenState extends State<DramaScreen> {
                       ),
                     ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryChip(String category, IconData icon) {
+    final isSelected = _selectedCategory == category;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedCategory = category;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF00FF87) : Colors.grey[900],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: isSelected ? Colors.transparent : Colors.white10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 14,
+              color: isSelected ? Colors.black : const Color(0xFF00FF87),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              category,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

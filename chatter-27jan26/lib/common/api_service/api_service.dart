@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:lumosocial/common/managers/logger.dart';
+import 'package:lumosocial/screens/wallet_screen/reward_overlay_manager.dart';
 
 class CancelToken {
   bool _isCancelled = false;
@@ -71,6 +72,9 @@ class ApiService {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         final prettyString = const JsonEncoder.withIndent('  ').convert(decodedResponse);
         Loggers.info(prettyString);
+        if (decodedResponse.containsKey('reward') && decodedResponse['reward'] != null) {
+          RewardOverlayManager.handleReward(decodedResponse['reward'] as Map<String, dynamic>);
+        }
         completion(decodedResponse);
       } else if (response.statusCode == 404) {
         Loggers.error('Please check baseURL in const.dart file');
@@ -185,6 +189,9 @@ class ApiService {
         final decodedResponse = jsonDecode(responseStr) as Map<String, dynamic>;
         final prettyString = const JsonEncoder.withIndent('  ').convert(decodedResponse);
         Loggers.info(prettyString);
+        if (decodedResponse.containsKey('reward') && decodedResponse['reward'] != null) {
+          RewardOverlayManager.handleReward(decodedResponse['reward'] as Map<String, dynamic>);
+        }
 
         // Use the provided `fromJson` function to parse the response
         completion(decodedResponse);

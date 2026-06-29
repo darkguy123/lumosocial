@@ -99,6 +99,11 @@ class WebService {
   static const String reportReel = "${apiURL}reportReel";
   static const String increaseReelViewCount = "${apiURL}increaseReelViewCount";
   static const String deleteReel = "${apiURL}deleteReel";
+
+  // Wallet APIs
+  static const String walletDetails = "${apiURL}wallet/details";
+  static const String walletSend = "${apiURL}wallet/send";
+  static const String walletSearchUsers = "${apiURL}wallet/searchUsers";
 }
 
 class Moderator {

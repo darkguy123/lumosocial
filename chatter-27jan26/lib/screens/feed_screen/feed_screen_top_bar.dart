@@ -6,6 +6,7 @@ import 'package:lumosocial/screens/extra_views/logo_tag.dart';
 import 'package:lumosocial/screens/notification_screen/notification_screen.dart';
 import 'package:lumosocial/screens/random_screen/random_screen.dart';
 import 'package:lumosocial/screens/search_screen/search_screen.dart';
+import 'package:lumosocial/screens/wallet_screen/wallet_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class FeedScreenTopBar extends StatelessWidget {
@@ -40,20 +41,33 @@ class FeedScreenTopBar extends StatelessWidget {
                     Get.to(() => RandomScreen());
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Image.asset(
                       MyImages.random,
                       width: 20,
                     ),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const WalletScreen());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Icon(
+                      Icons.account_balance_wallet_rounded,
+                      color: cWhite,
+                      size: imageSize,
+                    ),
+                  ),
+                ),
                 GestureDetector(
                   onTap: () {
                     Get.to(() => const AudioSpacesScreen());
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Image.asset(
                       MyImages.audioRoom,
                       width: imageSize,

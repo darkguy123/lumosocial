@@ -55,10 +55,10 @@ class FeedScreenTopBar extends StatelessWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(
-                      Icons.account_balance_wallet_rounded,
-                      color: cWhite,
-                      size: imageSize,
+                    child: Image.asset(
+                      MyImages.walletIcon,
+                      width: imageSize,
+                      height: imageSize,
                     ),
                   ),
                 ),

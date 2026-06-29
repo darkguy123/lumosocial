@@ -55,6 +55,7 @@ class MyImages {
   static var pauseFill = '${assetBase}pause_fill.png';
   static var maintenance = '${assetBase}maintenance.png';
   static var update = '${assetBase}update.png';
+  static var walletIcon = '${assetBase}wallet_icon.png';
 
   static var appIcon = 'ios/Runner/Assets.xcassets/AppIcon.appiconset/180.png';
 }

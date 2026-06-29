@@ -33,8 +33,8 @@ class RewardOverlayManager {
         showEarningToast(earned, action);
       }
 
-      // Check if daily limit of 10 Lc is reached
-      if (totalToday >= 10.0 && !_isShowingLimitPopup) {
+      // Check if daily limit of 50 Lc is reached
+      if (totalToday >= 50.0 && !_isShowingLimitPopup) {
         // Show center limit popup
         showLimitReachedPopup(totalToday);
       }

@@ -10,6 +10,7 @@ import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/screens/wallet_screen/wallet_controller.dart';
 import 'package:lumosocial/screens/wallet_screen/scanner_screen.dart';
+import 'package:lumosocial/common/extensions/image_extension.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});

@@ -16,6 +16,7 @@ import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
 import 'package:lumosocial/screens/random_screen/random_screen.dart';
 import 'package:lumosocial/screens/rooms_screen/rooms_screen.dart';
 import 'package:lumosocial/screens/tabbar/tabbar_controller.dart';
+import 'package:lumosocial/screens/drama_screen/drama_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class TabBarScreen extends StatelessWidget {
@@ -37,7 +38,7 @@ class TabBarScreen extends StatelessWidget {
                 child: ProsteIndexedStack(
                   children: [
                     IndexedStackChild(child: FeedScreen(scrollController: scrollController)),
-                    IndexedStackChild(child: RoomsScreen()),
+                    IndexedStackChild(child: const DramaScreen()),
                     IndexedStackChild(child: DashboardReelsScreen(), preload: true),
                     IndexedStackChild(child: ChatsScreen(), preload: true),
                     IndexedStackChild(child: ProfileScreen(isFromTabBar: true, userId: SessionManager.shared.getUserID()), preload: true),
@@ -55,7 +56,7 @@ class TabBarScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       button(LKeys.feed, MyImages.quill, 0, controller),
-                      button(LKeys.rooms, MyImages.meeting, 1, controller),
+                      button(LKeys.drama, MyImages.drama, 1, controller),
                       button(LKeys.reels, MyImages.reels, 2, controller),
                       GetBuilder(
                           init: chatScreenController,
@@ -106,7 +107,7 @@ class TabBarScreen extends StatelessWidget {
       case 0:
         return FeedScreen(scrollController: scrollController);
       case 1:
-        return RoomsScreen();
+        return const DramaScreen();
       case 2:
         return RandomScreen();
       case 3:

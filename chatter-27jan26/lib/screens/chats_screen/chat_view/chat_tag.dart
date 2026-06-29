@@ -17,6 +17,9 @@ import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
 import 'package:lumosocial/screens/story_screen/story_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/firebase_const.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
+import 'package:lumosocial/utilities/web_service.dart';
+import 'package:lumosocial/screens/drama_screen/drama_player_screen.dart';
 
 class ChatTag extends StatelessWidget {
   final ChattingController controller;
@@ -334,7 +337,90 @@ class ChatTag extends StatelessWidget {
         return imageAndVideoView();
       case MessageType.storyReply:
         return storyView();
+      case MessageType.watchParty:
+        return watchPartyView();
     }
+  }
+
+  Widget watchPartyView() {
+    var isMyMsg = message.senderId == SessionManager.shared.getUserID();
+    return Container(
+      width: Get.width * 0.6,
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 3),
+      decoration: BoxDecoration(
+        color: isMyMsg ? const Color(0xFF1E1E1E) : const Color(0xFF2C2C2C),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF00FF87).withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.movie_filter_rounded, color: Color(0xFF00FF87), size: 24),
+              const SizedBox(width: 8),
+              Text(
+                "Watch Party Invite 🍿",
+                style: MyTextStyle.gilroyBold(size: 14, color: Colors.white),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            message.msg ?? "come and join my watch party",
+            style: MyTextStyle.gilroyMedium(size: 13, color: Colors.white70),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            message.dramaTitle ?? "",
+            style: MyTextStyle.gilroyBold(size: 15, color: const Color(0xFF00FF87)),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF00FF87),
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: () {
+                BaseController.share.startLoading();
+                ApiService.shared.call(
+                  url: WebService.dramaDetails,
+                  param: {
+                    'drama_id': message.dramaId?.toInt() ?? 0,
+                    'user_id': SessionManager.shared.getUserID(),
+                  },
+                  completion: (response) {
+                    BaseController.share.stopLoading();
+                    if (response['status'] == true) {
+                      final episodes = response['data']['episodes_list'] as List? ?? [];
+                      int index = 0;
+                      if (message.episodeNumber != null) {
+                        index = episodes.indexWhere((e) => e['episode_number'] == message.episodeNumber?.toInt());
+                        if (index == -1) index = 0;
+                      }
+                      Get.to(() => DramaPlayerScreen(
+                            episodes: episodes,
+                            initialIndex: index,
+                            dramaTitle: message.dramaTitle ?? "",
+                            dramaId: message.dramaId?.toInt() ?? 0,
+                          ));
+                    } else {
+                      Get.snackbar("Error", "Failed to load watch party drama details.");
+                    }
+                  },
+                );
+              },
+              child: const Text("Join", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

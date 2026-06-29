@@ -239,8 +239,25 @@ class ChatMessage {
   List<String>? _deletedIds;
   num? _senderId;
   num? _storyId;
+  num? _dramaId;
+  num? _episodeId;
+  String? _dramaTitle;
+  num? _episodeNumber;
 
-  ChatMessage({String? id, String? content, String? thumbnail, String? msg, String? msgType, num? senderId, List<String>? notDeletedIdentities, int? storyId}) {
+  ChatMessage({
+    String? id,
+    String? content,
+    String? thumbnail,
+    String? msg,
+    String? msgType,
+    num? senderId,
+    List<String>? notDeletedIdentities,
+    int? storyId,
+    num? dramaId,
+    num? episodeId,
+    String? dramaTitle,
+    num? episodeNumber,
+  }) {
     _id = id;
     _content = content;
     _msg = msg;
@@ -249,10 +266,27 @@ class ChatMessage {
     _deletedIds = notDeletedIdentities;
     _thumbnail = thumbnail;
     _storyId = storyId;
+    _dramaId = dramaId;
+    _episodeId = episodeId;
+    _dramaTitle = dramaTitle;
+    _episodeNumber = episodeNumber;
   }
 
   Map<String, dynamic> toJson() {
-    return {"id": _id, "content": _content, "thumbnail": _thumbnail, "msg": _msg, "msgType": _msgType, "senderId": _senderId, "storyId": _storyId, "deletedIds": _deletedIds?.map((v) => v).toList()};
+    return {
+      "id": _id,
+      "content": _content,
+      "thumbnail": _thumbnail,
+      "msg": _msg,
+      "msgType": _msgType,
+      "senderId": _senderId,
+      "storyId": _storyId,
+      "dramaId": _dramaId,
+      "episodeId": _episodeId,
+      "dramaTitle": _dramaTitle,
+      "episodeNumber": _episodeNumber,
+      "deletedIds": _deletedIds?.map((v) => v).toList()
+    };
   }
 
   ChatMessage.fromJson(Map<String, dynamic>? json) {
@@ -263,6 +297,10 @@ class ChatMessage {
     _msgType = json?["msgType"];
     _senderId = json?["senderId"];
     _storyId = json?["storyId"];
+    _dramaId = json?["dramaId"];
+    _episodeId = json?["episodeId"];
+    _dramaTitle = json?["dramaTitle"];
+    _episodeNumber = json?["episodeNumber"];
     if (json?['deletedIds'] != null) {
       _deletedIds = [];
       json?['deletedIds'].forEach((v) {
@@ -282,11 +320,37 @@ class ChatMessage {
         notDeletedIdentities.add(v);
       });
     }
-    return ChatMessage(id: data?['id'], content: data?['content'], thumbnail: data?['thumbnail'], msg: data?['msg'], msgType: data?['msgType'], notDeletedIdentities: notDeletedIdentities, senderId: data?['senderId'], storyId: data?['storyId']);
+    return ChatMessage(
+      id: data?['id'],
+      content: data?['content'],
+      thumbnail: data?['thumbnail'],
+      msg: data?['msg'],
+      msgType: data?['msgType'],
+      notDeletedIdentities: notDeletedIdentities,
+      senderId: data?['senderId'],
+      storyId: data?['storyId'],
+      dramaId: data?['dramaId'],
+      episodeId: data?['episodeId'],
+      dramaTitle: data?['dramaTitle'],
+      episodeNumber: data?['episodeNumber'],
+    );
   }
 
   Map<String, dynamic> toFireStore() {
-    return {if (id != null) "id": _id, if (content != null) "content": _content, if (thumbnail != null) "thumbnail": _thumbnail, if (msg != null) "msg": _msg, "msgType": _msgType, if (senderId != null) "senderId": _senderId, if (notDeletedIdentities != null) "not_deleted_identities": _deletedIds?.map((v) => v).toList()};
+    return {
+      if (id != null) "id": _id,
+      if (content != null) "content": _content,
+      if (thumbnail != null) "thumbnail": _thumbnail,
+      if (msg != null) "msg": _msg,
+      "msgType": _msgType,
+      if (senderId != null) "senderId": _senderId,
+      if (storyId != null) "storyId": _storyId,
+      if (dramaId != null) "dramaId": _dramaId,
+      if (episodeId != null) "episodeId": _episodeId,
+      if (dramaTitle != null) "dramaTitle": _dramaTitle,
+      if (episodeNumber != null) "episodeNumber": _episodeNumber,
+      if (notDeletedIdentities != null) "not_deleted_identities": _deletedIds?.map((v) => v).toList()
+    };
   }
 
   String getChatTime() {
@@ -296,20 +360,17 @@ class ChatMessage {
   }
 
   String? get content => _content;
-
   String? get thumbnail => _thumbnail;
-
   List<String>? get notDeletedIdentities => _deletedIds;
-
   num? get senderId => _senderId;
-
   MessageType get msgType => MessageType.values.firstWhereOrNull((element) => element.value == _msgType) ?? MessageType.text;
-
   String? get msg => _msg;
-
   String? get id => _id;
-
   num? get storyId => _storyId;
+  num? get dramaId => _dramaId;
+  num? get episodeId => _episodeId;
+  String? get dramaTitle => _dramaTitle;
+  num? get episodeNumber => _episodeNumber;
 
   set thumbnail(String? value) {
     _thumbnail = value;

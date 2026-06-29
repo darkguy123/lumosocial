@@ -19,6 +19,7 @@ import 'package:lumosocial/screens/search_post_with_interest_screen/search_post_
 import 'package:lumosocial/screens/search_reel_with_interest_screen/search_reel_with_interest_screen.dart';
 import 'package:lumosocial/screens/search_screen/search_controller.dart';
 import 'package:lumosocial/screens/tag_screen/tag_screen.dart';
+import 'package:lumosocial/screens/drama_screen/drama_details_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 import '../rooms_screen/rooms_by_interest/room_explore_by_interests.dart';
@@ -57,7 +58,7 @@ class SearchScreen extends StatelessWidget {
                       usersView(controller),
                       postsView(controller),
                       reelsView(controller),
-                      hashtagView(controller),
+                      dramaView(controller),
                     ],
                   ),
                 )
@@ -67,43 +68,49 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget hashtagView(SearchScreenController controller) {
+  Widget dramaView(SearchScreenController controller) {
     return ListView.builder(
       padding: EdgeInsets.only(top: 10, bottom: Get.bottomBarHeight),
-      itemCount: controller.filterTags.length,
+      itemCount: controller.dramas.length,
       itemBuilder: (context, index) {
-        var tag = controller.filterTags[index];
+        var drama = controller.dramas[index];
         return InkWell(
           onTap: () {
-            Get.to(() => TagScreen(tag: '#${tag.tag ?? ''}'));
+            Get.to(() => DramaDetailsScreen(dramaId: int.parse(drama['id'].toString())));
           },
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 7, horizontal: 15),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
             child: Row(
               children: [
-                Container(
-                  decoration: ShapeDecoration(shape: CircleBorder(side: BorderSide(width: 2, color: cLightText.withValues(alpha: 0.1)))),
-                  padding: EdgeInsets.all(5),
-                  child: Image.asset(
-                    MyImages.hashtag,
-                    height: 30,
-                    width: 30,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    drama['thumbnail'] ?? '',
+                    height: 80,
+                    width: 60,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '#${tag.tag ?? ''}',
-                      style: MyTextStyle.gilroySemiBold(size: 18),
-                    ),
-                    Text(
-                      '${tag.postCount?.toInt().makeToString() ?? '0'} ${LKeys.posts.tr}',
-                      style: MyTextStyle.gilroyMedium(color: cLightText, size: 14),
-                    )
-                  ],
+                const SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        drama['title'] ?? '',
+                        style: MyTextStyle.gilroySemiBold(size: 16, color: Colors.white),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        '${drama['views_count'] ?? 0} Views',
+                        style: MyTextStyle.gilroyMedium(color: cLightText, size: 12),
+                      ),
+                    ],
+                  ),
                 ),
+                const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 16),
               ],
             ),
           ),

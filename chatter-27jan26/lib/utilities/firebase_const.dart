@@ -49,7 +49,8 @@ enum MessageType {
   text('TEXT'),
   image('IMAGE'),
   video('VIDEO'),
-  storyReply('STORY_REPLY');
+  storyReply('STORY_REPLY'),
+  watchParty('WATCH_PARTY');
 
   const MessageType(this.value);
 

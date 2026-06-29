@@ -58,6 +58,7 @@ class LKeys {
   static const setProfileDesc = "setProfileDesc";
   static const feed = "feed";
   static const rooms = "rooms";
+  static const drama = "drama";
   static const randoms = "randoms";
   static const chats = "chats";
   static const profile = "profile";

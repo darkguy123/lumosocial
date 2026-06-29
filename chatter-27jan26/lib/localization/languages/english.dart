@@ -35,6 +35,7 @@ const englishStrings = {
   LKeys.setProfileDesc: 'That’s great, Now\nlet us know how you look.',
   LKeys.feed: 'Feed',
   LKeys.rooms: 'Rooms',
+  LKeys.drama: 'Drama',
   LKeys.randoms: 'Randoms',
   LKeys.chats: 'Chats',
   LKeys.profile: 'Profile',

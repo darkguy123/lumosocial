@@ -102,7 +102,16 @@ class ChattingController extends BlockUserController {
     commonSend(type: MessageType.text);
   }
 
-  void commonSend({required MessageType type, String content = '', String thumbnail = '', num? storyId}) {
+  void commonSend({
+    required MessageType type,
+    String content = '',
+    String thumbnail = '',
+    num? storyId,
+    num? dramaId,
+    num? episodeId,
+    String? dramaTitle,
+    num? episodeNumber,
+  }) {
     if (chatUserRoom?.iAmBlocked == true) {
       return;
     }
@@ -164,7 +173,19 @@ class ChattingController extends BlockUserController {
         NotificationService.shared.sendToSingleUser(token: user?.deviceToken ?? '', deviceType: user?.deviceType, title: myUser?.fullName ?? '', body: lastMsg, conversationId: chatUserRoom?.conversationId ?? '');
       }
     }
-    var map = ChatMessage(id: date.microsecondsSinceEpoch.toString(), msg: messageTextController.text, msgType: type.value, content: content, thumbnail: thumbnail, senderId: myUser?.id, storyId: storyId?.toInt()).toJson();
+    var map = ChatMessage(
+      id: date.microsecondsSinceEpoch.toString(),
+      msg: messageTextController.text,
+      msgType: type.value,
+      content: content,
+      thumbnail: thumbnail,
+      senderId: myUser?.id,
+      storyId: storyId?.toInt(),
+      dramaId: dramaId,
+      episodeId: episodeId,
+      dramaTitle: dramaTitle,
+      episodeNumber: episodeNumber,
+    ).toJson();
 
     drChatMessages?.doc(date.microsecondsSinceEpoch.toString()).set(map);
     messageTextController.text = "";

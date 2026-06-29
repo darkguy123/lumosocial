@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/common/api_service/post_service.dart';
 import 'package:lumosocial/common/api_service/reel_service.dart';
 import 'package:lumosocial/common/api_service/user_service.dart';
@@ -12,6 +13,7 @@ import 'package:lumosocial/models/reel_model.dart';
 import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/models/search_hashtags_model.dart';
 import 'package:lumosocial/screens/audio_space/models/audio_space_user.dart';
+import 'package:lumosocial/utilities/web_service.dart';
 
 class SearchScreenController extends CupertinoController {
   List<User> users = [];
@@ -19,6 +21,7 @@ class SearchScreenController extends CupertinoController {
   RxList<Reel> reels = RxList();
   List<SearchTag> tags = [];
   List<SearchTag> filterTags = [];
+  List<dynamic> dramas = [];
   List<AudioSpaceUser> selectedUsers = [];
   TextEditingController textEditingController = TextEditingController();
 
@@ -26,7 +29,7 @@ class SearchScreenController extends CupertinoController {
     0: LKeys.users,
     1: LKeys.posts,
     2: LKeys.reels,
-    3: LKeys.hashtags,
+    3: LKeys.drama,
   };
 
   @override
@@ -35,7 +38,7 @@ class SearchScreenController extends CupertinoController {
     searchUser();
     searchPost();
     searchReel();
-    fetchAllHashtags();
+    fetchDramas();
   }
 
   void onSearchTextChanged() {
@@ -48,31 +51,46 @@ class SearchScreenController extends CupertinoController {
     searchUser(shouldErase: true);
     searchPost(shouldErase: true);
     searchReel(shouldErase: true);
-    searchHashtags();
+    searchDramas();
   }
 
-  void fetchAllHashtags() {
-    PostService.shared.searchHashtags(
-      textEditingController.text,
-      tags.length,
-      (newTags) {
-        tags = newTags;
-        filterTags = newTags;
+  void fetchDramas() {
+    ApiService.shared.call(
+      url: WebService.dramaList,
+      param: {},
+      completion: (response) {
+        if (response['status'] == true) {
+          final list = response['data'] as List? ?? [];
+          // Sort by views count to get most-watched
+          list.sort((a, b) {
+            final viewsA = int.tryParse(a['views_count'].toString()) ?? 0;
+            final viewsB = int.tryParse(b['views_count'].toString()) ?? 0;
+            return viewsB.compareTo(viewsA);
+          });
+          dramas = list.take(4).toList();
+        }
         update();
       },
     );
   }
 
-  void searchHashtags({bool shouldErase = false}) {
-    String searchText = textEditingController.text.toLowerCase();
+  void searchDramas() {
+    String searchText = textEditingController.text.trim();
     if (searchText.isEmpty) {
-      filterTags = tags;
+      fetchDramas();
     } else {
-      filterTags = tags.where((element) {
-        return element.tag?.toLowerCase().contains(searchText) ?? false;
-      }).toList();
+      ApiService.shared.call(
+        url: WebService.dramaSearch,
+        param: {'query': searchText},
+        completion: (response) {
+          if (response['status'] == true) {
+            final list = response['data'] as List? ?? [];
+            dramas = list.take(4).toList();
+          }
+          update();
+        },
+      );
     }
-    update();
   }
 
   Future<void> searchReel({bool shouldErase = false}) async {

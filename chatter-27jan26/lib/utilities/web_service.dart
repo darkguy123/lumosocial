@@ -106,6 +106,13 @@ class WebService {
   static const String walletSearchUsers = "${apiURL}wallet/searchUsers";
   static const String walletSetPin = "${apiURL}wallet/setPin";
   static const String walletVerifyPin = "${apiURL}wallet/verifyPin";
+
+  // Drama APIs
+  static const String dramaList = "${apiURL}drama/list";
+  static const String dramaDetails = "${apiURL}drama/details";
+  static const String dramaSearch = "${apiURL}drama/search";
+  static const String dramaSaveProgress = "${apiURL}drama/saveProgress";
+  static const String dramaLogView = "${apiURL}drama/logView";
 }
 
 class Moderator {

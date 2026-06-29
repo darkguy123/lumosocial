@@ -10,6 +10,7 @@ import 'package:lumosocial/screens/chats_screen/chat_view/chat_card.dart';
 import 'package:lumosocial/screens/chats_screen/chats_screen_controller.dart';
 import 'package:lumosocial/screens/extra_views/logo_tag.dart';
 import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/screens/rooms_screen/rooms_screen.dart';
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({Key? key}) : super(key: key);
@@ -121,7 +122,17 @@ class ChatsScreen extends StatelessWidget {
                   : Expanded(
                       child: Row(
                         children: [
-                          SizedBox(width: imageSize),
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => RoomsScreen());
+                            },
+                            child: Image.asset(
+                              MyImages.meeting,
+                              width: imageSize,
+                              height: imageSize,
+                              color: Colors.white,
+                            ),
+                          ),
                           const Spacer(),
                           const LogoTag(),
                           const Spacer(),

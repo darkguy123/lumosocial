@@ -10,6 +10,7 @@ import 'package:lumosocial/screens/post/post_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/firebase_const.dart';
 import 'package:video_player/video_player.dart';
+import 'package:lumosocial/main.dart';
 
 class VideoPlayerSheet extends StatefulWidget {
   final PostController controller;
@@ -20,7 +21,7 @@ class VideoPlayerSheet extends StatefulWidget {
   State<VideoPlayerSheet> createState() => _VideoPlayerSheetState();
 }
 
-class _VideoPlayerSheetState extends State<VideoPlayerSheet> {
+class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, WidgetsBindingObserver {
   VideoPlayerController? playerController;
   bool isLoading = true;
 
@@ -28,13 +29,55 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> {
   void initState() {
     initPlayer();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
     playerController?.pause();
     playerController = null;
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPushNext() {
+    _mutePlayer();
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    _unmutePlayer();
+    super.didPopNext();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _mutePlayer();
+    } else if (state == AppLifecycleState.resumed) {
+      _unmutePlayer();
+    }
+  }
+
+  void _mutePlayer() {
+    if (playerController != null && playerController!.value.isInitialized) {
+      playerController!.setVolume(0.0);
+    }
+  }
+
+  void _unmutePlayer() {
+    if (playerController != null && playerController!.value.isInitialized) {
+      playerController!.setVolume(1.0);
+    }
   }
 
   @override

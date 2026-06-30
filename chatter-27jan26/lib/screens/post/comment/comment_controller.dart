@@ -36,19 +36,38 @@ class CommentController extends BaseController {
   }
 
   void addComment() {
-    if (textEditingController.text.isEmpty) {
+    final commentText = textEditingController.text.trim();
+    if (commentText.isEmpty) {
       return;
     }
-    startLoading();
-    PostService.shared.addComment(textEditingController.text, post.id ?? 0, (comment) {
-      stopLoading();
-      comment.user = SessionManager.shared.getUser();
-      comments.insert(0, comment);
-      textEditingController.clear();
-      postController.post.commentsCount += 1;
-      postController.update(['comment']);
-      postController.update();
-      update();
+    textEditingController.clear();
+    
+    // Create an optimistic temporary comment object
+    final tempId = DateTime.now().millisecondsSinceEpoch;
+    final tempComment = Comment(
+      id: tempId,
+      userId: SessionManager.shared.getUser()?.id,
+      postId: post.id,
+      desc: commentText,
+      createdAt: DateTime.now().toUtc().toIso8601String(),
+      user: SessionManager.shared.getUser(),
+      isLike: 0,
+      commentLikeCount: 0,
+    );
+    
+    comments.insert(0, tempComment);
+    postController.post.commentsCount = (postController.post.commentsCount ?? 0) + 1;
+    postController.update(['comment']);
+    postController.update();
+    update();
+
+    PostService.shared.addComment(commentText, post.id ?? 0, (comment) {
+      final index = comments.indexWhere((element) => element.id == tempId);
+      if (index != -1) {
+        comment.user = SessionManager.shared.getUser();
+        comments[index] = comment;
+        update();
+      }
     });
   }
 

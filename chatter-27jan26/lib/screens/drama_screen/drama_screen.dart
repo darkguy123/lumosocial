@@ -24,6 +24,9 @@ class _DramaScreenState extends State<DramaScreen> {
   List<dynamic> get _filteredDramas {
     if (_selectedCategory == 'All') return _dramas;
     return _dramas.where((drama) {
+      if (drama['category'] != null && drama['category'].toString().isNotEmpty) {
+        return drama['category'].toString().toLowerCase() == _selectedCategory.toLowerCase();
+      }
       final title = (drama['title'] ?? '').toString().toLowerCase();
       final desc = (drama['description'] ?? '').toString().toLowerCase();
       

@@ -53,9 +53,10 @@ void main() async {
 
     FlutterError.presentError(details);
   };
-  // fvp.registerWith();
   runApp(const MyApp());
 }
+
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
     Lang lang = SessionManager.shared.getLang();
 
     return GetMaterialApp(
+      navigatorObservers: [routeObserver],
       translations: Languages(),
       locale: lang.language.local,
       builder: (context, child) {

@@ -37,20 +37,40 @@ class ReelCommentController extends BaseController {
   }
 
   void addComment() async {
-    if (textEditingController.text.isEmpty) {
+    final commentText = textEditingController.text.trim();
+    if (commentText.isEmpty) {
       return;
     }
-    startLoading();
-
-    ReelComment? comment = await ReelService.shared.addComment(comment: textEditingController.text, reelId: reel?.id ?? 0);
-    stopLoading();
-    if (comment != null) {
-      comment.user = SessionManager.shared.getUser();
-      comments.insert(0, comment);
-    }
     textEditingController.clear();
+
+    final tempId = DateTime.now().millisecondsSinceEpoch;
+    final tempComment = ReelComment(
+      id: tempId,
+      userId: SessionManager.shared.getUser()?.id,
+      reelId: reel?.id,
+      description: commentText,
+      createdAt: DateTime.now(),
+      user: SessionManager.shared.getUser(),
+    );
+
+    comments.insert(0, tempComment);
     reelController.reel.update((val) {
       val?.commentsCount = (reelController.reel.value?.commentsCount ?? 0) + 1;
+    });
+
+    ReelService.shared.addComment(comment: commentText, reelId: reel?.id ?? 0).then((comment) {
+      if (comment != null) {
+        final index = comments.indexWhere((element) => element.id == tempId);
+        if (index != -1) {
+          comment.user = SessionManager.shared.getUser();
+          comments[index] = comment;
+        }
+      } else {
+        comments.removeWhere((element) => element.id == tempId);
+        reelController.reel.update((val) {
+          val?.commentsCount = (reelController.reel.value?.commentsCount ?? 1) - 1;
+        });
+      }
     });
   }
 

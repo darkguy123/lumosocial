@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
+import 'package:lumosocial/main.dart';
 
 class IPTVChannel {
   final String name;
@@ -246,7 +247,7 @@ class LiveTvScreen extends StatefulWidget {
   State<LiveTvScreen> createState() => _LiveTvScreenState();
 }
 
-class _LiveTvScreenState extends State<LiveTvScreen> {
+class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBindingObserver {
   final LiveTvController controller = Get.put(LiveTvController());
   var _showInlineControls = false.obs;
   Timer? _inlineControlsTimer;
@@ -260,9 +261,58 @@ class _LiveTvScreenState extends State<LiveTvScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
     _inlineControlsTimer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPushNext() {
+    _mutePlayer();
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    _unmutePlayer();
+    super.didPopNext();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _mutePlayer();
+    } else if (state == AppLifecycleState.resumed) {
+      _unmutePlayer();
+    }
+  }
+
+  void _mutePlayer() {
+    if (controller.videoPlayerController != null &&
+        controller.videoPlayerController!.value.isInitialized) {
+      controller.videoPlayerController!.setVolume(0.0);
+    }
+  }
+
+  void _unmutePlayer() {
+    if (controller.videoPlayerController != null &&
+        controller.videoPlayerController!.value.isInitialized) {
+      controller.videoPlayerController!.setVolume(1.0);
+    }
   }
 
   @override

@@ -26,8 +26,8 @@ class Limits {
 
   static int sightEngineCropSec = 5;
 
-  static double imageSize = 720;
-  static int quality = 50;
+  static double imageSize = 1200;
+  static int quality = 80;
 }
 
 const List<String> storyQuickReplyEmojis = ['😂', '😮', '😍', '😢', '👏', '🔥'];

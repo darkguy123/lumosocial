@@ -9,10 +9,13 @@ import 'package:lumosocial/models/reel_model.dart';
 import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/screens/reels_screen/reel/reel_page.dart';
 import 'package:lumosocial/screens/reels_screen/reels_screen_controller.dart';
-import 'package:lumosocial/screens/reels_screen/widget/reels_text_field.dart';
-import 'package:lumosocial/screens/reels_screen/widget/reels_top_bar.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:lumosocial/main.dart';
+import 'package:lumosocial/screens/reels_screen/widget/reels_text_field.dart';
+import 'package:lumosocial/screens/reels_screen/widget/reels_top_bar.dart';
+
+
 
 class ReelsScreen extends StatefulWidget {
   final ReelPageType pageType;
@@ -46,22 +49,73 @@ class ReelsScreen extends StatefulWidget {
   State<ReelsScreen> createState() => _ReelsScreenState();
 }
 
-class _ReelsScreenState extends State<ReelsScreen> with AutomaticKeepAliveClientMixin {
+class _ReelsScreenState extends State<ReelsScreen> with AutomaticKeepAliveClientMixin, RouteAware, WidgetsBindingObserver {
+  late ReelsScreenController controller;
+  bool _isControllerInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPushNext() {
+    if (_isControllerInitialized) {
+      controller.muteCurrentPlayer();
+    }
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    if (_isControllerInitialized) {
+      controller.unmuteCurrentPlayer();
+    }
+    super.didPopNext();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!_isControllerInitialized) return;
+    if (state == AppLifecycleState.paused) {
+      controller.muteCurrentPlayer();
+    } else if (state == AppLifecycleState.resumed) {
+      controller.unmuteCurrentPlayer();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final controller = Get.put(
-      ReelsScreenController(
-        reels: widget.reels,
-        position: widget.position,
-        user: widget.user,
-        hashtag: widget.hashTag,
-        reelPageType: widget.pageType,
-        onFetchMoreData: widget.onFetchMoreData,
-        onRefresh: widget.onRefresh,
-      ),
-      tag: widget.pageType.withId(musicId: widget.music?.id, userId: widget.user?.id, hashTag: widget.hashTag),
-    );
+    if (!_isControllerInitialized) {
+      controller = Get.put(
+        ReelsScreenController(
+          reels: widget.reels,
+          position: widget.position,
+          user: widget.user,
+          hashtag: widget.hashTag,
+          reelPageType: widget.pageType,
+          onFetchMoreData: widget.onFetchMoreData,
+          onRefresh: widget.onRefresh,
+        ),
+        tag: widget.pageType.withId(musicId: widget.music?.id, userId: widget.user?.id, hashTag: widget.hashTag),
+      );
+      _isControllerInitialized = true;
+    }
 
     return Scaffold(
       backgroundColor: cBlack,

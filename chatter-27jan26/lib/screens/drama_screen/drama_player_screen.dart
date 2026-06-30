@@ -9,6 +9,7 @@ import 'package:lumosocial/screens/chats_screen/chatting_screen/chatting_control
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/web_service.dart';
 import 'package:lumosocial/utilities/firebase_const.dart';
+import 'package:lumosocial/main.dart';
 
 class DramaPlayerScreen extends StatefulWidget {
   final List<dynamic> episodes;
@@ -28,7 +29,7 @@ class DramaPlayerScreen extends StatefulWidget {
   State<DramaPlayerScreen> createState() => _DramaPlayerScreenState();
 }
 
-class _DramaPlayerScreenState extends State<DramaPlayerScreen> {
+class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, WidgetsBindingObserver {
   late PageController _pageController;
   late int _currentIndex;
 
@@ -40,9 +41,56 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: _currentIndex);
     _initializePlayer(_currentIndex);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPushNext() {
+    _mutePlayer();
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    _unmutePlayer();
+    super.didPopNext();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _mutePlayer();
+    } else if (state == AppLifecycleState.resumed) {
+      _unmutePlayer();
+    }
+  }
+
+  void _mutePlayer() {
+    if (_videoPlayerController != null && _isPlayerInitialized) {
+      _videoPlayerController!.setVolume(0.0);
+    }
+  }
+
+  void _unmutePlayer() {
+    if (_videoPlayerController != null && _isPlayerInitialized) {
+      _videoPlayerController!.setVolume(1.0);
+    }
   }
 
   void _initializePlayer(int index) async {

@@ -68,6 +68,20 @@ class ReelsScreenController extends BaseController {
     }
   }
 
+  void muteCurrentPlayer() {
+    final current = players[position.value]?.controller;
+    if (current != null && current.value.isInitialized) {
+      current.setVolume(0.0);
+    }
+  }
+
+  void unmuteCurrentPlayer() {
+    final current = players[position.value]?.controller;
+    if (current != null && current.value.isInitialized) {
+      current.setVolume(1.0);
+    }
+  }
+
   void initVideoPlayer() async {
     /// Initialize 1st video
     await _initializeControllerAtIndex(position.value);

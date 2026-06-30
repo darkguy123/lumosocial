@@ -51,6 +51,10 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
+    _progressTimer?.cancel();
+    _saveProgress();
+    _videoPlayerController?.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -179,14 +183,7 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
     });
   }
 
-  @override
-  void dispose() {
-    _progressTimer?.cancel();
-    _saveProgress();
-    _videoPlayerController?.dispose();
-    _pageController.dispose();
-    super.dispose();
-  }
+
 
   // Watch Party Share Modal
   void _openWatchPartyShareModal() {

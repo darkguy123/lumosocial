@@ -46,7 +46,7 @@ class ReelCommentController extends BaseController {
     final tempId = DateTime.now().millisecondsSinceEpoch;
     final tempComment = ReelComment(
       id: tempId,
-      userId: SessionManager.shared.getUser()?.id,
+      userId: SessionManager.shared.getUser()?.id?.toInt(),
       reelId: reel?.id,
       description: commentText,
       createdAt: DateTime.now(),

@@ -38,6 +38,10 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
   bool _isPlayerInitialized = false;
   Timer? _progressTimer;
 
+  bool _showSkipButton = false;
+  int _skipTimerSeconds = 10;
+  bool _autoSkipped = false;
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +57,10 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
     routeObserver.unsubscribe(this);
     _progressTimer?.cancel();
     _saveProgress();
-    _videoPlayerController?.dispose();
+    if (_videoPlayerController != null) {
+      _videoPlayerController!.removeListener(_videoPlayerListener);
+      _videoPlayerController!.dispose();
+    }
     _pageController.dispose();
     super.dispose();
   }
@@ -100,6 +107,7 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
   void _initializePlayer(int index) async {
     _progressTimer?.cancel();
     if (_videoPlayerController != null) {
+      _videoPlayerController!.removeListener(_videoPlayerListener);
       await _saveProgress();
       await _videoPlayerController!.dispose();
       _videoPlayerController = null;
@@ -108,6 +116,8 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
     setState(() {
       _isPlayerInitialized = false;
       _isPlaying = false;
+      _showSkipButton = false;
+      _autoSkipped = false;
     });
 
     final episode = widget.episodes[index];
@@ -130,8 +140,9 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
         _isPlayerInitialized = true;
         _isPlaying = true;
       });
+      _videoPlayerController!.addListener(_videoPlayerListener);
       _videoPlayerController!.play();
-      _videoPlayerController!.setLooping(true);
+      _videoPlayerController!.setLooping(false);
 
       // Periodically sync watch progress every 10 seconds
       _progressTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
@@ -140,6 +151,53 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
     } catch (e) {
       debugPrint("Video Player Error: $e");
       Get.snackbar("Playback Error", "Failed to load episode video content.", backgroundColor: Colors.red);
+    }
+  }
+
+  void _videoPlayerListener() {
+    if (_videoPlayerController == null || !_isPlayerInitialized) return;
+
+    final position = _videoPlayerController!.value.position;
+    final duration = _videoPlayerController!.value.duration;
+
+    if (duration.inSeconds > 0) {
+      final secondsRemaining = duration.inSeconds - position.inSeconds;
+      
+      // If within final 10 seconds, show skipping HUD
+      if (secondsRemaining <= 10 && secondsRemaining >= 0 && _currentIndex < widget.episodes.length - 1) {
+        if (!_showSkipButton) {
+          setState(() {
+            _showSkipButton = true;
+            _skipTimerSeconds = secondsRemaining;
+          });
+        } else if (_skipTimerSeconds != secondsRemaining) {
+          setState(() {
+            _skipTimerSeconds = secondsRemaining;
+          });
+        }
+      } else {
+        if (_showSkipButton) {
+          setState(() {
+            _showSkipButton = false;
+          });
+        }
+      }
+
+      // Auto skip when complete
+      if (position >= duration && !_autoSkipped) {
+        _autoSkipped = true;
+        _playNextEpisode();
+      }
+    }
+  }
+
+  void _playNextEpisode() {
+    if (_currentIndex < widget.episodes.length - 1) {
+      _pageController.animateToPage(
+        _currentIndex + 1,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -444,6 +502,50 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
                   ],
                 ),
               ),
+
+              // Skip Next Episode Banner Popup (Netflix style)
+              if (_showSkipButton && _currentIndex < widget.episodes.length - 1)
+                Positioned(
+                  bottom: 85,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.85),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: const Color(0xFF00FF87), width: 1.5),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Next Episode in ${_skipTimerSeconds.clamp(0, 10)}s",
+                          style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _showSkipButton = false;
+                            });
+                            _playNextEpisode();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF00FF87),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Text(
+                              "Play Next",
+                              style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           );
         },

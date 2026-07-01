@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:lumosocial/common/controller/post_upload_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
@@ -9,6 +11,7 @@ import 'package:lumosocial/screens/feed_screen/feed_screen_controller.dart';
 import 'package:lumosocial/screens/feed_screen/feed_screen_top_bar.dart';
 import 'package:lumosocial/screens/feed_screen/feed_stories_controller.dart';
 import 'package:lumosocial/screens/feed_screen/feed_story_screen.dart';
+import 'package:lumosocial/screens/feed_screen/side_menu_drawer.dart';
 import 'package:lumosocial/screens/post/post_card.dart';
 import 'package:lumosocial/screens/rooms_screen/room_card.dart';
 import 'package:lumosocial/utilities/const.dart';
@@ -25,6 +28,7 @@ class FeedScreen extends StatelessWidget {
     FeedScreenController controller = FeedScreenController(isFromFeedScreen: true, scrollController: scrollController);
     FeedStoriesController feedStoriesController = FeedStoriesController();
     return Scaffold(
+      drawer: const SideMenuDrawer(),
       body: Stack(
         children: [
           GetBuilder(
@@ -44,6 +48,70 @@ class FeedScreen extends StatelessWidget {
                       return Column(
                         children: [
                           const FeedScreenTopBar(),
+                          Obx(() {
+                            final uploadController = Get.find<PostUploadController>();
+                            if (uploadController.isUploading.value) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                color: Colors.white,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Uploading Post...",
+                                            style: MyTextStyle.gilroyMedium(size: 14, color: cBlack),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(5),
+                                            child: LinearProgressIndicator(
+                                              value: uploadController.uploadProgress.value,
+                                              backgroundColor: Colors.grey[200],
+                                              valueColor: AlwaysStoppedAnimation<Color>(cPrimary),
+                                              minHeight: 6,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 15),
+                                    if (uploadController.thumbnailPath.value.isNotEmpty)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          File(uploadController.thumbnailPath.value),
+                                          width: 45,
+                                          height: 45,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            }
+                            if (uploadController.isCompleted.value) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                                color: Colors.green,
+                                width: double.infinity,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Post uploaded successfully",
+                                      style: MyTextStyle.gilroyBold(size: 15, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          }),
                           Container(color: cLightBg, height: 10),
                           Expanded(
                             child: Stack(

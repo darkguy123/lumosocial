@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:lumosocial/screens/video_cropper/video_cropper_screen.dart';
 
+import 'package:lumosocial/common/controller/post_upload_controller.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:get/get.dart';
@@ -144,25 +145,42 @@ class AddPostController extends BaseController {
             contentType = PostType.audio;
           }
 
-          PostService.shared.uploadPost(
-            contentType: contentType,
-            urlPreview: urlJson,
-            tags: tags.join(','),
-            images: imageFileList,
-            video: videoFile,
-            audioFile: audioPath == null ? null : XFile(audioPath!),
-            thumbnailPath: thumbnailPath,
-            desc: textEditingController.text,
-            waves: waves,
-            interestIds: selectedInterests.map((element) => '${element.id}').toList().join(','),
-            onProgress: (bytes, totalBytes) {},
-            completion: (post) {
-              post.user = SessionManager.shared.getUser();
-              stopLoading();
-              Get.back(result: post);
-              showSnackBar(LKeys.postAddedSuccessfully.tr, type: SnackBarType.success);
-            },
-          );
+          if (contentType == PostType.image || contentType == PostType.video) {
+            Get.find<PostUploadController>().startUpload(
+              desc: textEditingController.text,
+              tags: tags.join(','),
+              contentType: contentType,
+              urlPreview: urlJson,
+              images: imageFileList,
+              video: videoFile,
+              audioFile: audioPath == null ? null : XFile(audioPath!),
+              thumbnail: thumbnailPath,
+              waves: waves,
+              interestIds: selectedInterests.map((element) => '${element.id}').toList().join(','),
+            );
+            stopLoading();
+            Get.back(result: "uploading");
+          } else {
+            PostService.shared.uploadPost(
+              contentType: contentType,
+              urlPreview: urlJson,
+              tags: tags.join(','),
+              images: imageFileList,
+              video: videoFile,
+              audioFile: audioPath == null ? null : XFile(audioPath!),
+              thumbnailPath: thumbnailPath,
+              desc: textEditingController.text,
+              waves: waves,
+              interestIds: selectedInterests.map((element) => '${element.id}').toList().join(','),
+              onProgress: (percentage) {},
+              completion: (post) {
+                post.user = SessionManager.shared.getUser();
+                stopLoading();
+                Get.back(result: post);
+                showSnackBar(LKeys.postAddedSuccessfully.tr, type: SnackBarType.success);
+              },
+            );
+          }
         });
   }
 

@@ -1,9 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:lumosocial/common/api_service/post_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lumosocial/screens/chats_screen/calling/voice_call_screen.dart';
 import 'package:lumosocial/common/api_service/moderator_service.dart';
 import 'package:lumosocial/common/api_service/notification_service.dart';
 import 'package:lumosocial/common/api_service/room_service.dart';
@@ -47,6 +54,56 @@ class ChattingController extends BlockUserController {
   );
   User? myUser = SessionManager.shared.getUser();
   bool shouldCallAPI = true;
+
+  final RecorderController recorderController = RecorderController();
+  var isRecording = false.obs;
+  var recordingPath = "".obs;
+
+  void startRecording() async {
+    if (chatUserRoom?.iAmBlocked == true) return;
+    if (chatUserRoom?.iBlocked == true) {
+      unblockUser(user, () {});
+      return;
+    }
+    
+    if (await Permission.microphone.request().isGranted) {
+      isRecording.value = true;
+      final tempDir = await getTemporaryDirectory();
+      final path = "${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.m4a";
+      recordingPath.value = path;
+      await recorderController.record(path: path);
+      update();
+    } else {
+      Get.snackbar("Microphone Permission", "Please grant microphone access to record voice notes.");
+    }
+  }
+
+  void cancelRecording() async {
+    await recorderController.stop();
+    isRecording.value = false;
+    if (recordingPath.value.isNotEmpty) {
+      final file = File(recordingPath.value);
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
+    }
+    recordingPath.value = "";
+    update();
+  }
+
+  void stopAndSendVoiceNote() async {
+    final path = await recorderController.stop();
+    isRecording.value = false;
+    update();
+    if (path != null && File(path).existsSync()) {
+      startLoading();
+      PostService.shared.uploadFile(XFile(path), (url) {
+        stopLoading();
+        commonSend(type: MessageType.audio, content: url);
+      });
+    }
+    recordingPath.value = "";
+  }
 
   ChattingController({this.room, this.user, ChatUserRoom? chatUserRoom, bool? shouldCallAPI}) {
     if (chatUserRoom != null) {
@@ -449,6 +506,43 @@ class ChattingController extends BlockUserController {
     SessionManager.shared.setStoredConversation('');
   }
 
+  void startVoiceCall() async {
+    if (chatUserRoom?.iAmBlocked == true) return;
+    if (chatUserRoom?.iBlocked == true) {
+      unblockUser(user, () {});
+      return;
+    }
+    if (user == null) return;
+
+    final myId = SessionManager.shared.getUserID();
+    final callDoc = db.collection('calls').doc();
+    final channelId = "call_${myId}_${user!.id}";
+
+    final callData = {
+      'callerId': myId,
+      'callerName': myUser?.fullName ?? 'Chatter User',
+      'callerImage': myUser?.profile ?? '',
+      'receiverId': user!.id,
+      'channelId': channelId,
+      'status': 'dialing',
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+
+    await callDoc.set(callData);
+
+    // Send a message inside chat history indicating a call was initiated
+    commonSend(type: MessageType.call, content: channelId);
+
+    Get.to(() => VoiceCallScreen(
+          callId: callDoc.id,
+          channelId: channelId,
+          callerId: myId.toInt(),
+          callerName: user!.fullName ?? 'Chatter User',
+          callerImage: user!.profile ?? '',
+          isIncoming: false,
+        ));
+  }
+
   @override
   void onClose() {
     startNotification();
@@ -456,6 +550,7 @@ class ChattingController extends BlockUserController {
     userListener?.cancel();
     myUserListener?.cancel();
     markAsRead();
+    recorderController.dispose();
     super.onClose();
     startNotification();
   }

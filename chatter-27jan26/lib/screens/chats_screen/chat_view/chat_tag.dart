@@ -2,6 +2,7 @@ import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:lumosocial/common/api_service/story_service.dart';
 import 'package:lumosocial/common/controller/base_controller.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
@@ -328,6 +329,7 @@ class ChatTag extends StatelessWidget {
   }
 
   Widget commonChooseView() {
+    var isMyMsg = message.senderId == SessionManager.shared.getUserID();
     switch (message.msgType) {
       case MessageType.text:
         return textView();
@@ -339,6 +341,27 @@ class ChatTag extends StatelessWidget {
         return storyView();
       case MessageType.watchParty:
         return watchPartyView();
+      case MessageType.audio:
+        return AudioBubblePlayer(audioUrl: message.content ?? "", isMyMsg: isMyMsg);
+      case MessageType.call:
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isMyMsg ? cBlack : cLightText.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.call_end_rounded, color: isMyMsg ? Colors.white : Colors.black, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                message.msg ?? "Voice Call ended",
+                style: MyTextStyle.gilroyMedium(color: isMyMsg ? Colors.white : Colors.black, size: 14),
+              ),
+            ],
+          ),
+        );
     }
   }
 
@@ -442,6 +465,109 @@ class ChatButton extends StatelessWidget {
           title.tr,
           style: MyTextStyle.gilroySemiBold(color: color),
         ),
+      ),
+    );
+  }
+}
+
+class AudioBubblePlayer extends StatefulWidget {
+  final String audioUrl;
+  final bool isMyMsg;
+
+  const AudioBubblePlayer({Key? key, required this.audioUrl, required this.isMyMsg}) : super(key: key);
+
+  @override
+  State<AudioBubblePlayer> createState() => _AudioBubblePlayerState();
+}
+
+class _AudioBubblePlayerState extends State<AudioBubblePlayer> {
+  late PlayerController playerController;
+  bool isPlaying = false;
+  bool isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    playerController = PlayerController();
+    _initPlayer();
+  }
+
+  void _initPlayer() async {
+    try {
+      await playerController.preparePlayer(
+        path: widget.audioUrl,
+        shouldExtractWaveform: true,
+        noOfSamples: 30,
+      );
+      if (mounted) {
+        setState(() {
+          isInitialized = true;
+        });
+      }
+      playerController.onPlayerStateChanged.listen((state) {
+        if (mounted) {
+          setState(() {
+            isPlaying = state == PlayerState.playing;
+          });
+        }
+      });
+    } catch (e) {
+      debugPrint("Error initializing voice player: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    playerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 220,
+      height: 50,
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: widget.isMyMsg ? cBlack : cLightText.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () async {
+              if (!isInitialized) return;
+              if (isPlaying) {
+                await playerController.pausePlayer();
+              } else {
+                await playerController.startPlayer();
+              }
+            },
+            child: Icon(
+              isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+              color: widget.isMyMsg ? cPrimary : cBlack,
+              size: 32,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: isInitialized
+                ? AudioFileWaveforms(
+                    size: const Size(140, 30),
+                    playerController: playerController,
+                    enableSeekGesture: true,
+                    waveformType: WaveformType.fitWidth,
+                    playerWaveStyle: PlayerWaveStyle(
+                      fixedWaveColor: widget.isMyMsg ? Colors.white38 : Colors.black26,
+                      liveWaveColor: widget.isMyMsg ? const Color(0xFF00FF87) : cPrimary,
+                      spacing: 4,
+                      waveThickness: 2.5,
+                    ),
+                  )
+                : const Center(child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: cPrimary))),
+          ),
+        ],
       ),
     );
   }

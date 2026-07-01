@@ -9,6 +9,7 @@ import 'package:retrytech_plugin/retrytech_plugin.dart';
 import 'package:lumosocial/common/api_service/sight_engine_service.dart';
 import 'package:lumosocial/common/api_service/story_service.dart';
 import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/controller/post_upload_controller.dart';
 import 'package:lumosocial/common/managers/editor_manager.dart';
 import 'package:lumosocial/common/managers/image_video_manager.dart';
 import 'package:lumosocial/common/managers/logger.dart';
@@ -317,16 +318,15 @@ extension CameraEditorScreenController on CreateStoryController {
   }
 
   void _upload({required String fileURL, required double duration, required String thumbnailPath}) async {
-    StoryService.shared.createStory(
-        fileURL: fileURL,
-        type: storyType.value.value,
-        duration: duration,
-        thumbnail: thumbnailPath,
-        completion: () {
-          stopLoading();
-          Get.back();
-          Get.back();
-        });
+    Get.find<PostUploadController>().startStoryUpload(
+      fileURL: fileURL,
+      thumbnail: thumbnailPath,
+      type: storyType.value.value,
+      duration: duration,
+    );
+    stopLoading();
+    Get.back();
+    Get.back();
   }
 
   void createAnotherStory() {

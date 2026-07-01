@@ -7,6 +7,8 @@ import 'package:lumosocial/screens/rooms_screen/single_room/single_room_screen.d
 import 'package:lumosocial/screens/single_post_screen/single_post_screen.dart';
 import 'package:lumosocial/screens/single_reel_screen/single_reel_screen.dart';
 
+import 'package:lumosocial/common/managers/voice_call_manager.dart';
+
 class TabBarController extends BaseController {
   int selectedTab = 0;
 
@@ -14,7 +16,8 @@ class TabBarController extends BaseController {
   void onInit() {
     super.onInit();
     handleShare();
-    FirebaseNotificationManager.shared.setupListener();
+    FirebaseNotificationManager.shared.init();
+    VoiceCallManager.shared.init();
   }
 
   void selectIndex(int index) {

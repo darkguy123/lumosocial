@@ -4,7 +4,6 @@ import 'package:lumosocial/common/extensions/image_extension.dart';
 import 'package:lumosocial/screens/audio_space/audio_spaces_screen/audio_spaces_screen.dart';
 import 'package:lumosocial/screens/extra_views/logo_tag.dart';
 import 'package:lumosocial/screens/notification_screen/notification_screen.dart';
-import 'package:lumosocial/screens/random_screen/random_screen.dart';
 import 'package:lumosocial/screens/search_screen/search_screen.dart';
 import 'package:lumosocial/screens/wallet_screen/wallet_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
@@ -26,6 +25,21 @@ class FeedScreenTopBar extends StatelessWidget {
             const LogoTag(width: 105),
             Row(
               children: [
+                Builder(
+                  builder: (context) {
+                    return InkWell(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: const Icon(
+                        Icons.menu_rounded,
+                        color: cLightText,
+                        size: 28,
+                      ),
+                    );
+                  }
+                ),
+                const SizedBox(width: 12),
                 InkWell(
                   onTap: () {
                     Get.to(() => const NotificationScreen());
@@ -34,18 +48,6 @@ class FeedScreenTopBar extends StatelessWidget {
                     MyImages.bell,
                     width: imageSize,
                     height: imageSize,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.to(() => RandomScreen());
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Image.asset(
-                      MyImages.random,
-                      width: 20,
-                    ),
                   ),
                 ),
                 const Spacer(),

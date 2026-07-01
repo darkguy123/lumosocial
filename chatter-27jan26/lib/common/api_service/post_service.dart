@@ -241,7 +241,7 @@ class PostService {
     required List<XFile> images,
     XFile? video,
     XFile? audioFile,
-    required Function(int bytes, int totalBytes) onProgress,
+    required Function(double percentage) onProgress,
     required Function(Post feed) completion,
     required String thumbnailPath,
     required List<double> waves,
@@ -267,6 +267,7 @@ class PostService {
                 : [audioFile],
         Param.thumbnailArray: [XFile(thumbnailPath)]
       },
+      onProgress: onProgress,
       completion: (data) {
         var post = SingleFeedModel.fromJson(data).data;
         if (post != null) {

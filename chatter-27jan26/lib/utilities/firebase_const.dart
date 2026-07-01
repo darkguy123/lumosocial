@@ -50,7 +50,9 @@ enum MessageType {
   image('IMAGE'),
   video('VIDEO'),
   storyReply('STORY_REPLY'),
-  watchParty('WATCH_PARTY');
+  watchParty('WATCH_PARTY'),
+  audio('AUDIO'),
+  call('CALL');
 
   const MessageType(this.value);
 

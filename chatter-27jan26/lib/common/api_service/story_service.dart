@@ -54,7 +54,14 @@ class StoryService {
     );
   }
 
-  void createStory({required String fileURL, String? thumbnail, required int type, required double duration, required Function() completion}) {
+  void createStory({
+    required String fileURL,
+    String? thumbnail,
+    required int type,
+    required double duration,
+    required Function(double percentage) onProgress,
+    required Function() completion,
+  }) {
     var param = {
       Param.userId: SessionManager.shared.getUserID(),
       Param.type: type,
@@ -70,6 +77,7 @@ class StoryService {
       url: WebService.createStory,
       param: param,
       filesMap: filesParam,
+      onProgress: onProgress,
       completion: (response) {
         var status = CommonResponse.fromJson(response).status;
         if (status == true) {

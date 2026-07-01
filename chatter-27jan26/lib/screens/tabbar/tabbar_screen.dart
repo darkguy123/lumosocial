@@ -14,9 +14,9 @@ import 'package:lumosocial/screens/dashboard_reels_screen/dashboard_reels_screen
 import 'package:lumosocial/screens/feed_screen/feed_screen.dart';
 import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
 import 'package:lumosocial/screens/random_screen/random_screen.dart';
-import 'package:lumosocial/screens/rooms_screen/rooms_screen.dart';
 import 'package:lumosocial/screens/tabbar/tabbar_controller.dart';
 import 'package:lumosocial/screens/drama_screen/drama_screen.dart';
+import 'package:lumosocial/common/controller/post_upload_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class TabBarScreen extends StatelessWidget {
@@ -27,6 +27,7 @@ class TabBarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final TabBarController controller = Get.put(TabBarController());
     final ChatsScreensController chatScreenController = Get.put(ChatsScreensController());
+    Get.put(PostUploadController());
     Functions.changStatusBar(StatusBarStyle.black);
     return Scaffold(
       backgroundColor: cWhite,

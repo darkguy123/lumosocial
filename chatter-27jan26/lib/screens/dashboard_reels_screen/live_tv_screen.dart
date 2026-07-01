@@ -8,6 +8,8 @@ import 'package:video_player/video_player.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/main.dart';
+import 'package:lumosocial/screens/tabbar/tabbar_controller.dart';
+import 'package:lumosocial/screens/dashboard_reels_screen/dashboard_reels_controller.dart';
 
 class IPTVChannel {
   final String name;
@@ -42,6 +44,32 @@ class LiveTvController extends GetxController {
   var selectedCategory = 'All'.obs;
   var showSearch = false.obs;
   var searchSuggestions = <IPTVChannel>[].obs;
+
+  // New volume/fullscreen management variables
+  var isTransitioningToFullscreen = false.obs;
+  var isMuted = false.obs;
+  var volume = 1.0.obs;
+
+  void toggleMute() {
+    isMuted.value = !isMuted.value;
+    if (videoPlayerController != null && videoPlayerController!.value.isInitialized) {
+      if (isMuted.value) {
+        videoPlayerController!.setVolume(0.0);
+      } else {
+        videoPlayerController!.setVolume(volume.value);
+      }
+    }
+  }
+
+  void setVolume(double val) {
+    volume.value = val;
+    if (val > 0) {
+      isMuted.value = false;
+    }
+    if (videoPlayerController != null && videoPlayerController!.value.isInitialized) {
+      videoPlayerController!.setVolume(isMuted.value ? 0.0 : val);
+    }
+  }
 
   @override
   void onInit() {
@@ -216,6 +244,7 @@ class LiveTvController extends GetxController {
       videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(channel.url));
       await videoPlayerController!.initialize();
       videoPlayerController!.setLooping(true);
+      await videoPlayerController!.setVolume(isMuted.value ? 0.0 : volume.value);
       await videoPlayerController!.play();
       isVideoPlaying.value = true;
     } catch (e) {
@@ -229,7 +258,7 @@ class LiveTvController extends GetxController {
   }
 
   Future<void> checkChannelsLiveStatus() async {
-    for (var channel in paginatedChannels) {
+    for (var channel in paginatedChannels.toList()) {
       try {
         final response = await http.head(Uri.parse(channel.url)).timeout(const Duration(seconds: 2));
         channel.isLive.value = (response.statusCode >= 200 && response.statusCode < 400);
@@ -237,6 +266,7 @@ class LiveTvController extends GetxController {
         channel.isLive.value = false;
       }
     }
+    paginatedChannels.value = paginatedChannels.where((c) => c.isLive.value).toList();
   }
 }
 
@@ -264,10 +294,20 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    try {
+      Get.find<TabBarController>().addListener(_checkMuteState);
+      Get.find<DashboardReelsController>().addListener(_checkMuteState);
+    } catch (e) {
+      debugPrint('Error attaching muting listeners: $e');
+    }
   }
 
   @override
   void dispose() {
+    try {
+      Get.find<TabBarController>().removeListener(_checkMuteState);
+      Get.find<DashboardReelsController>().removeListener(_checkMuteState);
+    } catch (_) {}
     WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
     _inlineControlsTimer?.cancel();
@@ -282,12 +322,15 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
 
   @override
   void didPushNext() {
-    _mutePlayer();
+    if (!controller.isTransitioningToFullscreen.value) {
+      _mutePlayer();
+    }
     super.didPushNext();
   }
 
   @override
   void didPopNext() {
+    controller.isTransitioningToFullscreen.value = false;
     _unmutePlayer();
     super.didPopNext();
   }
@@ -301,6 +344,24 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
     }
   }
 
+  void _checkMuteState() {
+    try {
+      final tabController = Get.find<TabBarController>();
+      final reelsController = Get.find<DashboardReelsController>();
+      
+      bool shouldMute = tabController.selectedTab != 2 || 
+                        reelsController.selectedPageType.value != DashboardReelPageType.liveTv;
+      
+      if (shouldMute) {
+        _mutePlayer();
+      } else {
+        _unmutePlayer();
+      }
+    } catch (e) {
+      debugPrint('Error in checking mute state: $e');
+    }
+  }
+
   void _mutePlayer() {
     if (controller.videoPlayerController != null &&
         controller.videoPlayerController!.value.isInitialized) {
@@ -311,7 +372,7 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
   void _unmutePlayer() {
     if (controller.videoPlayerController != null &&
         controller.videoPlayerController!.value.isInitialized) {
-      controller.videoPlayerController!.setVolume(1.0);
+      controller.videoPlayerController!.setVolume(controller.isMuted.value ? 0.0 : controller.volume.value);
     }
   }
 
@@ -349,6 +410,7 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
                         !controller.hasVideoError.value)
                       GestureDetector(
                         onDoubleTap: () {
+                          controller.isTransitioningToFullscreen.value = true;
                           Get.to(() => FullscreenLiveTvPlayer(controller: controller));
                         },
                         onTap: _triggerInlineControls,
@@ -405,6 +467,52 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
                                     },
                                   ),
                                 ),
+                                // Mute & Volume Control (bottom left)
+                                Positioned(
+                                  bottom: 10,
+                                  left: 10,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Obx(() => IconButton(
+                                            icon: Icon(
+                                              controller.isMuted.value
+                                                  ? Icons.volume_off_rounded
+                                                  : (controller.volume.value > 0.5
+                                                      ? Icons.volume_up_rounded
+                                                      : Icons.volume_down_rounded),
+                                              color: Colors.white,
+                                              size: 24,
+                                            ),
+                                            onPressed: () {
+                                              _triggerInlineControls();
+                                              controller.toggleMute();
+                                            },
+                                          )),
+                                      Obx(() => SizedBox(
+                                            width: 80,
+                                            child: SliderTheme(
+                                              data: SliderTheme.of(context).copyWith(
+                                                activeTrackColor: cPrimary,
+                                                inactiveTrackColor: Colors.white24,
+                                                thumbColor: cPrimary,
+                                                trackHeight: 2.0,
+                                                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6.0),
+                                              ),
+                                              child: Slider(
+                                                value: controller.volume.value,
+                                                min: 0.0,
+                                                max: 1.0,
+                                                onChanged: (val) {
+                                                  _triggerInlineControls();
+                                                  controller.setVolume(val);
+                                                },
+                                              ),
+                                            ),
+                                          )),
+                                    ],
+                                  ),
+                                ),
                                 // Fullscreen Toggle Button (bottom right)
                                 Positioned(
                                   bottom: 10,
@@ -413,6 +521,7 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
                                     icon: const Icon(Icons.fullscreen_rounded, color: Colors.white, size: 28),
                                     onPressed: () {
                                       _showInlineControls.value = false;
+                                      controller.isTransitioningToFullscreen.value = true;
                                       Get.to(() => FullscreenLiveTvPlayer(controller: controller));
                                     },
                                   ),

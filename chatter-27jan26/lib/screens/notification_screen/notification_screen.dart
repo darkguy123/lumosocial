@@ -230,6 +230,14 @@ class UserNotificationCard extends StatelessWidget {
         return LKeys.hasLikedYourReel.tr;
       case 10:
         return LKeys.hasCommentedToYourReel.tr;
+      case 11:
+        return "released a new episode on the drama you watched last.";
+      case 12:
+        return "sent you a message.";
+      case 13:
+        return "completed a transaction.";
+      case 14:
+        return "posted a new feed post.";
     }
     return "";
   }

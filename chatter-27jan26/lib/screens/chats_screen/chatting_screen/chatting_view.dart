@@ -2,6 +2,7 @@ import 'package:detectable_text_field/widgets/detectable_text_field.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:lumosocial/screens/wallet_screen/wallet_controller.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -93,69 +94,151 @@ class ChattingView extends StatelessWidget {
   }
 
   Widget bottom(ChattingController controller) {
-    return Container(
-      padding: const EdgeInsets.all(7),
-      color: cLightBg,
-      child: SafeArea(
-        top: false,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: Container(
-                decoration: ShapeDecoration(color: cLightText.withValues(alpha: 0.15), shape: const SmoothRectangleBorder(borderRadius: SmoothBorderRadius.all(SmoothRadius(cornerRadius: 20, cornerSmoothing: cornerSmoothing)))),
-                padding: const EdgeInsets.only(left: 2, top: 2, right: 2, bottom: 2),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 6),
-                        child: DetectableTextField(
-                          controller: controller.messageTextController,
-                          maxLines: 5,
-                          minLines: 1,
-                          textCapitalization: TextCapitalization.sentences,
-                          decoration: InputDecoration(hintText: LKeys.writeHere.tr, hintStyle: MyTextStyle.gilroyRegular(color: cLightText.withValues(alpha: 0.6)), border: InputBorder.none, counterText: '', isDense: true, contentPadding: const EdgeInsets.all(0)),
-                          cursorColor: cPrimary,
-                          style: MyTextStyle.gilroyRegular(color: cLightText),
-                          textInputAction: TextInputAction.newline,
-                        ),
+    return Obx(() {
+      if (controller.isRecording.value) {
+        return Container(
+          padding: const EdgeInsets.all(7),
+          color: cLightBg,
+          child: SafeArea(
+            top: false,
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: controller.cancelRecording,
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.redAccent,
+                    child: Icon(Icons.delete_forever_rounded, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    decoration: const ShapeDecoration(
+                      color: Colors.white12,
+                      shape: SmoothRectangleBorder(
+                        borderRadius: SmoothBorderRadius.all(SmoothRadius(cornerRadius: 20, cornerSmoothing: cornerSmoothing)),
                       ),
                     ),
-                    GestureDetector(onTap: controller.sendMsg, child: const SendBtn())
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    alignment: Alignment.center,
+                    child: AudioWaveforms(
+                      size: const Size(double.infinity, 30),
+                      recorderController: controller.recorderController,
+                      enableGesture: false,
+                      waveStyle: const WaveStyle(
+                        waveColor: cPrimary,
+                        showDurationLabel: true,
+                        durationLinesColor: cBlack,
+                        extendWaveform: true,
+                        showMiddleLine: false,
+                        spacing: 6,
+                        waveThickness: 3,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: controller.stopAndSendVoiceNote,
+                  child: const CircleAvatar(
+                    backgroundColor: Color(0xFF00FF87),
+                    child: Icon(Icons.send_rounded, color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      return Container(
+        padding: const EdgeInsets.all(7),
+        color: cLightBg,
+        child: SafeArea(
+          top: false,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: cLightText.withValues(alpha: 0.15),
+                    shape: const SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius.all(
+                        SmoothRadius(cornerRadius: 20, cornerSmoothing: cornerSmoothing),
+                      ),
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(left: 2, top: 2, right: 2, bottom: 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 6),
+                          child: DetectableTextField(
+                            controller: controller.messageTextController,
+                            maxLines: 5,
+                            minLines: 1,
+                            textCapitalization: TextCapitalization.sentences,
+                            decoration: InputDecoration(
+                              hintText: LKeys.writeHere.tr,
+                              hintStyle: MyTextStyle.gilroyRegular(color: cLightText.withValues(alpha: 0.6)),
+                              border: InputBorder.none,
+                              counterText: '',
+                              isDense: true,
+                              contentPadding: const EdgeInsets.all(0),
+                            ),
+                            cursorColor: cPrimary,
+                            style: MyTextStyle.gilroyRegular(color: cLightText),
+                            textInputAction: TextInputAction.newline,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(onTap: controller.sendMsg, child: const SendBtn()),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 5),
+              Container(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: controller.startRecording,
+                      child: const Icon(
+                        Icons.mic_none_rounded,
+                        color: cLightText,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    GestureDetector(
+                      onTap: () {
+                        _openSendCoinsDirectSheet(Get.context!, controller);
+                      },
+                      child: const Icon(
+                        Icons.monetization_on_rounded,
+                        color: Color(0xFF00FF87),
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    contentButton(iconData: Icons.add_circle_rounded, source: ImageSource.gallery, controller: controller),
+                    const SizedBox(width: 5),
+                    contentButton(iconData: Icons.camera_alt_rounded, source: ImageSource.camera, controller: controller),
+                    const SizedBox(width: 5),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(width: 5),
-            Container(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _openSendCoinsDirectSheet(Get.context!, controller);
-                    },
-                    child: const Icon(
-                      Icons.monetization_on_rounded,
-                      color: Color(0xFF00FF87),
-                      size: 28,
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  contentButton(iconData: Icons.add_circle_rounded, source: ImageSource.gallery, controller: controller),
-                  const SizedBox(width: 5),
-                  contentButton(iconData: Icons.camera_alt_rounded, source: ImageSource.camera, controller: controller),
-                  const SizedBox(width: 5),
-                ],
-              ),
-            )
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget contentButton({required IconData iconData, required ImageSource source, required ChattingController controller}) {
@@ -351,6 +434,17 @@ class ChattingView extends StatelessWidget {
                 ),
               ),
             ),
+            if (controller.chatUserRoom?.type != 2) ...[
+              GestureDetector(
+                onTap: controller.startVoiceCall,
+                child: const Icon(
+                  Icons.phone_in_talk_rounded,
+                  color: Color(0xFF00FF87),
+                  size: 26,
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
             controller.chatUserRoom?.type == 2
                 ? RoomMenu(controller: controller)
                 : Menu(

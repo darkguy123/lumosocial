@@ -7,6 +7,8 @@ import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/models/chat.dart';
 import 'package:lumosocial/screens/post/post_card.dart';
 import 'package:lumosocial/screens/post/post_controller.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
+import 'package:lumosocial/screens/post/video_ad_overlay.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/firebase_const.dart';
 import 'package:video_player/video_player.dart';
@@ -25,6 +27,14 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
   VideoPlayerController? playerController;
   bool isLoading = true;
 
+  static int videoViewCount = 0;
+  static DateTime? lastAdShownTime;
+
+  List<dynamic> _videoAds = [];
+  bool _adTriggeredForThisVideo = false;
+  bool _showAdOverlay = false;
+  Map<String, dynamic>? _selectedAd;
+
   @override
   void initState() {
     initPlayer();
@@ -36,6 +46,7 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
+    playerController?.removeListener(_playerListener);
     playerController?.pause();
     playerController = null;
     super.dispose();
@@ -133,6 +144,18 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
                                 ),
                               ),
                             ),
+                            if (_showAdOverlay && _selectedAd != null)
+                              VideoAdOverlay(
+                                ad: _selectedAd!,
+                                onAdFinished: () {
+                                  if (mounted) {
+                                    setState(() {
+                                      _showAdOverlay = false;
+                                    });
+                                  }
+                                  playerController?.play();
+                                },
+                              ),
                             playerController != null && playerController!.value.isInitialized && !isLoading
                                 ? ValueListenableBuilder(
                                     valueListenable: playerController!,
@@ -210,16 +233,62 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
     );
   }
 
+  void _fetchVideoAds() {
+    ApiService.shared.call(
+      url: "${apiURL}ad/list",
+      param: {},
+      completion: (response) {
+        if (response['status'] == true) {
+          if (mounted) {
+            setState(() {
+              _videoAds = (response['data'] ?? []).where((ad) => ad['ad_type'] == 'Skippable Video').toList();
+            });
+          }
+        }
+      }
+    );
+  }
+
+  void _playerListener() {
+    if (playerController == null || !playerController!.value.isInitialized) return;
+    
+    final position = playerController!.value.position.inSeconds;
+    if (position >= 20 && !_adTriggeredForThisVideo) {
+      _adTriggeredForThisVideo = true;
+      
+      final now = DateTime.now();
+      final diffMin = lastAdShownTime == null ? 999 : now.difference(lastAdShownTime!).inMinutes;
+      
+      if (videoViewCount % 3 == 0 && diffMin >= 20 && _videoAds.isNotEmpty) {
+        lastAdShownTime = now;
+        playerController!.pause();
+        if (mounted) {
+          setState(() {
+            _selectedAd = _videoAds[videoViewCount % _videoAds.length];
+            _showAdOverlay = true;
+          });
+        }
+      }
+    }
+  }
+
   void initPlayer() {
+    videoViewCount++;
+    _fetchVideoAds();
     playerController = VideoPlayerController.networkUrl(Uri.parse(widget.controller.post.content?.first.content?.addBaseURL() ?? ''))
       ..initialize().then((value) {
         if (Get.isBottomSheetOpen == true) {
           play();
         }
         isLoading = false;
-        setState(() {});
+        playerController?.addListener(_playerListener);
+        if (mounted) {
+          setState(() {});
+        }
       });
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void play() {

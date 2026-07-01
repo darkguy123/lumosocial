@@ -11,6 +11,8 @@ import 'package:lumosocial/screens/post/double_click_like.dart';
 import 'package:lumosocial/screens/reels_screen/reel/reel_page_controller.dart';
 import 'package:lumosocial/screens/reels_screen/reel/widget/side_bar_list.dart';
 import 'package:lumosocial/screens/reels_screen/reel/widget/user_info_and_description.dart';
+import 'package:lumosocial/screens/reels_screen/reel/widget/reel_ad_overlay.dart';
+import 'package:lumosocial/screens/reels_screen/reels_screen_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -77,6 +79,13 @@ class ReelPage extends StatelessWidget {
               ),
             ),
           ),
+          if (ReelsScreenController.activeAds.isNotEmpty)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ReelAdOverlay(
+                ad: ReelsScreenController.activeAds[(reelData?.id ?? 0) % ReelsScreenController.activeAds.length],
+              ),
+            ),
           ReelInfoSection(controller: controller)
         ],
       ),

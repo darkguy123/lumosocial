@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/common/api_service/post_service.dart';
 import 'package:lumosocial/models/posts_model.dart';
 import 'package:lumosocial/models/room_model.dart';
@@ -11,6 +12,7 @@ class FeedScreenController extends BlockUserController {
   String scrollID = "${DateTime.now().millisecondsSinceEpoch}scrollID";
   RxList<Post> posts = <Post>[].obs;
   List<Room> suggestedRooms = [];
+  List<dynamic> activeAds = [];
   bool? isFromFeedScreen;
   String profileFeedID = "profileFeedID";
   String feedViewID = "feedViewID";
@@ -23,11 +25,25 @@ class FeedScreenController extends BlockUserController {
     }
   }
 
+  void fetchActiveAds() {
+    ApiService.shared.call(
+      url: "${apiURL}ad/list",
+      param: {},
+      completion: (response) {
+        if (response['status'] == true) {
+          activeAds = response['data'] ?? [];
+          update();
+        }
+      },
+    );
+  }
+
   @override
   void onReady() {
     super.onReady();
     update();
     if (isFromFeedScreen == true) {
+      fetchActiveAds();
       fetchFeeds();
     }
     scrollController?.addListener(

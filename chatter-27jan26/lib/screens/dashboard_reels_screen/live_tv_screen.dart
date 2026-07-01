@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
+import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/main.dart';
@@ -29,6 +31,8 @@ class IPTVChannel {
 class LiveTvController extends GetxController {
   var allChannels = <IPTVChannel>[].obs;
   var paginatedChannels = <IPTVChannel>[].obs;
+  var liveMatches = <dynamic>[].obs;
+  var hasActiveMatches = false.obs;
   var isLoading = true.obs;
   var currentPage = 0.obs;
   final int itemsPerPage = 20;
@@ -74,7 +78,66 @@ class LiveTvController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchActiveMatches();
     fetchChannels();
+  }
+
+  void fetchActiveMatches() {
+    ApiService.shared.call(
+      url: "${apiURL}live-matches/active",
+      param: {},
+      completion: (response) {
+        if (response['status'] == true) {
+          liveMatches.value = response['data'] ?? [];
+          hasActiveMatches.value = liveMatches.isNotEmpty;
+        }
+      },
+    );
+  }
+
+  Future<void> playMatch(dynamic match) async {
+    isVideoLoading.value = true;
+    update();
+
+    if (videoPlayerController != null) {
+      await videoPlayerController!.dispose();
+      videoPlayerController = null;
+    }
+
+    final youtubeUrl = match['youtube_link'] ?? '';
+    final ytClient = yt.YoutubeExplode();
+    try {
+      final videoIdStr = yt.VideoId.parseVideoId(youtubeUrl);
+      if (videoIdStr != null) {
+        final videoId = yt.VideoId(videoIdStr);
+        final streamUrl = await ytClient.videos.streams.getHttpLiveStreamUrl(videoId);
+        if (streamUrl != null) {
+          videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(streamUrl));
+          await videoPlayerController!.initialize();
+          videoPlayerController!.setLooping(false);
+          await videoPlayerController!.setVolume(isMuted.value ? 0.0 : volume.value);
+          await videoPlayerController!.play();
+          isVideoPlaying.value = true;
+          hasVideoError.value = false;
+        } else {
+          // Regular video fallback
+          final muxedManifest = await ytClient.videos.streams.getManifest(videoId);
+          final streamInfo = muxedManifest.muxed.withHighestBitrate();
+          videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(streamInfo.url.toString()));
+          await videoPlayerController!.initialize();
+          await videoPlayerController!.play();
+          isVideoPlaying.value = true;
+          hasVideoError.value = false;
+        }
+      }
+    } catch (e) {
+      debugPrint("Live Match stream fetch error: $e");
+      hasVideoError.value = true;
+    } finally {
+      ytClient.close();
+      isVideoLoading.value = false;
+      update();
+    }
   }
 
   @override
@@ -380,8 +443,10 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: cBlack,
-      body: SafeArea(
-        child: Obx(() {
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Obx(() {
           if (controller.isLoading.value) {
             return Center(child: CircularProgressIndicator(color: cPrimary));
           }
@@ -811,7 +876,181 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
             ],
           );
         }),
+          ),
+          Obx(() {
+            if (controller.hasActiveMatches.value) {
+              return Positioned(
+                bottom: 80,
+                right: 20,
+                child: GestureDetector(
+                  onTap: () => _showLiveMatchesPopup(context),
+                  child: Container(
+                    width: 55,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      color: cPrimary,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: cPrimary.withValues(alpha: 0.4),
+                          blurRadius: 12,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.sports_soccer_rounded,
+                        color: Colors.black,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
+        ],
       ),
+    );
+  }
+
+  void _showLiveMatchesPopup(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: Color(0xFF121217),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Live Worldcup Matches",
+              style: MyTextStyle.gilroyBold(color: Colors.white, size: 18),
+            ),
+            const SizedBox(height: 12),
+            Obx(() {
+              if (controller.liveMatches.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(
+                    child: Text(
+                      "No matches scheduled at the moment.",
+                      style: TextStyle(color: Colors.white60),
+                    ),
+                  ),
+                );
+              }
+              return Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: controller.liveMatches.length,
+                  itemBuilder: (context, index) {
+                    final match = controller.liveMatches[index];
+                    final String liveStatus = match['live_status'] ?? 'UPCOMING';
+                    
+                    return Card(
+                      color: const Color(0xFF1E1E24),
+                      margin: const EdgeInsets.only(bottom: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(12),
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (match['team1_flag'] != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: Image.network(
+                                  match['team1_flag'],
+                                  width: 32,
+                                  height: 22,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, color: Colors.white24),
+                                ),
+                              ),
+                            const SizedBox(width: 8),
+                            Text(
+                              match['team1'] ?? '',
+                              style: MyTextStyle.gilroyBold(color: Colors.white, size: 14),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text("VS", style: TextStyle(color: cPrimary, fontWeight: FontWeight.bold)),
+                            ),
+                            Text(
+                              match['team2'] ?? '',
+                              style: MyTextStyle.gilroyBold(color: Colors.white, size: 14),
+                            ),
+                            const SizedBox(width: 8),
+                            if (match['team2_flag'] != null)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: Image.network(
+                                  match['team2_flag'],
+                                  width: 32,
+                                  height: 22,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, color: Colors.white24),
+                                ),
+                              ),
+                          ],
+                        ),
+                        title: Text(
+                          "${match['start_date']} @ ${match['start_time']}",
+                          style: MyTextStyle.gilroyMedium(color: Colors.white60, size: 12),
+                          textAlign: TextAlign.end,
+                        ),
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: liveStatus == 'LIVE' ? Colors.green.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: liveStatus == 'LIVE' ? Colors.green : Colors.grey,
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            liveStatus,
+                            style: MyTextStyle.gilroyBold(
+                              color: liveStatus == 'LIVE' ? Colors.green : Colors.grey,
+                              size: 10,
+                            ),
+                          ),
+                        ),
+                        onTap: () async {
+                          Get.back(); // Close bottomsheet
+                          await controller.playMatch(match);
+                          Get.to(() => FullscreenLiveTvPlayer(controller: controller));
+                        },
+                      ),
+                    );
+                  },
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
     );
   }
 }

@@ -12,6 +12,7 @@ import 'package:lumosocial/screens/feed_screen/feed_screen_top_bar.dart';
 import 'package:lumosocial/screens/feed_screen/feed_stories_controller.dart';
 import 'package:lumosocial/screens/feed_screen/feed_story_screen.dart';
 import 'package:lumosocial/screens/feed_screen/side_menu_drawer.dart';
+import 'package:lumosocial/screens/feed_screen/feed_ad_card.dart';
 import 'package:lumosocial/screens/post/post_card.dart';
 import 'package:lumosocial/screens/rooms_screen/room_card.dart';
 import 'package:lumosocial/utilities/const.dart';
@@ -243,6 +244,10 @@ class FeedsView extends StatelessWidget {
                             ),
                           )
                         : Container(),
+                    if (index > 0 && index % 4 == 0 && controller.activeAds.isNotEmpty)
+                      FeedAdCard(
+                        ad: controller.activeAds[index % controller.activeAds.length],
+                      ),
                     PostCard(
                       post: controller.posts[index],
                       onDeletePost: (postID) {

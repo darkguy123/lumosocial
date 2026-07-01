@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/common/api_service/reel_service.dart';
 import 'package:lumosocial/common/controller/base_controller.dart';
 import 'package:lumosocial/common/managers/logger.dart';
@@ -11,6 +12,7 @@ import 'package:lumosocial/enums/reel_page_type.dart';
 import 'package:lumosocial/models/reel_model.dart';
 import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/screens/reels_screen/reel/reel_page_controller.dart';
+import 'package:lumosocial/utilities/const.dart';
 import 'package:video_player/video_player.dart';
 
 class ReelsScreenController extends BaseController {
@@ -18,6 +20,7 @@ class ReelsScreenController extends BaseController {
 
   RxList<Reel> reels = <Reel>[].obs;
   RxInt position = 0.obs;
+  static List<dynamic> activeAds = [];
 
   String? hashtag;
   User? user;
@@ -43,6 +46,20 @@ class ReelsScreenController extends BaseController {
   void onInit() {
     super.onInit();
     pageController = PageController(initialPage: position.value);
+    fetchActiveAds();
+  }
+
+  void fetchActiveAds() {
+    ApiService.shared.call(
+      url: "${apiURL}ad/list",
+      param: {},
+      completion: (response) {
+        if (response['status'] == true) {
+          activeAds = response['data'] ?? [];
+          update();
+        }
+      },
+    );
   }
 
   @override

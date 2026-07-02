@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/common/extensions/image_extension.dart';
 import 'package:lumosocial/common/widgets/my_cached_image.dart';
+import 'package:lumosocial/screens/camera_screen/ar_camera_screen.dart';
 import 'package:lumosocial/screens/camera_screen/create_reel_screen.dart';
 import 'package:lumosocial/screens/camera_screen/create_reel_screen_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
@@ -55,13 +56,17 @@ class CreateStoryTopView extends StatelessWidget {
                 const SizedBox(height: 20),
                 if (!controller.isRecordingStarted) ...[
                   BuildBorderRoundIcon(onTap: controller.toggleCamera, image: MyImages.cameraRotate),
-                  // const SizedBox(height: 20),
-                  // BuildBorderRoundIcon(
-                  //   image: MyImages.filter,
-                  //   onTap: () {
-                  //     controller.isFilterShow.value = !controller.isFilterShow.value;
-                  //   },
-                  // ),
+                  const SizedBox(height: 20),
+                  BuildBorderRoundIcon(
+                    image: MyImages.filter,
+                    onTap: () {
+                      Get.to(() => ArCameraScreen(
+                        onMediaCaptured: (filePath) {
+                          Get.back();
+                        },
+                      ));
+                    },
+                  ),
                 ],
                 const SizedBox(height: 20),
               ],

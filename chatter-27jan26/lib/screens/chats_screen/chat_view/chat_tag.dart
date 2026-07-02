@@ -342,7 +342,7 @@ class ChatTag extends StatelessWidget {
       case MessageType.watchParty:
         return watchPartyView();
       case MessageType.audio:
-        return AudioBubblePlayer(audioUrl: message.content ?? "", isMyMsg: isMyMsg);
+        return AudioBubblePlayer(audioUrl: (message.content ?? "").addBaseURL(), isMyMsg: isMyMsg);
       case MessageType.call:
         return Container(
           padding: const EdgeInsets.all(12),

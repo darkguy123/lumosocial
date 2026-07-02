@@ -512,7 +512,22 @@ class ChattingController extends BlockUserController {
       unblockUser(user, () {});
       return;
     }
-    if (user == null) return;
+    
+    final status = await Permission.microphone.request();
+    if (!status.isGranted) {
+      Get.snackbar("Microphone Permission", "Please grant microphone access to make calls.");
+      return;
+    }
+
+    if (user == null) {
+      final targetUserId = chatUserRoom?.userIdOrRoomId?.toInt() ?? 0;
+      if (targetUserId == 0) return;
+      UserService.shared.fetchProfile(targetUserId, (fetchedUser) {
+        user = fetchedUser;
+        startVoiceCall();
+      });
+      return;
+    }
 
     final myId = SessionManager.shared.getUserID();
     final callDoc = db.collection('calls').doc();

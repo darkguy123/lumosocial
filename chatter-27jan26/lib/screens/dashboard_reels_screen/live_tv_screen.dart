@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/utilities/const.dart';
@@ -95,49 +96,19 @@ class LiveTvController extends GetxController {
     );
   }
 
-  Future<void> playMatch(dynamic match) async {
-    isVideoLoading.value = true;
-    update();
-
-    if (videoPlayerController != null) {
-      await videoPlayerController!.dispose();
-      videoPlayerController = null;
-    }
-
+  void playMatch(dynamic match) {
     final youtubeUrl = match['youtube_link'] ?? '';
-    final ytClient = yt.YoutubeExplode();
-    try {
-      final videoIdStr = yt.VideoId.parseVideoId(youtubeUrl);
-      if (videoIdStr != null) {
-        final videoId = yt.VideoId(videoIdStr);
-        final streamUrl = await ytClient.videos.streams.getHttpLiveStreamUrl(videoId);
-        if (streamUrl != null) {
-          videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(streamUrl));
-          await videoPlayerController!.initialize();
-          videoPlayerController!.setLooping(false);
-          await videoPlayerController!.setVolume(isMuted.value ? 0.0 : volume.value);
-          await videoPlayerController!.play();
-          isVideoPlaying.value = true;
-          hasVideoError.value = false;
-        } else {
-          // Regular video fallback
-          final muxedManifest = await ytClient.videos.streams.getManifest(videoId);
-          final streamInfo = muxedManifest.muxed.withHighestBitrate();
-          videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(streamInfo.url.toString()));
-          await videoPlayerController!.initialize();
-          await videoPlayerController!.play();
-          isVideoPlaying.value = true;
-          hasVideoError.value = false;
-        }
-      }
-    } catch (e) {
-      debugPrint("Live Match stream fetch error: $e");
-      hasVideoError.value = true;
-    } finally {
-      ytClient.close();
-      isVideoLoading.value = false;
-      update();
+    if (youtubeUrl.isEmpty) {
+      Get.snackbar('No Stream', 'No YouTube link available for this match.', backgroundColor: Colors.red, colorText: Colors.white);
+      return;
     }
+    // Convert watch URL to embed URL
+    String embedUrl = youtubeUrl;
+    final videoIdStr = yt.VideoId.parseVideoId(youtubeUrl);
+    if (videoIdStr != null) {
+      embedUrl = 'https://www.youtube.com/embed/$videoIdStr?autoplay=1&playsinline=1';
+    }
+    Get.to(() => LiveMatchYouTubePlayer(embedUrl: embedUrl, matchTitle: '${match["team1"] ?? ""} vs ${match["team2"] ?? ""}'));
   }
 
   @override
@@ -329,7 +300,7 @@ class LiveTvController extends GetxController {
         channel.isLive.value = false;
       }
     }
-    paginatedChannels.value = paginatedChannels.where((c) => c.isLive.value).toList();
+    // Keep all channels visible; isLive just updates the indicator dot
   }
 }
 
@@ -1036,10 +1007,9 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
                             ),
                           ),
                         ),
-                        onTap: () async {
+                        onTap: () {
                           Get.back(); // Close bottomsheet
-                          await controller.playMatch(match);
-                          Get.to(() => FullscreenLiveTvPlayer(controller: controller));
+                          controller.playMatch(match);
                         },
                       ),
                     );
@@ -1051,6 +1021,109 @@ class _LiveTvScreenState extends State<LiveTvScreen> with RouteAware, WidgetsBin
         ),
       ),
       isScrollControlled: true,
+    );
+  }
+}
+
+/// YouTube WebView player for Live Matches
+class LiveMatchYouTubePlayer extends StatefulWidget {
+  final String embedUrl;
+  final String matchTitle;
+  const LiveMatchYouTubePlayer({Key? key, required this.embedUrl, required this.matchTitle}) : super(key: key);
+
+  @override
+  State<LiveMatchYouTubePlayer> createState() => _LiveMatchYouTubePlayerState();
+}
+
+class _LiveMatchYouTubePlayerState extends State<LiveMatchYouTubePlayer> {
+  late final WebViewController _webController;
+  bool _isWebLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    _webController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.black)
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageFinished: (_) => setState(() => _isWebLoading = false),
+      ))
+      ..loadRequest(Uri.parse(widget.embedUrl));
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          WebViewWidget(controller: _webController),
+          if (_isWebLoading)
+            const Center(child: CircularProgressIndicator(color: Color(0xFF00FF87))),
+          Positioned(
+            top: 16,
+            right: 16,
+            child: SafeArea(
+              child: GestureDetector(
+                onTap: () => Get.back(),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.7),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white30),
+                  ),
+                  child: const Icon(Icons.close_rounded, color: Colors.white, size: 22),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 16,
+            left: 16,
+            child: SafeArea(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.only(right: 6),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Text(
+                      'LIVE • ${widget.matchTitle}',
+                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

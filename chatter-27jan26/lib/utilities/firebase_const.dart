@@ -52,7 +52,8 @@ enum MessageType {
   storyReply('STORY_REPLY'),
   watchParty('WATCH_PARTY'),
   audio('AUDIO'),
-  call('CALL');
+  call('CALL'),
+  coinTransfer('COIN_TRANSFER');
 
   const MessageType(this.value);
 

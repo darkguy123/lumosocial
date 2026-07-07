@@ -62,7 +62,9 @@ class FeedScreen extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Uploading Post...",
+                                            uploadController.isStoryUpload.value
+                                                ? "Uploading Story..."
+                                                : "Uploading Post...",
                                             style: MyTextStyle.gilroyMedium(size: 14, color: cBlack),
                                           ),
                                           const SizedBox(height: 5),
@@ -96,16 +98,23 @@ class FeedScreen extends StatelessWidget {
                             if (uploadController.isCompleted.value) {
                               return Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                                color: Colors.green,
+                                color: uploadController.isStoryUpload.value ? const Color(0xFF1A1A2E) : Colors.green,
                                 width: double.infinity,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                                    Icon(
+                                      uploadController.isStoryUpload.value ? Icons.auto_awesome_rounded : Icons.check_circle,
+                                      color: uploadController.isStoryUpload.value ? const Color(0xFF00FF87) : Colors.white,
+                                      size: 20,
+                                    ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      "Post uploaded successfully",
-                                      style: MyTextStyle.gilroyBold(size: 15, color: Colors.white),
+                                      uploadController.isStoryUpload.value ? "Story Published! 🎉" : "Post uploaded successfully",
+                                      style: MyTextStyle.gilroyBold(
+                                        size: 15,
+                                        color: uploadController.isStoryUpload.value ? const Color(0xFF00FF87) : Colors.white,
+                                      ),
                                     ),
                                   ],
                                 ),

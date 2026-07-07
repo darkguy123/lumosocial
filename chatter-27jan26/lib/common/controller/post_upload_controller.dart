@@ -15,6 +15,7 @@ class PostUploadController extends GetxController {
   var uploadProgress = 0.0.obs;
   var thumbnailPath = "".obs;
   var isCompleted = false.obs;
+  var isStoryUpload = false.obs;
 
   void startUpload({
     required String desc,
@@ -31,6 +32,7 @@ class PostUploadController extends GetxController {
     isUploading.value = true;
     uploadProgress.value = 0.0;
     isCompleted.value = false;
+    isStoryUpload.value = false;
     thumbnailPath.value = thumbnail.isEmpty && images.isNotEmpty ? images.first.path : thumbnail;
     update();
 
@@ -85,6 +87,7 @@ class PostUploadController extends GetxController {
     isUploading.value = true;
     uploadProgress.value = 0.0;
     isCompleted.value = false;
+    isStoryUpload.value = true;
     thumbnailPath.value = thumbnail ?? fileURL;
     update();
 

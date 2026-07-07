@@ -5,7 +5,6 @@ import 'package:lumosocial/common/extensions/image_extension.dart';
 import 'package:lumosocial/common/widgets/my_cached_image.dart';
 import 'package:lumosocial/screens/camera_screen/create_reel_screen.dart';
 import 'package:lumosocial/screens/camera_screen/create_reel_screen_controller.dart';
-import 'package:lumosocial/screens/camera_screen/ar_camera_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class CreateReelTopView extends StatelessWidget {
@@ -48,18 +47,6 @@ class CreateReelTopView extends StatelessWidget {
                   BuildBorderRoundIcon(
                     onTap: controller.onMusicTap,
                     image: MyImages.music,
-                  ),
-                  const SizedBox(height: 20),
-                  BuildBorderRoundIcon(
-                    image: MyImages.filter,
-                    onTap: () {
-                      Get.to(() => ArCameraScreen(
-                        onMediaCaptured: (filePath) {
-                          // Handle captured filtered media
-                          Get.back();
-                        },
-                      ));
-                    },
                   ),
                   const SizedBox(height: 20),
                 ]

@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:figma_squircle_updated/figma_squircle.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -21,6 +23,7 @@ import 'package:lumosocial/utilities/firebase_const.dart';
 import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/utilities/web_service.dart';
 import 'package:lumosocial/screens/drama_screen/drama_player_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ChatTag extends StatelessWidget {
   final ChattingController controller;
@@ -362,8 +365,121 @@ class ChatTag extends StatelessWidget {
             ],
           ),
         );
+      case MessageType.coinTransfer:
+        return CoinTransferBubble(message: message, isMyMsg: isMyMsg);
     }
   }
+
+}
+
+/// Coin transfer receipt bubble
+class CoinTransferBubble extends StatelessWidget {
+  final ChatMessage message;
+  final bool isMyMsg;
+
+  const CoinTransferBubble({Key? key, required this.message, required this.isMyMsg}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // msg format: "COIN_TRANSFER:amount" stored in content field
+    final rawContent = message.content ?? '';
+    final parts = rawContent.split(':');
+    final amount = parts.length > 1 ? parts[1] : (message.msg ?? '0');
+
+    return Container(
+      width: 200,
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isMyMsg
+              ? [const Color(0xFF1A1A1A), const Color(0xFF0E0E0E)]
+              : [const Color(0xFF1E2A1E), const Color(0xFF0F1A0F)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: const Color(0xFF00FF87).withValues(alpha: 0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF00FF87).withValues(alpha: 0.1),
+            blurRadius: 8,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.monetization_on_rounded, color: Color(0xFF00FF87), size: 18),
+              const SizedBox(width: 6),
+              Text(
+                isMyMsg ? 'Sent' : 'Received',
+                style: const TextStyle(color: Color(0xFF00FF87), fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '$amount Lc',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'gilroy_bold',
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            isMyMsg ? 'Coins Sent' : 'Coins Received',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.5),
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Divider(color: Colors.white10, height: 1),
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: () {
+              Get.snackbar(
+                'Lumo Wallet',
+                'Open your wallet to check your current balance.',
+                backgroundColor: const Color(0xFF00FF87),
+                colorText: Colors.black,
+                snackPosition: SnackPosition.BOTTOM,
+                duration: const Duration(seconds: 3),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFF00FF87).withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFF00FF87).withValues(alpha: 0.4)),
+              ),
+              child: const Text(
+                'Check Balance',
+                style: TextStyle(
+                  color: Color(0xFF00FF87),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
   Widget watchPartyView() {
     var isMyMsg = message.senderId == SessionManager.shared.getUserID();
@@ -484,35 +600,52 @@ class _AudioBubblePlayerState extends State<AudioBubblePlayer> {
   late PlayerController playerController;
   bool isPlaying = false;
   bool isInitialized = false;
+  bool hasError = false;
 
   @override
   void initState() {
     super.initState();
     playerController = PlayerController();
-    _initPlayer();
+    _downloadAndPrepare();
   }
 
-  void _initPlayer() async {
+  Future<void> _downloadAndPrepare() async {
     try {
+      // audio_waveforms needs a local file path — download the remote URL first
+      final dir = await getTemporaryDirectory();
+      final fileName = widget.audioUrl.split('/').last.split('?').first;
+      final localPath = '${dir.path}/$fileName';
+      final file = File(localPath);
+
+      if (!file.existsSync()) {
+        final httpClient = HttpClient();
+        final request = await httpClient.getUrl(Uri.parse(widget.audioUrl));
+        final response = await request.close();
+        final bytes = await consolidateHttpClientResponseBytes(response);
+        await file.writeAsBytes(bytes);
+        httpClient.close();
+      }
+
       await playerController.preparePlayer(
-        path: widget.audioUrl,
+        path: localPath,
         shouldExtractWaveform: true,
         noOfSamples: 30,
       );
+
       if (mounted) {
-        setState(() {
-          isInitialized = true;
-        });
+        setState(() => isInitialized = true);
       }
+
       playerController.onPlayerStateChanged.listen((state) {
         if (mounted) {
-          setState(() {
-            isPlaying = state == PlayerState.playing;
-          });
+          setState(() => isPlaying = state == PlayerState.playing);
         }
       });
     } catch (e) {
-      debugPrint("Error initializing voice player: $e");
+      debugPrint("AudioBubblePlayer error: $e");
+      if (mounted) {
+        setState(() => hasError = true);
+      }
     }
   }
 
@@ -545,27 +678,37 @@ class _AudioBubblePlayerState extends State<AudioBubblePlayer> {
               }
             },
             child: Icon(
-              isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
-              color: widget.isMyMsg ? cPrimary : cBlack,
+              hasError
+                  ? Icons.error_outline_rounded
+                  : (isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded),
+              color: hasError ? Colors.red : (widget.isMyMsg ? cPrimary : cBlack),
               size: 32,
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: isInitialized
-                ? AudioFileWaveforms(
-                    size: const Size(140, 30),
-                    playerController: playerController,
-                    enableSeekGesture: true,
-                    waveformType: WaveformType.fitWidth,
-                    playerWaveStyle: PlayerWaveStyle(
-                      fixedWaveColor: widget.isMyMsg ? Colors.white38 : Colors.black26,
-                      liveWaveColor: widget.isMyMsg ? const Color(0xFF00FF87) : cPrimary,
-                      spacing: 4,
-                      waveThickness: 2.5,
-                    ),
-                  )
-                : const Center(child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: cPrimary))),
+            child: hasError
+                ? Text('Audio unavailable', style: TextStyle(color: widget.isMyMsg ? Colors.white54 : Colors.black45, fontSize: 12))
+                : (isInitialized
+                    ? AudioFileWaveforms(
+                        size: const Size(140, 30),
+                        playerController: playerController,
+                        enableSeekGesture: true,
+                        waveformType: WaveformType.fitWidth,
+                        playerWaveStyle: PlayerWaveStyle(
+                          fixedWaveColor: widget.isMyMsg ? Colors.white38 : Colors.black26,
+                          liveWaveColor: widget.isMyMsg ? const Color(0xFF00FF87) : cPrimary,
+                          spacing: 4,
+                          waveThickness: 2.5,
+                        ),
+                      )
+                    : const Center(
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: cPrimary),
+                        ),
+                      )),
           ),
         ],
       ),

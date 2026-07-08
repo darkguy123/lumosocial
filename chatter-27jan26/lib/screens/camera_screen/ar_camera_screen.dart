@@ -128,6 +128,25 @@ class _ArCameraScreenState extends State<ArCameraScreen> {
           CameraAwesomeBuilder.custom(
             saveConfig: SaveConfig.photoAndVideo(),
             onImageForAnalysis: _processImage,
+            onMediaCaptureEvent: (event) {
+              if (event.status == MediaCaptureStatus.success) {
+                event.captureRequest.when(
+                  single: (single) {
+                    final filePath = single.file?.path;
+                    if (filePath != null) {
+                      widget.onMediaCaptured(filePath);
+                    }
+                  },
+                  multiple: (multiple) {
+                    final values = multiple.fileBySensor.values;
+                    final filePath = values.isEmpty ? null : values.first?.path;
+                    if (filePath != null) {
+                      widget.onMediaCaptured(filePath);
+                    }
+                  },
+                );
+              }
+            },
             builder: (cameraState, preview) {
               return Stack(
                 fit: StackFit.expand,

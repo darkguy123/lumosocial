@@ -63,6 +63,7 @@ class CreateStoryTopView extends StatelessWidget {
                       Get.to(() => ArCameraScreen(
                         onMediaCaptured: (filePath) {
                           Get.back();
+                          controller.handleCapturedMedia(filePath);
                         },
                       ));
                     },

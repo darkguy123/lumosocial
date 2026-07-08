@@ -15,6 +15,7 @@ import 'package:lumosocial/common/widgets/interest_selector.dart';
 import 'package:lumosocial/localization/languages.dart';
 import 'package:lumosocial/screens/add_post_screen/add_post_controller.dart';
 import 'package:lumosocial/screens/add_post_screen/capture_or_choose_sheet.dart';
+import 'package:lumosocial/screens/camera_screen/ar_camera_screen.dart';
 import 'package:lumosocial/screens/add_post_screen/record_audio/record_audio_screen.dart';
 import 'package:lumosocial/screens/extra_views/top_bar.dart';
 import 'package:lumosocial/screens/post/video_player_sheet.dart';
@@ -131,11 +132,11 @@ class AddPostScreen extends StatelessWidget {
                                   postBtn(controller, Icons.image_rounded, PickerStyle.image, () {
                                     onImageVideoBtnTap(controller, PickerStyle.image);
                                   }),
-                                  const SizedBox(width: 15),
+                                  const SizedBox(width: 12),
                                   postBtn(controller, Icons.video_library, PickerStyle.video, () {
                                     onImageVideoBtnTap(controller, PickerStyle.video);
                                   }),
-                                  const SizedBox(width: 15),
+                                  const SizedBox(width: 12),
                                   postBtn(controller, Icons.mic_outlined, PickerStyle.audio, () {
                                     Get.bottomSheet(
                                             RecordAudioScreen(
@@ -146,6 +147,15 @@ class AddPostScreen extends StatelessWidget {
                                         .then((value) {
                                       controller.audioPlayerController?.pausePlayer();
                                     });
+                                  }),
+                                  const SizedBox(width: 12),
+                                  postBtn(controller, Icons.auto_awesome_rounded, PickerStyle.image, () {
+                                    Get.to(() => ArCameraScreen(
+                                      onMediaCaptured: (filePath) {
+                                        Get.back();
+                                        controller.handleCapturedMedia(filePath);
+                                      },
+                                    ));
                                   }),
                                 ],
                               ),

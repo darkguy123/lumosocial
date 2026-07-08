@@ -118,6 +118,56 @@ class AddPostController extends BaseController {
     update([imageGetID, postBtnGetID]);
   }
 
+  Future<void> handleCapturedMedia(String filePath) async {
+    if (filePath.isEmpty) return;
+    startLoading();
+    final extension = filePath.split('.').last.toLowerCase();
+    if (extension == 'mp4' || extension == 'mov' || extension == 'mkv' || extension == '3gp' || extension == 'avi') {
+      type = PickerStyle.video;
+      XFile file = XFile(filePath);
+      int videoDurationSec = await file.path.getVideoDurationInSecond;
+      
+      if (videoDurationSec > 240) {
+        stopLoading();
+        final trimmedPath = await Get.to(() => VideoCropperScreen(
+          videoPath: file.path,
+          maxDurationSeconds: 240.0,
+        ));
+        if (trimmedPath != null && trimmedPath is String) {
+          file = XFile(trimmedPath);
+          startLoading();
+          videoDurationSec = await file.path.getVideoDurationInSecond;
+        } else {
+          return; // Cancelled
+        }
+      }
+
+      await SightEngineService.shared.checkVideoInSightEngine(
+          xFile: file,
+          duration: videoDurationSec,
+          completion: () async {
+            videoFile = file;
+            videoPlayerController = VideoPlayerController.file(File(videoFile!.path));
+            await videoPlayerController?.initialize();
+            update(['player']);
+            update();
+            videoPlayerController?.addListener(() {
+              update(['player']);
+            });
+          });
+    } else {
+      type = PickerStyle.image;
+      final file = XFile(filePath);
+      await SightEngineService.shared.checkImageInSightEngine(
+          xFile: file,
+          completion: () {
+            imageFileList.add(file);
+          });
+    }
+    stopLoading();
+    update([imageGetID, postBtnGetID]);
+  }
+
   void uploadPost() async {
     startLoading();
 

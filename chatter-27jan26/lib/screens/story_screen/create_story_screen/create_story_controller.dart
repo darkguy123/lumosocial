@@ -174,6 +174,17 @@ class CreateStoryController extends BaseController {
     });
   }
 
+  Future<void> handleCapturedMedia(String filePath) async {
+    if (filePath.isEmpty) return;
+    final extension = filePath.split('.').last.toLowerCase();
+    if (extension == 'mp4' || extension == 'mov' || extension == 'mkv' || extension == '3gp' || extension == 'avi') {
+      storyType.value = StoryType.video;
+    } else {
+      storyType.value = StoryType.image;
+    }
+    await _handleReel(XFile(filePath), shouldConvert: false);
+  }
+
   /// Handle the recorded video
   Future<void> _handleReel(XFile file, {bool shouldConvert = true}) async {
     if (file.path.isEmpty) return;

@@ -99,6 +99,17 @@ class SettingScreen extends StatelessWidget {
                           builder: (context) {
                             return SettingButtonWithSwitch(title: LKeys.getInvitedToRooms, desc: LKeys.getInvitedToRoomsDesc, isOn: controller.isGetInvited, onChange: controller.changeOfGetInvited);
                           }),
+                      GetBuilder<SettingController>(
+                          id: controller.autoplayVideosID,
+                          init: controller,
+                          builder: (context) {
+                            return SettingButtonWithSwitch(
+                              title: "Autoplay Videos",
+                              desc: "Autoplay videos in your news feed",
+                              isOn: controller.isAutoplayVideos,
+                              onChange: controller.changeOfAutoplayVideos,
+                            );
+                          }),
                       const SizedBox(height: 40),
                       SettingButton(
                         title: LKeys.privacyPolicy,

@@ -15,12 +15,15 @@ import 'package:lumosocial/screens/room_invitation_screen/room_invitation_screen
 import 'package:lumosocial/screens/rooms_you_own/rooms_you_own_screen.dart';
 import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
 import 'package:lumosocial/utilities/const.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SettingController extends BaseController {
   bool isNotification = SessionManager.shared.getUser()?.isPushNotifications == 1 ? true : false;
   bool isGetInvited = SessionManager.shared.getUser()?.isInvitedToRoom == 1 ? true : false;
+  bool isAutoplayVideos = GetStorage().read('lumo_autoplay_videos') ?? true;
   String notificationID = "notificationID";
   String getInvitedID = "getInvitedID";
+  String autoplayVideosID = "autoplayVideosID";
   String version = "";
 
   @override
@@ -58,6 +61,12 @@ class SettingController extends BaseController {
       isInvitedToRoom: isGetInvited,
       completion: (p0) {},
     );
+  }
+
+  void changeOfAutoplayVideos(bool value) {
+    isAutoplayVideos = value;
+    GetStorage().write('lumo_autoplay_videos', value);
+    update([autoplayVideosID]);
   }
 
   void tapRoomsYouOwn() {

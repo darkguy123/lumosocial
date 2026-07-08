@@ -24,6 +24,7 @@ import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/utilities/web_service.dart';
 import 'package:lumosocial/screens/drama_screen/drama_player_screen.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:lumosocial/utilities/translate_util.dart';
 
 class ChatTag extends StatelessWidget {
   final ChattingController controller;
@@ -311,20 +312,10 @@ class ChatTag extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           padding == null ? remoteUserNameView() : Container(),
-          DetectableText(
-            maxLines: null,
-            detectionRegExp: detectionRegExp(atSign: false, url: true)!,
-            onTap: (p0) async {
-              controller.handleURL(url: p0);
-            },
-            lessStyle: MyTextStyle.gilroyMedium(color: cPrimary),
-            moreStyle: MyTextStyle.gilroyMedium(color: cPrimary),
-            trimCollapsedText: LKeys.showMore.tr,
-            trimExpandedText: '  ${LKeys.showLess.tr}',
+          TranslatableChatText(
             text: message.msg ?? '',
-            basicStyle: MyTextStyle.gilroyRegular(size: 16, color: isMyMsg ? cWhite : cBlack),
-            detectedStyle: MyTextStyle.gilroySemiBold(size: 16, color: cPrimary),
-            // )
+            isMyMsg: isMyMsg,
+            controller: controller,
           ),
         ],
       ),
@@ -712,6 +703,109 @@ class _AudioBubblePlayerState extends State<AudioBubblePlayer> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class TranslatableChatText extends StatefulWidget {
+  final String text;
+  final bool isMyMsg;
+  final ChattingController controller;
+
+  const TranslatableChatText({
+    Key? key,
+    required this.text,
+    required this.isMyMsg,
+    required this.controller,
+  }) : super(key: key);
+
+  @override
+  State<TranslatableChatText> createState() => _TranslatableChatTextState();
+}
+
+class _TranslatableChatTextState extends State<TranslatableChatText> {
+  bool _isTranslated = false;
+  bool _isTranslating = false;
+  late String _displayText;
+
+  @override
+  void initState() {
+    super.initState();
+    _displayText = widget.text;
+  }
+
+  @override
+  void didUpdateWidget(covariant TranslatableChatText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.text != oldWidget.text) {
+      _displayText = widget.text;
+      _isTranslated = false;
+    }
+  }
+
+  void _toggleTranslation() async {
+    if (_isTranslated) {
+      setState(() {
+        _displayText = widget.text;
+        _isTranslated = false;
+      });
+    } else {
+      setState(() {
+        _isTranslating = true;
+      });
+      try {
+        final translated = await translateText(widget.text, targetLang: 'en');
+        setState(() {
+          _displayText = translated;
+          _isTranslated = true;
+        });
+      } catch (e) {
+        debugPrint("Translation error: $e");
+      } finally {
+        setState(() {
+          _isTranslating = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DetectableText(
+          maxLines: null,
+          detectionRegExp: detectionRegExp(atSign: false, url: true)!,
+          onTap: (p0) async {
+            widget.controller.handleURL(url: p0);
+          },
+          lessStyle: MyTextStyle.gilroyMedium(color: cPrimary),
+          moreStyle: MyTextStyle.gilroyMedium(color: cPrimary),
+          trimCollapsedText: LKeys.showMore.tr,
+          trimExpandedText: '  ${LKeys.showLess.tr}',
+          text: _displayText,
+          basicStyle: MyTextStyle.gilroyRegular(size: 16, color: widget.isMyMsg ? cWhite : cBlack),
+          detectedStyle: MyTextStyle.gilroySemiBold(size: 16, color: cPrimary),
+        ),
+        if (widget.text.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          GestureDetector(
+            onTap: _isTranslating ? null : _toggleTranslation,
+            child: Text(
+              _isTranslating
+                  ? "Translating..."
+                  : _isTranslated
+                      ? "Show original"
+                      : "Translate",
+              style: MyTextStyle.gilroySemiBold(
+                size: 11,
+                color: widget.isMyMsg ? const Color(0xFF00FF87) : cPrimary,
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

@@ -26,6 +26,10 @@ import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
 import 'package:lumosocial/screens/tag_screen/tag_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:video_player/video_player.dart';
+import 'package:lumosocial/utilities/translate_util.dart';
 
 import '../tag_screen/tag_controller.dart';
 import 'double_click_like.dart';
@@ -102,51 +106,124 @@ class PostCard extends StatelessWidget {
   }
 }
 
-class PostDescriptionView extends StatelessWidget {
+class PostDescriptionView extends StatefulWidget {
   final PostController controller;
   final bool isForVideo;
 
   const PostDescriptionView({Key? key, required this.controller, this.isForVideo = false}) : super(key: key);
 
   @override
+  State<PostDescriptionView> createState() => _PostDescriptionViewState();
+}
+
+class _PostDescriptionViewState extends State<PostDescriptionView> {
+  bool _isTranslated = false;
+  bool _isTranslating = false;
+  late String _displayText;
+
+  @override
+  void initState() {
+    super.initState();
+    _displayText = widget.controller.post.desc ?? '';
+  }
+
+  @override
+  void didUpdateWidget(covariant PostDescriptionView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller.post.desc != oldWidget.controller.post.desc) {
+      _displayText = widget.controller.post.desc ?? '';
+      _isTranslated = false;
+    }
+  }
+
+  void _toggleTranslation() async {
+    if (_isTranslated) {
+      setState(() {
+        _displayText = widget.controller.post.desc ?? '';
+        _isTranslated = false;
+      });
+    } else {
+      setState(() {
+        _isTranslating = true;
+      });
+      try {
+        final translated = await translateText(widget.controller.post.desc ?? '', targetLang: 'en');
+        setState(() {
+          _displayText = translated;
+          _isTranslated = true;
+        });
+      } catch (e) {
+        debugPrint("Translation error: $e");
+      } finally {
+        setState(() {
+          _isTranslating = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final textContent = widget.controller.post.desc ?? '';
+    if (textContent.isEmpty) return const SizedBox.shrink();
+
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 6),
-      child: ReadMoreText(
-        controller.post.desc ?? '',
-        style: MyTextStyle.outfitLight(size: 16, color: isForVideo ? cLightIcon : cMainText),
-        annotations: [
-          Annotation(
-            regExp: RegExp(r'#([a-zA-Z0-9_]+)'),
-            spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
-                text: text,
-                style: textStyle?.copyWith(
-                  color: cPrimary,
-                  fontFamily: MyTextStyle.outfitMedium(size: 16, color: cHashtagColor).fontFamily,
-                  fontSize: 16,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () async {
-                    if (text.startsWith('#')) {
-                      Get.delete<TagController>().then((value) {
-                        Get.to(
-                          () => TagScreen(
-                            tag: text,
-                            isForReel: false,
-                          ),
-                          preventDuplicates: false,
-                        );
-                      });
-                    }
-                  }),
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ReadMoreText(
+            _displayText,
+            style: MyTextStyle.outfitLight(size: 16, color: widget.isForVideo ? cLightIcon : cMainText),
+            annotations: [
+              Annotation(
+                regExp: RegExp(r'#([a-zA-Z0-9_]+)'),
+                spanBuilder: ({required String text, TextStyle? textStyle}) => TextSpan(
+                    text: text,
+                    style: textStyle?.copyWith(
+                      color: cPrimary,
+                      fontFamily: MyTextStyle.outfitMedium(size: 16, color: cHashtagColor).fontFamily,
+                      fontSize: 16,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        if (text.startsWith('#')) {
+                          Get.delete<TagController>().then((value) {
+                            Get.to(
+                              () => TagScreen(
+                                tag: text,
+                                isForReel: false,
+                              ),
+                              preventDuplicates: false,
+                            );
+                          });
+                        }
+                      }),
+              ),
+            ],
+            trimMode: TrimMode.Line,
+            trimLines: 5,
+            trimCollapsedText: ' ${LKeys.showMore.tr}',
+            trimExpandedText: '   ${LKeys.showLess.tr}',
+            moreStyle: MyTextStyle.outfitRegular(color: widget.isForVideo ? cLightIcon : cMainText, size: 16),
+            lessStyle: MyTextStyle.outfitRegular(color: widget.isForVideo ? cLightIcon : cMainText, size: 16),
+          ),
+          const SizedBox(height: 4),
+          GestureDetector(
+            onTap: _isTranslating ? null : _toggleTranslation,
+            child: Text(
+              _isTranslating
+                  ? "Translating..."
+                  : _isTranslated
+                      ? "Show original"
+                      : "Translate",
+              style: MyTextStyle.gilroySemiBold(
+                size: 12,
+                color: widget.isForVideo ? const Color(0xFF00FF87) : cPrimary,
+              ),
+            ),
           ),
         ],
-        trimMode: TrimMode.Line,
-        trimLines: 5,
-        trimCollapsedText: ' ${LKeys.showMore.tr}',
-        trimExpandedText: '   ${LKeys.showLess.tr}',
-        moreStyle: MyTextStyle.outfitRegular(color: isForVideo ? cLightIcon : cMainText, size: 16),
-        lessStyle: MyTextStyle.outfitRegular(color: isForVideo ? cLightIcon : cMainText, size: 16),
       ),
     );
   }
@@ -443,32 +520,119 @@ class PostImagesPageView extends StatelessWidget {
   }
 }
 
-class PostVideoElement extends StatelessWidget {
+class PostVideoElement extends StatefulWidget {
   final PostController controller;
 
   const PostVideoElement({Key? key, required this.controller}) : super(key: key);
 
   @override
+  State<PostVideoElement> createState() => _PostVideoElementState();
+}
+
+class _PostVideoElementState extends State<PostVideoElement> {
+  VideoPlayerController? _videoController;
+  bool _isInitialized = false;
+  bool _isMuted = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final url = widget.controller.post.content?.first.content?.addBaseURL() ?? '';
+    if (url.isNotEmpty) {
+      final isHls = url.contains('.m3u8') || url.contains('m3u8');
+      _videoController = VideoPlayerController.networkUrl(
+        Uri.parse(url),
+        formatHint: isHls ? VideoFormat.hls : null,
+      )..initialize().then((_) {
+          if (mounted) {
+            setState(() {
+              _isInitialized = true;
+            });
+            _videoController!.setVolume(0.0);
+            _videoController!.setLooping(true);
+          }
+        });
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (controller.post.content?.isEmpty == true) {
+    if (widget.controller.post.content?.isEmpty == true) {
       return Container();
     }
-    return GestureDetector(
-      onTap: () {
-        controller.openVideoSheet();
+
+    final bool autoplayEnabled = GetStorage().read('lumo_autoplay_videos') ?? true;
+
+    return VisibilityDetector(
+      key: Key('post_video_${widget.controller.post.id}'),
+      onVisibilityChanged: (visibilityInfo) {
+        if (!autoplayEnabled || _videoController == null || !_isInitialized) return;
+        
+        final visiblePercentage = visibilityInfo.visibleFraction * 100;
+        if (visiblePercentage > 60) {
+          _videoController!.play();
+        } else {
+          _videoController!.pause();
+        }
       },
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox(
-            height: Get.width,
-            width: double.infinity,
-            child: MyCachedImage(
-              imageUrl: (controller.post.content?.first.thumbnail ?? ""),
+      child: GestureDetector(
+        onTap: () {
+          _videoController?.pause();
+          widget.controller.openVideoSheet();
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              height: Get.width,
+              width: double.infinity,
+              child: _isInitialized && _videoController != null
+                  ? FittedBox(
+                      fit: BoxFit.cover,
+                      clipBehavior: Clip.hardEdge,
+                      child: SizedBox(
+                        width: _videoController!.value.size.width,
+                        height: _videoController!.value.size.height,
+                        child: VideoPlayer(_videoController!),
+                      ),
+                    )
+                  : MyCachedImage(
+                      imageUrl: (widget.controller.post.content?.first.thumbnail ?? ""),
+                    ),
             ),
-          ),
-          PlayButton(),
-        ],
+            if (!_isInitialized)
+              const Center(child: CircularProgressIndicator(color: Color(0xFF00FF87)))
+            else ...[
+              Positioned(
+                bottom: 12,
+                right: 12,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isMuted = !_isMuted;
+                      _videoController?.setVolume(_isMuted ? 0.0 : 1.0);
+                    });
+                  },
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.black54,
+                    child: Icon(
+                      _isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

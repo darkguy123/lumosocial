@@ -163,6 +163,7 @@ class ChattingController extends BlockUserController {
     required MessageType type,
     String content = '',
     String thumbnail = '',
+    String? customMsg,
     num? storyId,
     num? dramaId,
     num? episodeId,
@@ -232,7 +233,7 @@ class ChattingController extends BlockUserController {
     }
     var map = ChatMessage(
       id: date.microsecondsSinceEpoch.toString(),
-      msg: messageTextController.text,
+      msg: customMsg ?? (messageTextController.text.isEmpty ? content : messageTextController.text),
       msgType: type.value,
       content: content,
       thumbnail: thumbnail,
@@ -245,7 +246,9 @@ class ChattingController extends BlockUserController {
     ).toJson();
 
     drChatMessages?.doc(date.microsecondsSinceEpoch.toString()).set(map);
-    messageTextController.text = "";
+    if (type == MessageType.text) {
+      messageTextController.text = "";
+    }
   }
 
   void removeStoryFromMessage({required ChatMessage message}) {

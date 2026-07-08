@@ -207,14 +207,6 @@ class ChattingView extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: controller.startRecording,
-                      child: const Icon(
-                        Icons.mic_none_rounded,
-                        color: cLightText,
-                        size: 28,
-                      ),
-                    ),
                     const SizedBox(width: 5),
                     GestureDetector(
                       onTap: () {
@@ -434,17 +426,7 @@ class ChattingView extends StatelessWidget {
                 ),
               ),
             ),
-            if (controller.chatUserRoom?.type != 2) ...[
-              GestureDetector(
-                onTap: controller.startVoiceCall,
-                child: const Icon(
-                  Icons.phone_in_talk_rounded,
-                  color: Color(0xFF00FF87),
-                  size: 26,
-                ),
-              ),
-              const SizedBox(width: 12),
-            ],
+            const SizedBox(width: 12),
             controller.chatUserRoom?.type == 2
                 ? RoomMenu(controller: controller)
                 : Menu(
@@ -696,7 +678,7 @@ class ChattingView extends StatelessWidget {
                                 ),
                               );
                               if (authenticated) {
-                                _executeDirectTransfer(recipientUsername, amount, walletController);
+                                _executeDirectTransfer(recipientUsername, amount, walletController, chatController);
                                 return;
                               }
                             }
@@ -759,7 +741,7 @@ class ChattingView extends StatelessWidget {
                             Get.back(); // close loader
 
                             if (verified) {
-                              _executeDirectTransfer(recipientUsername, amount, walletController);
+                              _executeDirectTransfer(recipientUsername, amount, walletController, chatController);
                             } else {
                               Get.snackbar("Authentication Failed", "Incorrect Transaction PIN.", backgroundColor: Colors.red, colorText: Colors.white);
                             }
@@ -834,7 +816,7 @@ class ChattingView extends StatelessWidget {
                             Get.back(); // close loader
 
                             if (success) {
-                              _executeDirectTransfer(recipientUsername, amount, walletController);
+                              _executeDirectTransfer(recipientUsername, amount, walletController, chatController);
                             }
                           },
                           child: const Text("Set PIN & Transfer", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
@@ -851,7 +833,7 @@ class ChattingView extends StatelessWidget {
     );
   }
 
-  void _executeDirectTransfer(String recipient, double amount, WalletController walletController) {
+  void _executeDirectTransfer(String recipient, double amount, WalletController walletController, ChattingController chatController) {
     Get.dialog(
       const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
       barrierDismissible: false,
@@ -861,6 +843,13 @@ class ChattingView extends StatelessWidget {
       Get.back(); // close loading dialog
       if (success) {
         Get.back(); // close send modal sheet
+        
+        chatController.commonSend(
+          type: MessageType.coinTransfer,
+          content: 'COIN_TRANSFER:${amount.toStringAsFixed(2)}',
+          customMsg: 'Sent ${amount.toStringAsFixed(2)} Lc',
+        );
+
         Get.snackbar(
           "Transfer Successful",
           "You have sent $amount Lc to @$recipient successfully.",

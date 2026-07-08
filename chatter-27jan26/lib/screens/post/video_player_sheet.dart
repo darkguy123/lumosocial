@@ -275,7 +275,12 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
   void initPlayer() {
     videoViewCount++;
     _fetchVideoAds();
-    playerController = VideoPlayerController.networkUrl(Uri.parse(widget.controller.post.content?.first.content?.addBaseURL() ?? ''))
+    final url = widget.controller.post.content?.first.content?.addBaseURL() ?? '';
+    final isHls = url.contains('.m3u8') || url.contains('m3u8');
+    playerController = VideoPlayerController.networkUrl(
+      Uri.parse(url),
+      formatHint: isHls ? VideoFormat.hls : null,
+    )
       ..initialize().then((value) {
         if (Get.isBottomSheetOpen == true) {
           play();

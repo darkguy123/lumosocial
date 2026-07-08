@@ -129,7 +129,11 @@ class _DramaPlayerScreenState extends State<DramaPlayerScreen> with RouteAware, 
       return;
     }
 
-    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(url));
+    final isHls = url.contains('.m3u8') || url.contains('m3u8');
+    _videoPlayerController = VideoPlayerController.networkUrl(
+      Uri.parse(url),
+      formatHint: isHls ? VideoFormat.hls : null,
+    );
 
     try {
       await _videoPlayerController!.initialize();

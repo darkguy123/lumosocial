@@ -12,6 +12,7 @@ import 'package:lumosocial/screens/search_screen/search_screen.dart';
 import 'package:lumosocial/screens/wallet_screen/wallet_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/web_service.dart';
+import 'package:lumosocial/screens/ads/publish_ad_screen.dart';
 
 class SideMenuDrawer extends StatefulWidget {
   const SideMenuDrawer({Key? key}) : super(key: key);
@@ -204,6 +205,14 @@ class _SideMenuDrawerState extends State<SideMenuDrawer> {
                     onTap: () {
                       Get.back();
                       Get.to(() => const AudioSpacesScreen());
+                    },
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.campaign_outlined,
+                    title: "Lumo Ad Center",
+                    onTap: () {
+                      Get.back();
+                      Get.to(() => const PublishAdScreen());
                     },
                   ),
                 ],

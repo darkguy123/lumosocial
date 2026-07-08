@@ -11,9 +11,10 @@ import 'package:lumosocial/screens/post/double_click_like.dart';
 import 'package:lumosocial/screens/reels_screen/reel/reel_page_controller.dart';
 import 'package:lumosocial/screens/reels_screen/reel/widget/side_bar_list.dart';
 import 'package:lumosocial/screens/reels_screen/reel/widget/user_info_and_description.dart';
-import 'package:lumosocial/screens/reels_screen/reel/widget/reel_ad_overlay.dart';
 import 'package:lumosocial/screens/reels_screen/reels_screen_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/screens/post/video_ad_overlay.dart';
+import 'dart:math';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -79,13 +80,11 @@ class ReelPage extends StatelessWidget {
               ),
             ),
           ),
-          if (ReelsScreenController.activeAds.isNotEmpty)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ReelAdOverlay(
-                ad: ReelsScreenController.activeAds[(reelData?.id ?? 0) % ReelsScreenController.activeAds.length],
-              ),
-            ),
+          ReelSkipableAdOverlay(
+            mainVideoController: videoPlayerController,
+            ads: ReelsScreenController.activeAds,
+            reelData: reelData,
+          ),
           ReelInfoSection(controller: controller)
         ],
       ),
@@ -162,5 +161,77 @@ class PlayAnimationButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ReelSkipableAdOverlay extends StatefulWidget {
+  final VideoPlayerController? mainVideoController;
+  final List<dynamic> ads;
+  final Reel? reelData;
+
+  const ReelSkipableAdOverlay({
+    Key? key,
+    required this.mainVideoController,
+    required this.ads,
+    required this.reelData,
+  }) : super(key: key);
+
+  @override
+  State<ReelSkipableAdOverlay> createState() => _ReelSkipableAdOverlayState();
+}
+
+class _ReelSkipableAdOverlayState extends State<ReelSkipableAdOverlay> {
+  bool _adTriggered = false;
+  bool _showAd = false;
+  Map<String, dynamic>? _selectedAd;
+  late int _triggerSecond;
+  late bool _shouldShowAd;
+
+  @override
+  void initState() {
+    super.initState();
+    _triggerSecond = 3 + Random().nextInt(8); // random between 3 and 10 seconds
+    _shouldShowAd = widget.ads.isNotEmpty && Random().nextBool(); // 50% chance
+    widget.mainVideoController?.addListener(_videoListener);
+  }
+
+  @override
+  void dispose() {
+    widget.mainVideoController?.removeListener(_videoListener);
+    super.dispose();
+  }
+
+  void _videoListener() {
+    if (widget.mainVideoController == null || !widget.mainVideoController!.value.isInitialized) return;
+
+    final position = widget.mainVideoController!.value.position.inSeconds;
+    if (position >= _triggerSecond && !_adTriggered && _shouldShowAd) {
+      if (mounted) {
+        setState(() {
+          _adTriggered = true;
+          _selectedAd = Map<String, dynamic>.from(widget.ads[Random().nextInt(widget.ads.length)]);
+          _showAd = true;
+        });
+      }
+      widget.mainVideoController?.pause();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showAd && _selectedAd != null) {
+      return VideoAdOverlay(
+        ad: _selectedAd!,
+        onAdFinished: () {
+          if (mounted) {
+            setState(() {
+              _showAd = false;
+            });
+          }
+          widget.mainVideoController?.play();
+        },
+      );
+    }
+    return const SizedBox.shrink();
   }
 }

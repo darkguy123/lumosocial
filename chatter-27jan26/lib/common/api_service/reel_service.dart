@@ -24,6 +24,7 @@ class ReelService {
     required String hashtags,
     required String interestIds,
     required int? musicId,
+    Function(double percentage)? onProgress,
   }) async {
     ReelModel model = await NewApiService.shared.multiPartCallApi(
       filesMap: {
@@ -38,6 +39,7 @@ class ReelService {
         Param.hashtags: hashtags,
         Param.musicId: musicId,
       },
+      onProgress: onProgress,
       fromJson: ReelModel.fromJson,
     );
 

@@ -9,6 +9,13 @@ import 'package:lumosocial/common/managers/session_manager.dart';
 import 'package:lumosocial/screens/chats_screen/calling/voice_call_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/params.dart';
+import 'package:lumosocial/screens/chats_screen/chatting_screen/chatting_view.dart';
+import 'package:lumosocial/screens/dashboard_reels_screen/live_tv_screen.dart';
+import 'package:lumosocial/screens/single_reel_screen/single_reel_screen.dart';
+import 'package:lumosocial/screens/single_post_screen/single_post_screen.dart';
+import 'package:lumosocial/screens/rooms_screen/single_room/single_room_screen.dart';
+import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
+import 'package:lumosocial/models/registration.dart';
 
 class FirebaseNotificationManager {
   static var shared = FirebaseNotificationManager();
@@ -43,7 +50,7 @@ class FirebaseNotificationManager {
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       if (message.data[Param.conversationId] == SessionManager.shared.getStoredConversation()) {
         print('In Same Chat');
         return;
@@ -51,7 +58,7 @@ class FirebaseNotificationManager {
       if (message.messageId != newMessageId || Platform.isAndroid) {
         newMessageId = message.messageId!;
         print('Notification: ${message.messageId}');
-        showNotification(message);
+        await showNotification(message);
       }
     });
 
@@ -74,7 +81,13 @@ class FirebaseNotificationManager {
   }
 
   void _handleNotificationClick(RemoteMessage message) {
-    if (message.data['type'] == 'call') {
+    final type = message.data['type']?.toString();
+    final postId = message.data['postId'];
+    final reelId = message.data['reelId'];
+    final roomId = message.data['roomId'];
+    final userId = message.data['userId'];
+
+    if (type == 'call') {
       Get.to(() => VoiceCallScreen(
         callId: message.data['callId'] ?? '',
         channelId: message.data['channelId'] ?? '',
@@ -83,17 +96,47 @@ class FirebaseNotificationManager {
         callerImage: message.data['callerImage'] ?? '',
         isIncoming: true,
       ));
+    } else if (reelId != null) {
+      Get.to(() => SingleReelScreen(reelId: int.tryParse(reelId.toString()) ?? 0));
+    } else if (postId != null) {
+      Get.to(() => SinglePostScreen(postId: int.tryParse(postId.toString()) ?? 0));
+    } else if (roomId != null) {
+      Get.to(() => SingleRoomScreen(roomId: int.tryParse(roomId.toString()) ?? 0));
+    } else if (type == 'chat' && userId != null) {
+      Get.to(() => ChattingView(user: User(id: int.tryParse(userId.toString()))));
+    } else if (type == 'live_match') {
+      Get.to(() => const LiveTvScreen());
+    } else if (userId != null) {
+      Get.to(() => ProfileScreen(userId: int.tryParse(userId.toString()) ?? 0));
     }
   }
 
-  void showNotification(RemoteMessage message) {
+  Future<void> _ensureLocalNotificationsInitialized() async {
+    var initializationSettingsAndroid = const AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+    var initializationSettingsIOS = const DarwinInitializationSettings(
+      defaultPresentAlert: true,
+      defaultPresentSound: true,
+      defaultPresentBadge: false,
+    );
+    var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> showNotification(RemoteMessage message) async {
     String? title = message.data['title'] ?? message.notification?.title;
     String? body = message.data['body'] ?? message.notification?.body;
     if (title == null && body == null) return;
 
+    await _ensureLocalNotificationsInitialized();
+
     final isCall = message.data['type'] == 'call';
 
-    flutterLocalNotificationsPlugin.show(
+    await flutterLocalNotificationsPlugin.show(
       isCall ? 999 : 1,
       title,
       body,
@@ -157,7 +200,7 @@ class FirebaseNotificationManager {
     }
     ;
     hasListenerSet = true;
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print("notification aavi: ${message.toMap()}");
 
       if (message.data[Param.conversationId] == SessionManager.shared.getStoredConversation()) {
@@ -168,7 +211,7 @@ class FirebaseNotificationManager {
       if (message.messageId != newMessageId || Platform.isAndroid) {
         newMessageId = message.messageId!;
         print('Notification: ${message.messageId}');
-        showNotification(message);
+        await showNotification(message);
       }
     });
   }

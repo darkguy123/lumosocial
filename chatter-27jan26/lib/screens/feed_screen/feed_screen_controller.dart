@@ -6,6 +6,7 @@ import 'package:lumosocial/models/posts_model.dart';
 import 'package:lumosocial/models/room_model.dart';
 import 'package:lumosocial/screens/chats_screen/chatting_screen/block_user_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeedScreenController extends BlockUserController {
   // List<Feed> posts = [];
@@ -25,15 +26,25 @@ class FeedScreenController extends BlockUserController {
     }
   }
 
-  void fetchActiveAds() {
+  void fetchActiveAds() async {
+    List<dynamic> userAds = [];
+    try {
+      final adsSnap = await FirebaseFirestore.instance.collection('ads').get();
+      userAds = adsSnap.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      debugPrint("Error fetching active Firestore ads: $e");
+    }
+
     ApiService.shared.call(
       url: "${apiURL}ad/list",
       param: {},
       completion: (response) {
-        if (response['status'] == true) {
-          activeAds = response['data'] ?? [];
-          update();
+        List<dynamic> systemAds = [];
+        if (response != null && response['status'] == true) {
+          systemAds = response['data'] ?? [];
         }
+        activeAds = [...systemAds, ...userAds];
+        update();
       },
     );
   }

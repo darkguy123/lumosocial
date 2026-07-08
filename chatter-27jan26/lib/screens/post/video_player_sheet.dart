@@ -13,6 +13,8 @@ import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/utilities/firebase_const.dart';
 import 'package:video_player/video_player.dart';
 import 'package:lumosocial/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 
 class VideoPlayerSheet extends StatefulWidget {
   final PostController controller;
@@ -27,16 +29,19 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
   VideoPlayerController? playerController;
   bool isLoading = true;
 
-  static int videoViewCount = 0;
-  static DateTime? lastAdShownTime;
+
 
   List<dynamic> _videoAds = [];
   bool _adTriggeredForThisVideo = false;
   bool _showAdOverlay = false;
   Map<String, dynamic>? _selectedAd;
+  late int _adTriggerSecond;
+  late bool _shouldShowAdForThisVideo;
 
   @override
   void initState() {
+    _adTriggerSecond = 5 + Random().nextInt(15);
+    _shouldShowAdForThisVideo = Random().nextBool();
     initPlayer();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -233,19 +238,29 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
     );
   }
 
-  void _fetchVideoAds() {
+  void _fetchVideoAds() async {
+    List<dynamic> userAds = [];
+    try {
+      final adsSnap = await FirebaseFirestore.instance.collection('ads').get();
+      userAds = adsSnap.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      debugPrint("Error fetching active Firestore ads: $e");
+    }
+
     ApiService.shared.call(
       url: "${apiURL}ad/list",
       param: {},
       completion: (response) {
-        if (response['status'] == true) {
-          if (mounted) {
-            setState(() {
-              _videoAds = (response['data'] ?? []).where((ad) => ad['ad_type'] == 'Skippable Video').toList();
-            });
-          }
+        List<dynamic> systemAds = [];
+        if (response != null && response['status'] == true) {
+          systemAds = (response['data'] ?? []).where((ad) => ad['ad_type'] == 'Skippable Video').toList();
         }
-      }
+        if (mounted) {
+          setState(() {
+            _videoAds = [...systemAds, ...userAds];
+          });
+        }
+      },
     );
   }
 
@@ -253,27 +268,20 @@ class _VideoPlayerSheetState extends State<VideoPlayerSheet> with RouteAware, Wi
     if (playerController == null || !playerController!.value.isInitialized) return;
     
     final position = playerController!.value.position.inSeconds;
-    if (position >= 20 && !_adTriggeredForThisVideo) {
+    if (position >= _adTriggerSecond && !_adTriggeredForThisVideo && _shouldShowAdForThisVideo && _videoAds.isNotEmpty) {
       _adTriggeredForThisVideo = true;
       
-      final now = DateTime.now();
-      final diffMin = lastAdShownTime == null ? 999 : now.difference(lastAdShownTime!).inMinutes;
-      
-      if (videoViewCount % 3 == 0 && diffMin >= 20 && _videoAds.isNotEmpty) {
-        lastAdShownTime = now;
-        playerController!.pause();
-        if (mounted) {
-          setState(() {
-            _selectedAd = _videoAds[videoViewCount % _videoAds.length];
-            _showAdOverlay = true;
-          });
-        }
+      playerController!.pause();
+      if (mounted) {
+        setState(() {
+          _selectedAd = Map<String, dynamic>.from(_videoAds[Random().nextInt(_videoAds.length)]);
+          _showAdOverlay = true;
+        });
       }
     }
   }
 
   void initPlayer() {
-    videoViewCount++;
     _fetchVideoAds();
     final url = widget.controller.post.content?.first.content?.addBaseURL() ?? '';
     final isHls = url.contains('.m3u8') || url.contains('m3u8');

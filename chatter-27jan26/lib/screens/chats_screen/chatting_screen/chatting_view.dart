@@ -207,6 +207,14 @@ class ChattingView extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Row(
                   children: [
+                    GestureDetector(
+                      onTap: controller.startRecording,
+                      child: const Icon(
+                        Icons.mic_none_rounded,
+                        color: cLightText,
+                        size: 28,
+                      ),
+                    ),
                     const SizedBox(width: 5),
                     GestureDetector(
                       onTap: () {

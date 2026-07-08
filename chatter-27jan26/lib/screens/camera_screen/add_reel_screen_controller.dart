@@ -23,6 +23,10 @@ class AddReelScreenController extends BaseController {
   );
   RxList<Interest> selectedInterests = RxList();
 
+  RxBool isUploading = false.obs;
+  RxDouble uploadProgress = 0.0.obs;
+  RxBool isCompleted = false.obs;
+
   AddReelScreenController({required AddReelData data}) {
     this.data = data.obs;
   }
@@ -90,6 +94,12 @@ class AddReelScreenController extends BaseController {
               xFile: XFile(data.value.videoPath!),
               duration: videoDurationSec,
               completion: () async {
+                BaseController.share.stopLoading();
+
+                isUploading.value = true;
+                uploadProgress.value = 0.0;
+                isCompleted.value = false;
+
                 Reel? reel = await ReelService.shared.uploadReel(
                   description: textEditingController.text,
                   content: XFile(data.value.videoPath!),
@@ -97,13 +107,23 @@ class AddReelScreenController extends BaseController {
                   hashtags: tags.join(','),
                   interestIds: selectedInterests.map((element) => '${element.id}').toList().join(','),
                   musicId: data.value.selectedMusic?.music?.id,
+                  onProgress: (percentage) {
+                    uploadProgress.value = percentage;
+                  },
                 );
-                stopLoading();
+
+                isUploading.value = false;
                 if (reel != null) {
-                  Get.back();
-                  Get.back();
-                  Get.back();
-                  Get.back(result: reel);
+                  isCompleted.value = true;
+                  await Future.delayed(const Duration(seconds: 2));
+                  isCompleted.value = false;
+
+                  Get.off(() => ReelsScreen(
+                        reels: [reel].obs,
+                        position: 0.obs,
+                        pageType: ReelPageType.single,
+                        isLoading: false.obs,
+                      ));
                 }
               });
         });

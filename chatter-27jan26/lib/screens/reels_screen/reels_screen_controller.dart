@@ -13,6 +13,7 @@ import 'package:lumosocial/models/reel_model.dart';
 import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/screens/reels_screen/reel/reel_page_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:video_player/video_player.dart';
 
 class ReelsScreenController extends BaseController {
@@ -49,15 +50,25 @@ class ReelsScreenController extends BaseController {
     fetchActiveAds();
   }
 
-  void fetchActiveAds() {
+  void fetchActiveAds() async {
+    List<dynamic> userAds = [];
+    try {
+      final adsSnap = await FirebaseFirestore.instance.collection('ads').get();
+      userAds = adsSnap.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      debugPrint("Error fetching active Firestore ads: $e");
+    }
+
     ApiService.shared.call(
       url: "${apiURL}ad/list",
       param: {},
       completion: (response) {
-        if (response['status'] == true) {
-          activeAds = response['data'] ?? [];
-          update();
+        List<dynamic> systemAds = [];
+        if (response != null && response['status'] == true) {
+          systemAds = response['data'] ?? [];
         }
+        activeAds = [...systemAds, ...userAds];
+        update();
       },
     );
   }

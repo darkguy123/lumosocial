@@ -25,6 +25,7 @@ import 'package:lumosocial/utilities/web_service.dart';
 import 'package:lumosocial/screens/drama_screen/drama_player_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:lumosocial/utilities/translate_util.dart';
+import 'package:http/http.dart' as http;
 
 class ChatTag extends StatelessWidget {
   final ChattingController controller;
@@ -602,26 +603,34 @@ class _AudioBubblePlayerState extends State<AudioBubblePlayer> {
 
   Future<void> _downloadAndPrepare() async {
     try {
-      // audio_waveforms needs a local file path — download the remote URL first
       final dir = await getTemporaryDirectory();
       final fileName = widget.audioUrl.split('/').last.split('?').first;
       final localPath = '${dir.path}/$fileName';
       final file = File(localPath);
 
       if (!file.existsSync()) {
-        final httpClient = HttpClient();
-        final request = await httpClient.getUrl(Uri.parse(widget.audioUrl));
-        final response = await request.close();
-        final bytes = await consolidateHttpClientResponseBytes(response);
-        await file.writeAsBytes(bytes);
-        httpClient.close();
+        final response = await http.get(Uri.parse(widget.audioUrl));
+        if (response.statusCode == 200) {
+          await file.writeAsBytes(response.bodyBytes);
+        } else {
+          throw Exception("Failed to download audio file: ${response.statusCode}");
+        }
       }
 
-      await playerController.preparePlayer(
-        path: localPath,
-        shouldExtractWaveform: true,
-        noOfSamples: 30,
-      );
+      try {
+        await playerController.preparePlayer(
+          path: localPath,
+          shouldExtractWaveform: true,
+          noOfSamples: 30,
+        );
+      } catch (e) {
+        debugPrint("preparePlayer with waveform failed, retrying without waveform: $e");
+        await playerController.preparePlayer(
+          path: localPath,
+          shouldExtractWaveform: false,
+          noOfSamples: 30,
+        );
+      }
 
       if (mounted) {
         setState(() => isInitialized = true);

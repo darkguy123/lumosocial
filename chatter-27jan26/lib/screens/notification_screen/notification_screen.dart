@@ -20,6 +20,8 @@ import 'package:lumosocial/screens/rooms_screen/single_room/single_room_screen.d
 import 'package:lumosocial/screens/single_post_screen/single_post_screen.dart';
 import 'package:lumosocial/screens/single_reel_screen/single_reel_screen.dart';
 import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/screens/chats_screen/chatting_screen/chatting_view.dart';
+import 'package:lumosocial/screens/dashboard_reels_screen/live_tv_screen.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -58,17 +60,17 @@ class NotificationScreen extends StatelessWidget {
                                 await controller.fetchUserNotifications(shouldRefresh: true);
                               },
                               child: NoDataView(
-                                showShow: !controller.isLoading.value && controller.userNotifications.isEmpty,
+                                showShow: !controller.isLoading.value && controller.forYouNotifications.isEmpty,
                                 child: LoadMoreWidget(
                                   loadMore: controller.fetchUserNotifications,
                                   child: ListView.builder(
                                     physics: AlwaysScrollableScrollPhysics(),
                                     controller: controller.userScrollController,
                                     padding: const EdgeInsets.all(10),
-                                    itemCount: controller.userNotifications.length,
+                                    itemCount: controller.forYouNotifications.length,
                                     itemBuilder: (context, index) {
                                       return UserNotificationCard(
-                                        notification: controller.userNotifications[index],
+                                        notification: controller.forYouNotifications[index],
                                       );
                                     },
                                   ),
@@ -122,15 +124,19 @@ class NotificationScreen extends StatelessWidget {
   }
 
   Widget listView({required NotificationScreenController controller}) {
+    final list = controller.combinedPlatformNotifications;
     return ListView.builder(
-      physics: AlwaysScrollableScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(),
       controller: controller.scrollController,
       padding: const EdgeInsets.all(10),
-      itemCount: controller.notifications.length,
+      itemCount: list.length,
       itemBuilder: (context, index) {
-        return NotificationCard(
-          notification: controller.notifications[index],
-        );
+        final item = list[index];
+        if (item is UserNotification) {
+          return UserNotificationCard(notification: item);
+        } else {
+          return NotificationCard(notification: item as PlatformNotification);
+        }
       },
     );
   }
@@ -147,7 +153,12 @@ class UserNotificationCard extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            if (notification.reel != null) {
+            final t = (notification.type ?? 0).toInt();
+            if (t == 12 && notification.user != null) {
+              Get.to(() => ChattingView(user: notification.user));
+            } else if (t == 15) {
+              Get.to(() => const LiveTvScreen());
+            } else if (notification.reel != null) {
               Get.to(() => SingleReelScreen(reelId: notification.reel?.id ?? 0));
             } else if (notification.post != null) {
               Get.to(() => SinglePostScreen(postId: notification.post?.id ?? 0));
@@ -238,6 +249,14 @@ class UserNotificationCard extends StatelessWidget {
         return "completed a transaction.";
       case 14:
         return "posted a new feed post.";
+      case 15:
+        return "published a live match.";
+      case 16:
+        return "sent you a coin transfer.";
+      case 17:
+        return "blocked or reported you.";
+      case 18:
+        return "earned Lc coins from activities.";
     }
     return "";
   }

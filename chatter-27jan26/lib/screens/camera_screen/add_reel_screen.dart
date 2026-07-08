@@ -21,106 +21,177 @@ class AddReelScreen extends StatelessWidget {
     AddReelScreenController controller = Get.put(AddReelScreenController(data: data));
     return Scaffold(
       body: Obx(
-        () => Column(
+        () => Stack(
           children: [
-            TopBarForInView(
-              title: LKeys.addNewReel,
-              child: InkWell(
-                onTap: controller.uploadReel,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  padding: const EdgeInsets.only(right: 20, left: 20, top: 7, bottom: 5),
-                  decoration: BoxDecoration(color: cPrimary, borderRadius: BorderRadius.circular(100)),
-                  child: Text(
-                    LKeys.post.tr.toUpperCase(),
-                    style: MyTextStyle.gilroySemiBold(color: cBlack, size: 14),
+            Column(
+              children: [
+                TopBarForInView(
+                  title: LKeys.addNewReel,
+                  child: InkWell(
+                    onTap: controller.isUploading.value ? null : controller.uploadReel,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.only(right: 20, left: 20, top: 7, bottom: 5),
+                      decoration: BoxDecoration(
+                        color: controller.isUploading.value ? Colors.grey : cPrimary,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Text(
+                        LKeys.post.tr.toUpperCase(),
+                        style: MyTextStyle.gilroySemiBold(color: cBlack, size: 14),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: SafeArea(
-                  top: false,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Container(
-                        width: 170,
-                        height: 250,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            ClipSmoothRect(
-                              radius: SmoothBorderRadius(cornerRadius: 10, cornerSmoothing: cornerSmoothing),
-                              child: controller.data.value.thumbnailBytes != null
-                                  ? Image.memory(
-                                      controller.data.value.thumbnailBytes!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Container(
-                                      color: cLightBg,
-                                    ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  BlurBgButton(
-                                    text: LKeys.preview,
-                                    onTap: controller.openPreview,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: SafeArea(
+                      top: false,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20),
+                          Container(
+                            width: 170,
+                            height: 250,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                ClipSmoothRect(
+                                  radius: SmoothBorderRadius(cornerRadius: 10, cornerSmoothing: cornerSmoothing),
+                                  child: controller.data.value.thumbnailBytes != null
+                                      ? Image.memory(
+                                          controller.data.value.thumbnailBytes!,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Container(
+                                          color: cLightBg,
+                                        ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      BlurBgButton(
+                                        text: LKeys.preview,
+                                        onTap: controller.openPreview,
+                                      ),
+                                      BlurBgButton(
+                                        text: LKeys.changeCover,
+                                        onTap: controller.changeCover,
+                                      )
+                                    ],
                                   ),
-                                  BlurBgButton(
-                                    text: LKeys.changeCover,
-                                    onTap: controller.changeCover,
-                                  )
-                                ],
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            margin: const EdgeInsets.all(15),
+                            height: 130,
+                            decoration: ShapeDecoration(color: cLightBg, shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius.all(SmoothRadius(cornerRadius: 10, cornerSmoothing: cornerSmoothing)))),
+                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                            child: DetectableTextField(
+                              style: MyTextStyle.outfitLight(size: 18, color: cBlack).copyWith(height: 1.2),
+                              textCapitalization: TextCapitalization.sentences,
+                              expands: true,
+                              minLines: null,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                hintText: LKeys.writeHere.tr,
+                                hintStyle: MyTextStyle.outfitLight(color: cLightText.withValues(alpha: 0.6), size: 18),
+                                border: InputBorder.none,
+                                counterText: '',
+                                isDense: true,
+                                contentPadding: const EdgeInsets.all(0),
                               ),
-                            )
+                              cursorColor: cPrimary,
+                              maxLength: null,
+                              keyboardType: TextInputType.multiline,
+                              controller: controller.textEditingController,
+                              textInputAction: TextInputAction.next,
+                              // onChanged: controller.onTextChanged,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: InterestSelectorSection(
+                              title: LKeys.selectInterestToContinue,
+                              selectedInterests: controller.selectedInterests,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (controller.isUploading.value)
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 50,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Uploading Reel...",
+                              style: MyTextStyle.gilroyMedium(size: 14, color: cBlack),
+                            ),
+                            const SizedBox(height: 5),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: LinearProgressIndicator(
+                                value: controller.uploadProgress.value,
+                                backgroundColor: Colors.grey[200],
+                                valueColor: AlwaysStoppedAnimation<Color>(cPrimary),
+                                minHeight: 6,
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Container(
-                        margin: const EdgeInsets.all(15),
-                        height: 130,
-                        decoration: ShapeDecoration(color: cLightBg, shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius.all(SmoothRadius(cornerRadius: 10, cornerSmoothing: cornerSmoothing)))),
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                        child: DetectableTextField(
-                          style: MyTextStyle.outfitLight(size: 18, color: cBlack).copyWith(height: 1.2),
-                          textCapitalization: TextCapitalization.sentences,
-                          expands: true,
-                          minLines: null,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            hintText: LKeys.writeHere.tr,
-                            hintStyle: MyTextStyle.outfitLight(color: cLightText.withValues(alpha: 0.6), size: 18),
-                            border: InputBorder.none,
-                            counterText: '',
-                            isDense: true,
-                            contentPadding: const EdgeInsets.all(0),
-                          ),
-                          cursorColor: cPrimary,
-                          maxLength: null,
-                          keyboardType: TextInputType.multiline,
-                          controller: controller.textEditingController,
-                          textInputAction: TextInputAction.next,
-                          // onChanged: controller.onTextChanged,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: InterestSelectorSection(
-                          title: LKeys.selectInterestToContinue,
-                          selectedInterests: controller.selectedInterests,
-                        ),
-                      )
                     ],
                   ),
                 ),
               ),
-            ),
+            if (controller.isCompleted.value)
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 50,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                  color: Colors.green,
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.check_circle,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Reels Published",
+                        style: MyTextStyle.gilroyBold(
+                          size: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),

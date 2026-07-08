@@ -10,6 +10,42 @@ class NotificationScreenController extends CupertinoController {
   List<PlatformNotification> notifications = [];
   List<UserNotification> userNotifications = [];
 
+  List<UserNotification> get forYouNotifications {
+    return userNotifications.where((n) {
+      final t = (n.type ?? 0).toInt();
+      return t == 2 || t == 3 || t == 9 || t == 10 || t == 11 || t == 12 || t == 14 || t == 15 || (t >= 4 && t <= 8);
+    }).toList();
+  }
+
+  List<UserNotification> get platformUserNotifications {
+    return userNotifications.where((n) {
+      final t = (n.type ?? 0).toInt();
+      return t == 1 || t == 13 || t == 16 || t == 17 || t == 18;
+    }).toList();
+  }
+
+  List<dynamic> get combinedPlatformNotifications {
+    List<dynamic> combined = [];
+    combined.addAll(platformUserNotifications);
+    combined.addAll(notifications);
+    combined.sort((a, b) {
+      DateTime dateA;
+      DateTime dateB;
+      if (a is UserNotification) {
+        dateA = DateTime.tryParse(a.createdAt ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      } else {
+        dateA = DateTime.tryParse((a as PlatformNotification).createdAt ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      }
+      if (b is UserNotification) {
+        dateB = DateTime.tryParse(b.createdAt ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      } else {
+        dateB = DateTime.tryParse((b as PlatformNotification).createdAt ?? '') ?? DateTime.fromMillisecondsSinceEpoch(0);
+      }
+      return dateB.compareTo(dateA);
+    });
+    return combined;
+  }
+
   @override
   void onReady() {
     fetchUserNotifications();

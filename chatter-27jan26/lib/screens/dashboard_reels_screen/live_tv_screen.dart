@@ -1038,6 +1038,9 @@ class LiveMatchYouTubePlayer extends StatefulWidget {
 class _LiveMatchYouTubePlayerState extends State<LiveMatchYouTubePlayer> {
   late final WebViewController _webController;
   bool _isWebLoading = true;
+  bool _isPlaying = true;
+  bool _showControls = true;
+  Timer? _controlsTimer;
 
   @override
   void initState() {
@@ -1052,7 +1055,12 @@ class _LiveMatchYouTubePlayerState extends State<LiveMatchYouTubePlayer> {
       ..setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
       ..setBackgroundColor(Colors.black)
       ..setNavigationDelegate(NavigationDelegate(
-        onPageFinished: (_) => setState(() => _isWebLoading = false),
+        onPageFinished: (_) {
+          if (mounted) {
+            setState(() => _isWebLoading = false);
+            _resetControlsTimer();
+          }
+        },
       ));
 
     // Try to extract YouTube video ID to load custom HTML iframe string (prevents mobile playback blocks)
@@ -1120,8 +1128,35 @@ class _LiveMatchYouTubePlayerState extends State<LiveMatchYouTubePlayer> {
     }
   }
 
+  void _resetControlsTimer() {
+    _controlsTimer?.cancel();
+    setState(() {
+      _showControls = true;
+    });
+    _controlsTimer = Timer(const Duration(seconds: 4), () {
+      if (mounted) {
+        setState(() {
+          _showControls = false;
+        });
+      }
+    });
+  }
+
+  void _togglePlayPause() {
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
+    if (_isPlaying) {
+      _webController.runJavaScript('document.getElementById("player").contentWindow.postMessage(\'{"event":"command","func":"playVideo","args":""}\', \'*\');');
+    } else {
+      _webController.runJavaScript('document.getElementById("player").contentWindow.postMessage(\'{"event":"command","func":"pauseVideo","args":""}\', \'*\');');
+    }
+    _resetControlsTimer();
+  }
+
   @override
   void dispose() {
+    _controlsTimer?.cancel();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
@@ -1131,62 +1166,92 @@ class _LiveMatchYouTubePlayerState extends State<LiveMatchYouTubePlayer> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          WebViewWidget(controller: _webController),
-          if (_isWebLoading)
-            const Center(child: CircularProgressIndicator(color: Color(0xFF00FF87))),
-          Positioned(
-            top: 16,
-            right: 16,
-            child: SafeArea(
-              child: GestureDetector(
-                onTap: () => Get.back(),
+      body: GestureDetector(
+        onTap: _resetControlsTimer,
+        behavior: HitTestBehavior.opaque,
+        child: Stack(
+          children: [
+            IgnorePointer(
+              ignoring: true,
+              child: WebViewWidget(controller: _webController),
+            ),
+            if (_isWebLoading)
+              const Center(child: CircularProgressIndicator(color: Color(0xFF00FF87))),
+              
+            // App-level video controls overlay
+            if (!_isWebLoading && _showControls)
+              Center(
+                child: GestureDetector(
+                  onTap: _togglePlayPause,
+                  child: Container(
+                    width: 65,
+                    height: 65,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.65),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white24, width: 1.5),
+                    ),
+                    child: Icon(
+                      _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                      color: Colors.white,
+                      size: 38,
+                    ),
+                  ),
+                ),
+              ),
+              
+            Positioned(
+              top: 16,
+              right: 16,
+              child: SafeArea(
+                child: GestureDetector(
+                  onTap: () => Get.back(),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.7),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white30),
+                    ),
+                    child: const Icon(Icons.close_rounded, color: Colors.white, size: 22),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 16,
+              left: 16,
+              child: SafeArea(
                 child: Container(
-                  width: 40,
-                  height: 40,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.7),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white30),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.close_rounded, color: Colors.white, size: 22),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 16,
-            left: 16,
-            child: SafeArea(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.7),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      margin: const EdgeInsets.only(right: 6),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        margin: const EdgeInsets.only(right: 6),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'LIVE • ${widget.matchTitle}',
-                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                      Text(
+                        'LIVE • ${widget.matchTitle}',
+                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

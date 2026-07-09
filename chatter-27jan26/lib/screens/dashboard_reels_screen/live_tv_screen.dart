@@ -1049,11 +1049,75 @@ class _LiveMatchYouTubePlayerState extends State<LiveMatchYouTubePlayer> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _webController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
       ..setBackgroundColor(Colors.black)
       ..setNavigationDelegate(NavigationDelegate(
         onPageFinished: (_) => setState(() => _isWebLoading = false),
-      ))
-      ..loadRequest(Uri.parse(widget.embedUrl));
+      ));
+
+    // Try to extract YouTube video ID to load custom HTML iframe string (prevents mobile playback blocks)
+    String? videoId;
+    try {
+      final uri = Uri.parse(widget.embedUrl);
+      if (uri.pathSegments.contains('embed')) {
+        final index = uri.pathSegments.indexOf('embed');
+        if (index + 1 < uri.pathSegments.length) {
+          videoId = uri.pathSegments[index + 1].split('?').first;
+        }
+      }
+    } catch (e) {
+      debugPrint("Error parsing YouTube video ID: $e");
+    }
+
+    if (videoId != null && videoId.isNotEmpty) {
+      final html = '''
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        overflow: hidden;
+      }
+      .video-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="video-container">
+      <iframe
+        id="player"
+        src="https://www.youtube.com/embed/$videoId?autoplay=1&playsinline=1&enablejsapi=1&fs=1&rel=0&showinfo=0&origin=https://www.youtube.com"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </body>
+</html>
+''';
+      _webController.loadHtmlString(html, baseUrl: 'https://www.youtube.com');
+    } else {
+      _webController.loadRequest(
+        Uri.parse(widget.embedUrl),
+        headers: const {'Referer': 'https://www.youtube.com'},
+      );
+    }
   }
 
   @override

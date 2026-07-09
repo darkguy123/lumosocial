@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/common/extensions/image_extension.dart';
@@ -39,93 +40,122 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   @override
   Widget build(BuildContext context) {
     var isLastPage = (screens.length - 1) == currentPage;
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    LKeys.textChatDedicated.tr,
-                    style: MyTextStyle.gilroyLight(size: 22),
-                  ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  Text(
-                    LKeys.socialMedia.tr,
-                    style: MyTextStyle.gilroySemiBold(size: 23),
-                  ),
-                ],
+    Widget mainBody = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                LKeys.textChatDedicated.tr,
+                style: MyTextStyle.gilroyLight(size: 22),
               ),
-            ),
-            Expanded(
-              child: PageView(
-                controller: pageController,
-                children: screens,
+              const SizedBox(
+                height: 3,
               ),
-            ),
-            Container(
-              height: 10,
-              margin: EdgeInsets.only(bottom: 30),
-              alignment: Alignment.center,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(0),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: screens.length,
-                  itemBuilder: (context, index) {
-                    return CircleAvatar(
-                      radius: 10,
-                      backgroundColor: currentPage == index ? cLightText.withValues(alpha: 0.5) : cLightBg,
-                    );
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: CommonButton(
-                  text: isLastPage ? LKeys.letsStart : LKeys.next,
-                  onTap: () {
-                    if (!isLastPage) {
-                      pageController.animateToPage(
-                        currentPage + 1,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.linear,
-                      );
-                    } else {
-                      Get.to(() => const LoginScreen());
-                    }
-                  }),
-            ),
-            Opacity(
-              opacity: isLastPage ? 0 : 1,
-              child: GestureDetector(
-                onTap: () {
+              Text(
+                LKeys.socialMedia.tr,
+                style: MyTextStyle.gilroySemiBold(size: 23),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: PageView(
+            controller: pageController,
+            children: screens,
+          ),
+        ),
+        Container(
+          height: 10,
+          margin: EdgeInsets.only(bottom: 30),
+          alignment: Alignment.center,
+          child: ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.all(0),
+              scrollDirection: Axis.horizontal,
+              itemCount: screens.length,
+              itemBuilder: (context, index) {
+                return CircleAvatar(
+                  radius: 10,
+                  backgroundColor: currentPage == index ? cLightText.withValues(alpha: 0.5) : cLightBg,
+                );
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: CommonButton(
+              text: isLastPage ? LKeys.letsStart : LKeys.next,
+              onTap: () {
+                if (!isLastPage) {
                   pageController.animateToPage(
-                    screens.length - 1,
+                    currentPage + 1,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.linear,
                   );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Center(
-                    child: Text(
-                      LKeys.skip.tr,
-                      style: MyTextStyle.gilroyRegular(size: 16, color: cLightText),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                } else {
+                  Get.to(() => const LoginScreen());
+                }
+              }),
+        ),
+        Opacity(
+          opacity: isLastPage ? 0 : 1,
+          child: GestureDetector(
+            onTap: () {
+              pageController.animateToPage(
+                screens.length - 1,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.linear,
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: Text(
+                  LKeys.skip.tr,
+                  style: MyTextStyle.gilroyRegular(size: 16, color: cLightText),
+                  textAlign: TextAlign.center,
                 ),
               ),
-            )
-          ],
+            ),
+          ),
+        )
+      ],
+    );
+
+    if (kIsWeb && MediaQuery.of(context).size.width > 600) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF07080B),
+        body: Center(
+          child: Container(
+            width: 410,
+            height: 820,
+            margin: const EdgeInsets.symmetric(vertical: 20),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.white10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  blurRadius: 32,
+                  offset: const Offset(0, 12),
+                )
+              ]
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: SafeArea(child: mainBody),
+            ),
+          ),
         ),
-      ),
+      );
+    }
+
+    return Scaffold(
+      body: SafeArea(child: mainBody),
     );
   }
 }

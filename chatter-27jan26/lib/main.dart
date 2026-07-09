@@ -2,6 +2,7 @@ import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,22 +30,46 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  if (!kIsWeb) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 
-  await Firebase.initializeApp();
-  // Set the background messaging handler early on, as a named top-level function
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  if (kIsWeb) {
+    try {
+      await Firebase.initializeApp();
+    } catch (e) {
+      debugPrint("Firebase Web initialization failed or skipped: $e");
+    }
+  } else {
+    await Firebase.initializeApp();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
   await GetStorage.init();
   SessionManager.shared;
   InterstitialManager.shared;
-  await AppTrackingTransparency.requestTrackingAuthorization();
+
+  if (!kIsWeb) {
+    await AppTrackingTransparency.requestTrackingAuthorization();
+  }
+  
   PackageInfo.fromPlatform();
   SubscriptionManager.shared.initPlatformState();
-  MobileAds.instance.initialize();
-  (await AudioSession.instance).configure(const AudioSessionConfiguration.speech());
+
+  if (!kIsWeb) {
+    MobileAds.instance.initialize();
+  }
+
+  if (!kIsWeb) {
+    try {
+      (await AudioSession.instance).configure(const AudioSessionConfiguration.speech());
+    } catch (e) {
+      debugPrint("AudioSession configuration failed: $e");
+    }
+  }
 
   FlutterError.onError = (FlutterErrorDetails details) {
     if (details.library == 'image resource service' && (details.exception.toString().contains('404') || details.exception.toString().contains('403'))) {

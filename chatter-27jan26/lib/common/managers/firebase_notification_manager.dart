@@ -33,6 +33,7 @@ class FirebaseNotificationManager {
   String newMessageId = '';
 
   void init() async {
+    if (kIsWeb) return;
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
 
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(alert: true, sound: true);
@@ -176,6 +177,7 @@ class FirebaseNotificationManager {
   }
 
   void subscribeToTopic(String topic) async {
+    if (kIsWeb) return;
     var user = SessionManager.shared.getUser();
     if (user == null || user.isPushNotifications == 1) {
       await firebaseMessaging.subscribeToTopic('${topic}_${Platform.isIOS ? 'ios' : 'android'}').onError((error, stackTrace) {
@@ -187,6 +189,7 @@ class FirebaseNotificationManager {
   }
 
   void unsubscribeToTopic(String topic) async {
+    if (kIsWeb) return;
     await firebaseMessaging.unsubscribeFromTopic('${topic}_${Platform.isIOS ? 'ios' : 'android'}');
 
     if (kDebugMode) await firebaseMessaging.subscribeToTopic('test_${topic}_${Platform.isIOS ? 'ios' : 'android'}');
@@ -195,6 +198,7 @@ class FirebaseNotificationManager {
   bool hasListenerSet = false;
 
   void setupListener() async {
+    if (kIsWeb) return;
     if (hasListenerSet) {
       return;
     }

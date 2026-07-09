@@ -224,6 +224,10 @@ class ApiService {
   }
 
   Future<String?> downloadFile(String url, String fileName) async {
+    if (kIsWeb) {
+      Loggers.error("File downloads are not supported on web via standard file paths.");
+      return null;
+    }
     try {
       var response = await http.get(Uri.parse(url));
 

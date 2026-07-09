@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lumosocial/localization/allLanguages.dart';
 import 'package:lumosocial/models/registration.dart';
@@ -92,10 +92,12 @@ class SessionManager {
   }
 
   String getBannerAdId() {
+    if (kIsWeb) return '';
     return (Platform.isAndroid ? (getSettings()?.adBannerAndroid) : (getSettings()?.adBannerIOs)) ?? '';
   }
 
   String getInterstitialAdId() {
+    if (kIsWeb) return '';
     return (Platform.isAndroid ? (getSettings()?.adInterstitialAndroid) : (getSettings()?.adInterstitialIOs)) ?? '';
   }
 

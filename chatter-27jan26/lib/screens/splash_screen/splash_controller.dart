@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,7 +55,7 @@ class SplashController extends BaseController {
       return MaintenanceScreen();
     }
 
-    if (settings?.isForceAppUpdate == 1) {
+    if (!kIsWeb && settings?.isForceAppUpdate == 1) {
       var packageInfo = await PackageInfo.fromPlatform();
       String version = packageInfo.version;
 

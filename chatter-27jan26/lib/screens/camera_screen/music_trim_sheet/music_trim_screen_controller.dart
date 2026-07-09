@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
@@ -161,6 +162,7 @@ class MusicTrimScreenController extends BaseController {
   }
 
   Future<String> getPath() async {
+    if (kIsWeb) return '';
     Directory? directory = await (Platform.isAndroid ? getExternalStorageDirectory() : getApplicationDocumentsDirectory());
     return directory?.path ?? '';
   }

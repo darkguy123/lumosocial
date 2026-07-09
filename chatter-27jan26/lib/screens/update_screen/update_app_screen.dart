@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
@@ -48,7 +49,7 @@ class UpdateAppScreen extends StatelessWidget {
           CommonButton(
               text: LKeys.update,
               onTap: () {
-                if (Platform.isAndroid) {
+                if (!kIsWeb && Platform.isAndroid) {
                   launchUrl(Uri.parse(SessionManager.shared.getSettings()?.playStoreDownloadLink ?? ''), mode: LaunchMode.externalApplication);
                 } else {
                   launchUrl(Uri.parse(SessionManager.shared.getSettings()?.appStoreDownloadLink ?? ''), mode: LaunchMode.externalApplication);

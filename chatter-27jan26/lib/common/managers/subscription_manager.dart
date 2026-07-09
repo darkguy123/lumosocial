@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -15,6 +16,7 @@ class SubscriptionManager {
   List<Package> packages = [];
 
   Future<void> initPlatformState() async {
+    if (kIsWeb) return;
     PurchasesConfiguration configuration;
     if (Platform.isAndroid) {
       if (revenuecatAndroidApiKey.isNotEmpty) {

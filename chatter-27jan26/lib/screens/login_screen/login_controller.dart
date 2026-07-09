@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,7 +54,7 @@ class LoginController extends BaseController {
   void googleLogin() async {
     final GoogleSignIn googleSignIn = GoogleSignIn.instance;
 
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       String id = await getWebClientId();
       await GoogleSignIn.instance.initialize(serverClientId: id, clientId: id);
     } else {

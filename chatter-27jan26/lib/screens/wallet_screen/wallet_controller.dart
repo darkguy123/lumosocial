@@ -164,4 +164,128 @@ class WalletController extends GetxController {
 
     return completer.future;
   }
+
+  /// Initialize Flutterwave Payment session
+  Future<Map<String, dynamic>?> initializeFlutterwavePayment({
+    required double coins,
+    required double amount,
+    String currency = 'NGN',
+  }) async {
+    final userId = SessionManager.shared.getUserID();
+    final completer = Completer<Map<String, dynamic>?>();
+
+    ApiService.shared.call(
+      url: WebService.flutterwaveInitialize,
+      param: {
+        'user_id': userId,
+        'coins': coins,
+        'amount': amount,
+        'currency': currency,
+      },
+      completion: (response) {
+        if (response['status'] == true && response['data'] != null) {
+          completer.complete(Map<String, dynamic>.from(response['data']));
+        } else {
+          completer.complete(null);
+          Get.snackbar(
+            "Payment Error",
+            response['message'] ?? "Could not initialize payment session.",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      },
+    );
+
+    return completer.future;
+  }
+
+  /// Verify Flutterwave Payment & Credit Coins
+  Future<bool> verifyFlutterwavePayment({
+    required double coins,
+    required String txRef,
+    String? transactionId,
+  }) async {
+    final userId = SessionManager.shared.getUserID();
+    final completer = Completer<bool>();
+
+    ApiService.shared.call(
+      url: WebService.flutterwaveVerify,
+      param: {
+        'user_id': userId,
+        'coins': coins,
+        'tx_ref': txRef,
+        if (transactionId != null) 'transaction_id': transactionId,
+      },
+      completion: (response) {
+        if (response['status'] == true) {
+          fetchWalletDetails(); // Refresh wallet details
+          completer.complete(true);
+        } else {
+          completer.complete(false);
+          Get.snackbar(
+            "Verification Error",
+            response['message'] ?? "Could not verify payment.",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      },
+    );
+
+    return completer.future;
+  }
+
+  /// Request Coin Withdrawal
+  /// Enforces Minimum 20,000 Lumo Coins
+  Future<bool> requestWithdrawal({
+    required double amount,
+    required String bankName,
+    required String accountNumber,
+    String? accountName,
+  }) async {
+    if (amount < 20000) {
+      Get.snackbar(
+        "Minimum Withdrawal",
+        "The minimum withdrawal amount is 20,000 Lumo Coins.",
+        backgroundColor: Colors.orange,
+        colorText: Colors.black,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return false;
+    }
+
+    final userId = SessionManager.shared.getUserID();
+    final completer = Completer<bool>();
+
+    ApiService.shared.call(
+      url: WebService.walletWithdraw,
+      param: {
+        'user_id': userId,
+        'amount': amount,
+        'bank_name': bankName,
+        'account_number': accountNumber,
+        'account_name': accountName ?? '',
+      },
+      completion: (response) {
+        if (response['status'] == true) {
+          fetchWalletDetails(); // Refresh balance & transactions
+          completer.complete(true);
+        } else {
+          completer.complete(false);
+          Get.snackbar(
+            "Withdrawal Failed",
+            response['message'] ?? "Could not process withdrawal request.",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      },
+    );
+
+    return completer.future;
+  }
 }

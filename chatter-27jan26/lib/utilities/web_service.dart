@@ -106,6 +106,9 @@ class WebService {
   static const String walletSearchUsers = "${apiURL}wallet/searchUsers";
   static const String walletSetPin = "${apiURL}wallet/setPin";
   static const String walletVerifyPin = "${apiURL}wallet/verifyPin";
+  static const String flutterwaveInitialize = "${apiURL}wallet/flutterwave/initialize";
+  static const String flutterwaveVerify = "${apiURL}wallet/flutterwave/verify";
+  static const String walletWithdraw = "${apiURL}wallet/withdraw";
 
   // Drama APIs
   static const String dramaList = "${apiURL}drama/list";

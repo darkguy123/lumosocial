@@ -10,6 +10,7 @@ import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/utilities/const.dart';
 import 'package:lumosocial/screens/wallet_screen/wallet_controller.dart';
 import 'package:lumosocial/screens/wallet_screen/scanner_screen.dart';
+import 'package:lumosocial/screens/wallet_screen/flutterwave_payment_screen.dart';
 import 'package:lumosocial/common/extensions/image_extension.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -184,54 +185,110 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
                 const SizedBox(height: 25),
 
-                // Send / Receive Action Buttons
-                Row(
+                // Action Buttons (Add Coin, Withdraw, Send, Receive)
+                Column(
                   children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00FF87),
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF00FF87),
+                              foregroundColor: Colors.black,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 5,
+                            ),
+                            onPressed: () => _openAddCoinsModal(context),
+                            icon: const Icon(Icons.add_circle_outline_rounded, size: 20),
+                            label: const Text(
+                              "Add Coin",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Gilroy-Bold',
+                              ),
+                            ),
                           ),
-                          elevation: 5,
                         ),
-                        onPressed: () => _openSendCoinsModal(context),
-                        icon: const Icon(Icons.send_rounded, size: 20),
-                        label: const Text(
-                          "Send",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Gilroy-Bold',
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF1E1E24),
+                              foregroundColor: const Color(0xFFFFB703),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                side: const BorderSide(color: Color(0xFFFFB703), width: 1.2),
+                              ),
+                              elevation: 2,
+                            ),
+                            onPressed: () => _openWithdrawModal(context),
+                            icon: const Icon(Icons.account_balance_wallet_rounded, size: 20),
+                            label: const Text(
+                              "Withdraw",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Gilroy-Bold',
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF00FF87),
-                          side: const BorderSide(color: Color(0xFF00FF87), width: 1.5),
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white24, width: 1),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            onPressed: () => _openSendCoinsModal(context),
+                            icon: const Icon(Icons.send_rounded, size: 18),
+                            label: const Text(
+                              "Send",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Gilroy-Bold',
+                              ),
+                            ),
                           ),
                         ),
-                        onPressed: () => _openReceiveCoinsModal(context),
-                        icon: const Icon(Icons.qr_code_2_rounded, size: 20),
-                        label: const Text(
-                          "Receive",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Gilroy-Bold',
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white24, width: 1),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            onPressed: () => _openReceiveCoinsModal(context),
+                            icon: const Icon(Icons.qr_code_2_rounded, size: 18),
+                            label: const Text(
+                              "Receive",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Gilroy-Bold',
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -445,9 +502,512 @@ class _WalletScreenState extends State<WalletScreen> {
   // Action methods
   Future<void> _scanQrCode() async {
     final result = await Get.to(() => const ScannerScreen());
-    if (result is String && result.isNotEmpty) {
+    if (result is String && result.isNotEmpty && mounted) {
       _openSendCoinsModal(context, prefilledRecipient: result);
     }
+  }
+
+  void _openAddCoinsModal(BuildContext context) {
+    double selectedCoins = 5000;
+    final TextEditingController customCoinsController = TextEditingController(text: "5000");
+
+    final packages = [1000.0, 5000.0, 10000.0, 20000.0, 50000.0, 100000.0];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF151515),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setModalState) {
+          final fiatPrice = selectedCoins * controller.ngnRate.value;
+
+          return Padding(
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 25,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 25,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  children: [
+                    const Icon(Icons.add_circle_outline_rounded, color: Color(0xFF00FF87), size: 28),
+                    const SizedBox(width: 10),
+                    const Text(
+                      "Buy Lumo Coins",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Gilroy-Bold',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Pay securely via Flutterwave (Cards, Bank Transfer, USSD, Mobile Money)",
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13),
+                ),
+                const SizedBox(height: 20),
+
+                const Text(
+                  "Select Package",
+                  style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: packages.map((pkg) {
+                    final isSelected = selectedCoins == pkg;
+                    return ChoiceChip(
+                      label: Text("${pkg.toInt()} Lc"),
+                      selected: isSelected,
+                      selectedColor: const Color(0xFF00FF87),
+                      backgroundColor: const Color(0xFF222222),
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.black : Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      onSelected: (selected) {
+                        if (selected) {
+                          setModalState(() {
+                            selectedCoins = pkg;
+                            customCoinsController.text = pkg.toInt().toString();
+                          });
+                        }
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 20),
+
+                TextField(
+                  controller: customCoinsController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  onChanged: (val) {
+                    setModalState(() {
+                      selectedCoins = double.tryParse(val) ?? 0.0;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: "Or enter custom coin amount",
+                    labelStyle: TextStyle(color: Colors.white54, fontSize: 13),
+                    suffixText: "Lc",
+                    suffixStyle: TextStyle(color: Color(0xFF00FF87), fontSize: 16, fontWeight: FontWeight.bold),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF00FF87))),
+                  ),
+                ),
+                const SizedBox(height: 25),
+
+                // Amount breakdown card
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("Total Payable", style: TextStyle(color: Colors.white54, fontSize: 12)),
+                          const SizedBox(height: 4),
+                          Text(
+                            "₦${fiatPrice.toStringAsFixed(2)} NGN",
+                            style: const TextStyle(color: Color(0xFF00FF87), fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "≈ ${selectedCoins.toStringAsFixed(0)} Lc",
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 25),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF00FF87),
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 5,
+                    ),
+                    icon: const Icon(Icons.payment_rounded, size: 22),
+                    label: const Text(
+                      "Pay with Flutterwave",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Gilroy-Bold'),
+                    ),
+                    onPressed: () async {
+                      if (selectedCoins < 1) {
+                        Get.snackbar("Invalid Amount", "Please enter at least 1 Lumo Coin to buy.", backgroundColor: Colors.orange);
+                        return;
+                      }
+
+                      Get.dialog(
+                        const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
+                        barrierDismissible: false,
+                      );
+
+                      final initData = await controller.initializeFlutterwavePayment(
+                        coins: selectedCoins,
+                        amount: fiatPrice,
+                        currency: 'NGN',
+                      );
+
+                      Get.back(); // close loader
+
+                      if (initData != null && initData['payment_url'] != null) {
+                        final paymentUrl = initData['payment_url'];
+                        final txRef = initData['tx_ref'] ?? '';
+
+                        final result = await Get.to(() => FlutterwavePaymentScreen(
+                          paymentUrl: paymentUrl,
+                          txRef: txRef,
+                        ));
+
+                        if (result is FlutterwavePaymentResult && result.success) {
+                          Get.back(); // close modal sheet
+
+                          Get.dialog(
+                            const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FF87)))),
+                            barrierDismissible: false,
+                          );
+
+                          bool verified = await controller.verifyFlutterwavePayment(
+                            coins: selectedCoins,
+                            txRef: result.txRef,
+                            transactionId: result.transactionId,
+                          );
+
+                          Get.back(); // close loader
+
+                          if (verified) {
+                            Get.snackbar(
+                              "Purchase Successful!",
+                              "Successfully added ${selectedCoins.toStringAsFixed(0)} Lumo Coins to your wallet.",
+                              backgroundColor: const Color(0xFF00FF87),
+                              colorText: Colors.black,
+                              snackPosition: SnackPosition.BOTTOM,
+                              duration: const Duration(seconds: 4),
+                            );
+                          }
+                        }
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
+
+  void _openWithdrawModal(BuildContext context) {
+    double amount = 20000.0;
+    final TextEditingController amountController = TextEditingController(text: "20000");
+    final TextEditingController bankNameController = TextEditingController();
+    final TextEditingController accountNumberController = TextEditingController();
+    final TextEditingController accountNameController = TextEditingController();
+    final TextEditingController pinController = TextEditingController();
+
+    int currentStep = 1;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF151515),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setModalState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 25,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 25,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Text(
+                  currentStep == 1 ? "Withdraw Lumo Coins" : "Authorize Payout",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Gilroy-Bold',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  currentStep == 1
+                      ? "Withdraw earnings directly to your bank account"
+                      : "Enter your 4-digit PIN to confirm withdrawal",
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13),
+                ),
+                const SizedBox(height: 20),
+
+                if (currentStep == 1) ...[
+                  // Balance badge
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFB703).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFFFB703).withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Available Balance", style: TextStyle(color: Colors.white70, fontSize: 13)),
+                        Text(
+                          "${controller.balance.value.toStringAsFixed(2)} Lc",
+                          style: const TextStyle(color: Color(0xFFFFB703), fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Amount Field
+                  TextField(
+                    controller: amountController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                    decoration: const InputDecoration(
+                      labelText: "Withdrawal Amount (Lc)",
+                      labelStyle: TextStyle(color: Colors.white54, fontSize: 13),
+                      helperText: "Minimum withdrawal limit: 20,000 Lc",
+                      helperStyle: TextStyle(color: Color(0xFFFFB703), fontSize: 12, fontWeight: FontWeight.bold),
+                      suffixText: "Lc",
+                      suffixStyle: TextStyle(color: Color(0xFFFFB703), fontSize: 16, fontWeight: FontWeight.bold),
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFFFB703))),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Bank Name
+                  TextField(
+                    controller: bankNameController,
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                    decoration: const InputDecoration(
+                      labelText: "Bank Name (e.g. GTBank, Access Bank, OPay, Kuda)",
+                      labelStyle: TextStyle(color: Colors.white54, fontSize: 13),
+                      prefixIcon: Icon(Icons.account_balance_rounded, color: Colors.white54),
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFFFB703))),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Account Number
+                  TextField(
+                    controller: accountNumberController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                    decoration: const InputDecoration(
+                      labelText: "Account Number",
+                      labelStyle: TextStyle(color: Colors.white54, fontSize: 13),
+                      prefixIcon: Icon(Icons.pin_rounded, color: Colors.white54),
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFFFB703))),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Account Holder Name
+                  TextField(
+                    controller: accountNameController,
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                    decoration: const InputDecoration(
+                      labelText: "Account Holder Name (Optional)",
+                      labelStyle: TextStyle(color: Colors.white54, fontSize: 13),
+                      prefixIcon: Icon(Icons.person_outline_rounded, color: Colors.white54),
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFFFB703))),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFB703),
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      onPressed: () {
+                        amount = double.tryParse(amountController.text) ?? 0.0;
+
+                        if (amount < 20000) {
+                          Get.snackbar(
+                            "Minimum Requirement",
+                            "Minimum withdrawal requirement is 20,000 Lumo Coins.",
+                            backgroundColor: Colors.orange,
+                            colorText: Colors.black,
+                          );
+                          return;
+                        }
+
+                        if (amount > controller.balance.value) {
+                          Get.snackbar(
+                            "Insufficient Balance",
+                            "Your available balance is ${controller.balance.value.toStringAsFixed(2)} Lc.",
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
+
+                        if (bankNameController.text.trim().isEmpty) {
+                          Get.snackbar("Missing Field", "Please enter your bank name.", backgroundColor: Colors.orange);
+                          return;
+                        }
+
+                        if (accountNumberController.text.trim().isEmpty) {
+                          Get.snackbar("Missing Field", "Please enter your bank account number.", backgroundColor: Colors.orange);
+                          return;
+                        }
+
+                        setModalState(() {
+                          currentStep = 2;
+                        });
+                      },
+                      child: const Text("Continue to Submit", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                  ),
+                ],
+
+                if (currentStep == 2) ...[
+                  TextField(
+                    controller: pinController,
+                    obscureText: true,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    maxLength: 4,
+                    style: const TextStyle(color: Colors.white, fontSize: 22, letterSpacing: 10),
+                    decoration: const InputDecoration(
+                      labelText: "Enter 4-digit PIN",
+                      labelStyle: TextStyle(color: Colors.white54, letterSpacing: 0),
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFFFB703))),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFB703),
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      onPressed: () async {
+                        String pin = pinController.text.trim();
+                        if (controller.hasPin.value && pin.length != 4) {
+                          Get.snackbar("Invalid PIN", "Please enter a valid 4-digit PIN.", backgroundColor: Colors.orange);
+                          return;
+                        }
+
+                        Get.dialog(
+                          const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFFB703)))),
+                          barrierDismissible: false,
+                        );
+
+                        if (controller.hasPin.value) {
+                          bool pinValid = await controller.verifyTransactionPin(pin);
+                          if (!pinValid) {
+                            Get.back(); // close loader
+                            Get.snackbar("Authentication Failed", "Incorrect Transaction PIN.", backgroundColor: Colors.red, colorText: Colors.white);
+                            return;
+                          }
+                        }
+
+                        bool success = await controller.requestWithdrawal(
+                          amount: amount,
+                          bankName: bankNameController.text.trim(),
+                          accountNumber: accountNumberController.text.trim(),
+                          accountName: accountNameController.text.trim(),
+                        );
+
+                        Get.back(); // close loader
+
+                        if (success) {
+                          Get.back(); // close modal sheet
+                          Get.snackbar(
+                            "Withdrawal Submitted",
+                            "Withdrawal request of ${amount.toStringAsFixed(0)} Lc submitted successfully.",
+                            backgroundColor: const Color(0xFF00FF87),
+                            colorText: Colors.black,
+                            snackPosition: SnackPosition.BOTTOM,
+                            duration: const Duration(seconds: 4),
+                          );
+                        }
+                      },
+                      child: const Text("Confirm & Submit Withdrawal", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        });
+      },
+    );
   }
 
   void _openReceiveCoinsModal(BuildContext context) {

@@ -7,7 +7,7 @@ const String apiURL = "${baseURL}api/";
 const String termsURL = "${baseURL}termsOfUse";
 const String privacyURL = "${baseURL}privacyPolicy";
 const String helpURL = "https://social.equipmentmarket.ng/help";
-const String notificationTopic = "chatter"; // Do not change it
+const String notificationTopic = "lumo"; // App Push Notification Topic
 
 const String revenuecatAppleApiKey = '';
 const String revenuecatAndroidApiKey = '';

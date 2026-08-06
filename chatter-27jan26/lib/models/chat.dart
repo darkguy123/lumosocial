@@ -243,6 +243,10 @@ class ChatMessage {
   num? _episodeId;
   String? _dramaTitle;
   num? _episodeNumber;
+  String? _replyMsg;
+  String? _replySenderName;
+  String? _replyMsgType;
+  bool? _isEdited;
 
   ChatMessage({
     String? id,
@@ -257,6 +261,10 @@ class ChatMessage {
     num? episodeId,
     String? dramaTitle,
     num? episodeNumber,
+    String? replyMsg,
+    String? replySenderName,
+    String? replyMsgType,
+    bool? isEdited,
   }) {
     _id = id;
     _content = content;
@@ -270,6 +278,10 @@ class ChatMessage {
     _episodeId = episodeId;
     _dramaTitle = dramaTitle;
     _episodeNumber = episodeNumber;
+    _replyMsg = replyMsg;
+    _replySenderName = replySenderName;
+    _replyMsgType = replyMsgType;
+    _isEdited = isEdited;
   }
 
   Map<String, dynamic> toJson() {
@@ -285,6 +297,10 @@ class ChatMessage {
       "episodeId": _episodeId,
       "dramaTitle": _dramaTitle,
       "episodeNumber": _episodeNumber,
+      "replyMsg": _replyMsg,
+      "replySenderName": _replySenderName,
+      "replyMsgType": _replyMsgType,
+      "isEdited": _isEdited,
       "deletedIds": _deletedIds?.map((v) => v).toList()
     };
   }
@@ -301,6 +317,10 @@ class ChatMessage {
     _episodeId = json?["episodeId"];
     _dramaTitle = json?["dramaTitle"];
     _episodeNumber = json?["episodeNumber"];
+    _replyMsg = json?["replyMsg"];
+    _replySenderName = json?["replySenderName"];
+    _replyMsgType = json?["replyMsgType"];
+    _isEdited = json?["isEdited"];
     if (json?['deletedIds'] != null) {
       _deletedIds = [];
       json?['deletedIds'].forEach((v) {
@@ -333,6 +353,10 @@ class ChatMessage {
       episodeId: data?['episodeId'],
       dramaTitle: data?['dramaTitle'],
       episodeNumber: data?['episodeNumber'],
+      replyMsg: data?['replyMsg'],
+      replySenderName: data?['replySenderName'],
+      replyMsgType: data?['replyMsgType'],
+      isEdited: data?['isEdited'],
     );
   }
 
@@ -349,14 +373,22 @@ class ChatMessage {
       if (episodeId != null) "episodeId": _episodeId,
       if (dramaTitle != null) "dramaTitle": _dramaTitle,
       if (episodeNumber != null) "episodeNumber": _episodeNumber,
+      if (replyMsg != null) "replyMsg": _replyMsg,
+      if (replySenderName != null) "replySenderName": _replySenderName,
+      if (replyMsgType != null) "replyMsgType": _replyMsgType,
+      if (isEdited != null) "isEdited": _isEdited,
       if (notDeletedIdentities != null) "not_deleted_identities": _deletedIds?.map((v) => v).toList()
     };
   }
 
   String getChatTime() {
-    return DateFormat('dd MMM, yyyy h:mm a').format(
+    String timeStr = DateFormat('dd MMM, yyyy h:mm a').format(
       DateTime.fromMillisecondsSinceEpoch((int.parse(id ?? '0') / 1000).round()),
     );
+    if (_isEdited == true) {
+      return "$timeStr • (edited)";
+    }
+    return timeStr;
   }
 
   String? get content => _content;
@@ -371,6 +403,10 @@ class ChatMessage {
   num? get episodeId => _episodeId;
   String? get dramaTitle => _dramaTitle;
   num? get episodeNumber => _episodeNumber;
+  String? get replyMsg => _replyMsg;
+  String? get replySenderName => _replySenderName;
+  String? get replyMsgType => _replyMsgType;
+  bool? get isEdited => _isEdited;
 
   set thumbnail(String? value) {
     _thumbnail = value;

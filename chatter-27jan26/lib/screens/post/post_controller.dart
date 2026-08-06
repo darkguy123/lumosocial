@@ -12,6 +12,7 @@ import 'package:lumosocial/screens/post/post_liked_users_screen.dart';
 import 'package:lumosocial/screens/post/video_player_sheet.dart';
 import 'package:lumosocial/screens/report_screen/report_sheet.dart';
 import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/common/managers/sound_manager.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class PostController extends BaseController {
@@ -72,6 +73,7 @@ class PostController extends BaseController {
   }
 
   void likePost() {
+    SoundManager.shared.playPopSound();
     refreshView();
     PostService.shared.likePost(post.id ?? 0, () {});
   }

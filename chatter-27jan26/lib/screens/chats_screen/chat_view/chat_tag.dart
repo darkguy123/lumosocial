@@ -38,25 +38,118 @@ class ChatTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isMyMsg = message.senderId == SessionManager.shared.getUserID();
-    return Row(
-      mainAxisAlignment: isMyMsg ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        isMyMsg ? const Spacer() : Container(),
-        Column(
-          crossAxisAlignment: isMyMsg ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+    return Dismissible(
+      key: Key('msg_${message.id}'),
+      direction: DismissDirection.startToEnd,
+      confirmDismiss: (direction) async {
+        controller.setReplyMessage(message);
+        return false;
+      },
+      background: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        child: const Icon(Icons.reply_rounded, color: cPrimary, size: 24),
+      ),
+      child: GestureDetector(
+        onLongPress: () => _showContextMenu(context, isMyMsg),
+        child: Row(
+          mainAxisAlignment: isMyMsg ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
-            commonChooseView(),
-            Text(
-              message.getChatTime(),
-              style: MyTextStyle.gilroyRegular(size: 12, color: cLightText),
+            isMyMsg ? const Spacer() : Container(),
+            Column(
+              crossAxisAlignment: isMyMsg ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                if (message.replyMsg != null && message.replyMsg!.isNotEmpty)
+                  _buildQuotedReplyBox(isMyMsg),
+                commonChooseView(),
+                Text(
+                  message.getChatTime(),
+                  style: MyTextStyle.gilroyRegular(size: 12, color: cLightText),
+                ),
+                const SizedBox(
+                  height: 10,
+                )
+              ],
             ),
-            const SizedBox(
-              height: 10,
-            )
+            !isMyMsg ? const Spacer() : Container(),
           ],
         ),
-        !isMyMsg ? const Spacer() : Container(),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildQuotedReplyBox(bool isMyMsg) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      constraints: BoxConstraints(maxWidth: Get.width * 0.7),
+      decoration: BoxDecoration(
+        color: isMyMsg ? cBlack.withValues(alpha: 0.15) : cLightBg,
+        borderRadius: BorderRadius.circular(8),
+        border: const Border(
+          left: BorderSide(color: cPrimary, width: 3),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message.replySenderName ?? "Replying to message",
+            style: MyTextStyle.gilroyBold(size: 11, color: cPrimary),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            message.replyMsg ?? "",
+            style: MyTextStyle.gilroyRegular(size: 13, color: cBlack.withValues(alpha: 0.8)),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showContextMenu(BuildContext context, bool isMyMsg) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        decoration: const BoxDecoration(
+          color: cWhite,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.reply_rounded, color: cPrimary),
+              title: Text("Reply", style: MyTextStyle.gilroyBold(size: 15)),
+              onTap: () {
+                Get.back();
+                controller.setReplyMessage(message);
+              },
+            ),
+            if (isMyMsg && message.msgType == MessageType.text)
+              ListTile(
+                leading: const Icon(Icons.edit_rounded, color: Colors.blue),
+                title: Text("Edit Message", style: MyTextStyle.gilroyBold(size: 15)),
+                onTap: () {
+                  Get.back();
+                  controller.startEditMessage(message);
+                },
+              ),
+            if (isMyMsg || isFromRoom)
+              ListTile(
+                leading: const Icon(Icons.delete_outline_rounded, color: Colors.red),
+                title: Text("Delete Message", style: MyTextStyle.gilroyBold(size: 15, color: Colors.red)),
+                onTap: () {
+                  Get.back();
+                  controller.deleteChatMessage(message);
+                },
+              ),
+          ],
+        ),
+      ),
     );
   }
 

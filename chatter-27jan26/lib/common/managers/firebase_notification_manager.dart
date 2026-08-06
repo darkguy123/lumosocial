@@ -16,6 +16,7 @@ import 'package:lumosocial/screens/single_post_screen/single_post_screen.dart';
 import 'package:lumosocial/screens/rooms_screen/single_room/single_room_screen.dart';
 import 'package:lumosocial/screens/profile_screen/profile_screen.dart';
 import 'package:lumosocial/models/registration.dart';
+import 'package:lumosocial/common/managers/sound_manager.dart';
 
 class FirebaseNotificationManager {
   static var shared = FirebaseNotificationManager();
@@ -23,8 +24,8 @@ class FirebaseNotificationManager {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'chatter', // id
-      'Chatter Notification', // title
+      'lumo', // id
+      'LUMO Notification', // title
       playSound: true,
       enableLights: true,
       enableVibration: true,
@@ -133,6 +134,7 @@ class FirebaseNotificationManager {
     String? body = message.data['body'] ?? message.notification?.body;
     if (title == null && body == null) return;
 
+    SoundManager.shared.playMessageSound();
     await _ensureLocalNotificationsInitialized();
 
     final isCall = message.data['type'] == 'call';
@@ -142,12 +144,20 @@ class FirebaseNotificationManager {
       title,
       body,
       NotificationDetails(
-        iOS: const DarwinNotificationDetails(presentSound: true, presentAlert: true, presentBadge: false),
+        iOS: const DarwinNotificationDetails(
+          presentSound: true,
+          presentAlert: true,
+          presentBadge: false,
+          sound: 'default',
+        ),
         android: AndroidNotificationDetails(
           isCall ? 'call_channel' : channel.id,
           isCall ? 'Calls' : channel.name,
-          importance: isCall ? Importance.max : Importance.defaultImportance,
-          priority: isCall ? Priority.high : Priority.defaultPriority,
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
           fullScreenIntent: isCall,
           ongoing: isCall,
         ),

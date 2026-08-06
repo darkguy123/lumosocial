@@ -29,7 +29,7 @@ class _VideoAdOverlayState extends State<VideoAdOverlay> {
   VideoPlayerController? _adPlayerController;
   bool _isInitialized = false;
   bool _canSkip = false;
-  int _countdown = 5;
+  int _countdown = 3;
   bool _rewardGranted = false;
 
   bool _isImageAd = false;

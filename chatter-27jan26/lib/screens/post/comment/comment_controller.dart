@@ -9,6 +9,7 @@ import 'package:lumosocial/models/comments_model.dart';
 import 'package:lumosocial/models/posts_model.dart';
 import 'package:lumosocial/screens/post/post_controller.dart';
 import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
+import 'package:lumosocial/common/managers/sound_manager.dart';
 
 class CommentController extends BaseController {
   final Post post;
@@ -40,6 +41,7 @@ class CommentController extends BaseController {
     if (commentText.isEmpty) {
       return;
     }
+    SoundManager.shared.playBellSound();
     textEditingController.clear();
     
     // Create an optimistic temporary comment object

@@ -147,15 +147,62 @@ class ChattingController extends BlockUserController {
     super.onInit();
   }
 
+  ChatMessage? replyingMessage;
+  ChatMessage? editingMessage;
+
+  void setReplyMessage(ChatMessage msg) {
+    replyingMessage = msg;
+    editingMessage = null;
+    update();
+  }
+
+  void cancelReply() {
+    replyingMessage = null;
+    update();
+  }
+
+  void startEditMessage(ChatMessage msg) {
+    editingMessage = msg;
+    replyingMessage = null;
+    messageTextController.text = msg.msg ?? '';
+    update();
+  }
+
+  void cancelEdit() {
+    editingMessage = null;
+    messageTextController.clear();
+    update();
+  }
+
+  void deleteChatMessage(ChatMessage msg) {
+    if (msg.id != null) {
+      drChatMessages?.doc(msg.id).delete();
+      update();
+    }
+  }
+
   void sendStoryReply({required Story story, required String reply}) {
     messageTextController.text = reply;
     commonSend(type: MessageType.storyReply, content: '', thumbnail: story.thumbnailForReply ?? '', storyId: story.id);
   }
 
   void sendMsg({MessageType type = MessageType.text}) {
-    if (messageTextController.text.isEmpty) {
+    if (messageTextController.text.trim().isEmpty) {
       return;
     }
+
+    if (editingMessage != null) {
+      final newText = messageTextController.text.trim();
+      if (newText.isNotEmpty && editingMessage!.id != null) {
+        drChatMessages?.doc(editingMessage!.id).update({
+          'msg': newText,
+          'isEdited': true,
+        });
+      }
+      cancelEdit();
+      return;
+    }
+
     commonSend(type: MessageType.text);
   }
 
@@ -231,6 +278,17 @@ class ChattingController extends BlockUserController {
         NotificationService.shared.sendToSingleUser(token: user?.deviceToken ?? '', deviceType: user?.deviceType, title: myUser?.fullName ?? '', body: lastMsg, conversationId: chatUserRoom?.conversationId ?? '');
       }
     }
+
+    String? replyMsgText;
+    String? replySender;
+    String? replyType;
+
+    if (replyingMessage != null) {
+      replyMsgText = replyingMessage!.msg?.isNotEmpty == true ? replyingMessage!.msg : replyingMessage!.content;
+      replySender = replyingMessage!.senderId == myUser?.id ? "You" : (user?.fullName ?? "User");
+      replyType = replyingMessage!.msgType.value;
+    }
+
     var map = ChatMessage(
       id: date.microsecondsSinceEpoch.toString(),
       msg: customMsg ?? (messageTextController.text.isEmpty ? content : messageTextController.text),
@@ -243,9 +301,13 @@ class ChattingController extends BlockUserController {
       episodeId: episodeId,
       dramaTitle: dramaTitle,
       episodeNumber: episodeNumber,
+      replyMsg: replyMsgText,
+      replySenderName: replySender,
+      replyMsgType: replyType,
     ).toJson();
 
     drChatMessages?.doc(date.microsecondsSinceEpoch.toString()).set(map);
+    replyingMessage = null;
     if (type == MessageType.text) {
       messageTextController.text = "";
     }

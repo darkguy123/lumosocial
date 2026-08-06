@@ -253,7 +253,7 @@ class FeedsView extends StatelessWidget {
                             ),
                           )
                         : Container(),
-                    if (index > 0 && index % 4 == 0 && controller.activeAds.isNotEmpty)
+                    if (index > 0 && (index + 1) % 3 == 0 && controller.activeAds.isNotEmpty)
                       FeedAdCard(
                         ad: controller.activeAds[index % controller.activeAds.length],
                       ),

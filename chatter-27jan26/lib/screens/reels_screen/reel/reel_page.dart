@@ -13,6 +13,8 @@ import 'package:lumosocial/screens/reels_screen/reel/widget/side_bar_list.dart';
 import 'package:lumosocial/screens/reels_screen/reel/widget/user_info_and_description.dart';
 import 'package:lumosocial/screens/reels_screen/reels_screen_controller.dart';
 import 'package:lumosocial/utilities/const.dart';
+import 'package:lumosocial/screens/reels_screen/reel/widget/reels_video_ad_overlay.dart';
+import 'package:lumosocial/screens/reels_screen/reels_ad_manager.dart';
 import 'package:lumosocial/screens/post/video_ad_overlay.dart';
 import 'dart:math';
 import 'package:video_player/video_player.dart';
@@ -64,7 +66,7 @@ class ReelPage extends StatelessWidget {
                 }
               }
             },
-            key: Key('key_${reelData?.content ?? ''}_${DateTime.now().millisecondsSinceEpoch}'),
+            key: ValueKey('key_${reelData?.id}_${reelData?.content ?? ''}'),
             child: DoubleClickLikeAnimator(
               onAnimation: controller.likeWithDoubleTap,
               onTap: onPlayPause,
@@ -80,9 +82,8 @@ class ReelPage extends StatelessWidget {
               ),
             ),
           ),
-          ReelSkipableAdOverlay(
+          ReelVideoAdContainer(
             mainVideoController: videoPlayerController,
-            ads: ReelsScreenController.activeAds,
             reelData: reelData,
           ),
           ReelInfoSection(controller: controller)
@@ -164,72 +165,38 @@ class PlayAnimationButton extends StatelessWidget {
   }
 }
 
-class ReelSkipableAdOverlay extends StatefulWidget {
+class ReelVideoAdContainer extends StatefulWidget {
   final VideoPlayerController? mainVideoController;
-  final List<dynamic> ads;
   final Reel? reelData;
 
-  const ReelSkipableAdOverlay({
+  const ReelVideoAdContainer({
     Key? key,
     required this.mainVideoController,
-    required this.ads,
     required this.reelData,
   }) : super(key: key);
 
   @override
-  State<ReelSkipableAdOverlay> createState() => _ReelSkipableAdOverlayState();
+  State<ReelVideoAdContainer> createState() => _ReelVideoAdContainerState();
 }
 
-class _ReelSkipableAdOverlayState extends State<ReelSkipableAdOverlay> {
-  bool _adTriggered = false;
-  bool _showAd = false;
-  Map<String, dynamic>? _selectedAd;
-  late int _triggerSecond;
-  late bool _shouldShowAd;
+class _ReelVideoAdContainerState extends State<ReelVideoAdContainer> {
+  bool _shouldShowAd = false;
 
   @override
   void initState() {
     super.initState();
-    _triggerSecond = 3 + Random().nextInt(8); // random between 3 and 10 seconds
-    _shouldShowAd = widget.ads.isNotEmpty && Random().nextBool(); // 50% chance
-    widget.mainVideoController?.addListener(_videoListener);
-  }
-
-  @override
-  void dispose() {
-    widget.mainVideoController?.removeListener(_videoListener);
-    super.dispose();
-  }
-
-  void _videoListener() {
-    if (widget.mainVideoController == null || !widget.mainVideoController!.value.isInitialized) return;
-
-    final position = widget.mainVideoController!.value.position.inSeconds;
-    if (position >= _triggerSecond && !_adTriggered && _shouldShowAd) {
-      if (mounted) {
-        setState(() {
-          _adTriggered = true;
-          _selectedAd = Map<String, dynamic>.from(widget.ads[Random().nextInt(widget.ads.length)]);
-          _showAd = true;
-        });
-      }
-      widget.mainVideoController?.pause();
-    }
+    final adManager = ReelsAdManager.instance;
+    adManager.reelsViewedCount++;
+    _shouldShowAd = adManager.shouldTriggerAd(adManager.reelsViewedCount, ReelsScreenController.activeAds);
+    debugPrint("ReelPage initialized. Viewed count: ${adManager.reelsViewedCount}, Trigger Ad: $_shouldShowAd");
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_showAd && _selectedAd != null) {
-      return VideoAdOverlay(
-        ad: _selectedAd!,
-        onAdFinished: () {
-          if (mounted) {
-            setState(() {
-              _showAd = false;
-            });
-          }
-          widget.mainVideoController?.play();
-        },
+    if (_shouldShowAd && ReelsScreenController.activeAds.isNotEmpty) {
+      return ReelsVideoAdOverlayWidget(
+        mainVideoController: widget.mainVideoController,
+        ads: ReelsScreenController.activeAds,
       );
     }
     return const SizedBox.shrink();

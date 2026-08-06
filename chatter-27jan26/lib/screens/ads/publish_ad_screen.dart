@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lumosocial/screens/ads/running_ads_screen.dart';
+import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/common/api_service/post_service.dart';
 import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/common/extensions/string_extension.dart';
@@ -60,7 +62,6 @@ class _PublishAdScreenState extends State<PublishAdScreen> {
       } else if (_pricingType == 'click') {
         _calculatedCost = qty * 2.0;
       } else {
-        // Both: 10 LC per 50 views + 2 LC per click
         _calculatedCost = ((qty / 50) * 10.0) + (qty * 2.0);
       }
     });
@@ -106,7 +107,6 @@ class _PublishAdScreenState extends State<PublishAdScreen> {
       return;
     }
 
-    // Prompt for PIN to confirm wallet transfer
     final pinController = TextEditingController();
     final pinConfirmed = await Get.defaultDialog<bool>(
       title: "Authorize Payment",
@@ -158,63 +158,41 @@ class _PublishAdScreenState extends State<PublishAdScreen> {
       _isUploading = true;
     });
 
-    // 1. Pay with Lumo Coins (Send to admin/ad system account)
-    final paymentSuccess = await _walletController.sendCoins(
-      recipientIdentity: 'admin',
-      amount: _calculatedCost,
-    );
+    PostService.shared.uploadFile(XFile(_selectedFile!.path), (mediaUrl) async {
+      final userId = SessionManager.shared.getUserID();
+      ApiService.shared.call(
+        url: "${apiURL}ad/create",
+        param: {
+          "user_id": userId,
+          "campaign_name": _titleController.text.trim(),
+          "description": _descController.text.trim(),
+          "target_link": _linkController.text.trim(),
+          "ad_type": _mediaType == 'video' ? "Skippable Video" : "Feed Ad",
+          "budget_coins": _calculatedCost,
+          "media_url": mediaUrl,
+        },
+        completion: (response) {
+          setState(() {
+            _isUploading = false;
+          });
 
-    if (!paymentSuccess) {
-      setState(() {
-        _isUploading = false;
-      });
-      return;
-    }
-
-    // 2. Upload Ad file
-    PostService.shared.uploadFile(XFile(_selectedFile!.path), (url) async {
-      if (url.isEmpty) {
-        Get.snackbar("Upload Failed", "Could not upload ad media file.");
-        setState(() {
-          _isUploading = false;
-        });
-        return;
-      }
-
-      // 3. Write Ad metadata to Firestore ads collection
-      final qty = int.tryParse(_quantityController.text) ?? 50;
-      final docRef = FirebaseFirestore.instance.collection('ads').doc();
-
-      final adData = {
-        'id': docRef.id,
-        'userId': SessionManager.shared.getUserID(),
-        'campaign_name': _titleController.text.trim(),
-        'description': _descController.text.trim(),
-        'target_link': _linkController.text.trim(),
-        'media_url': jsonEncode([url]),
-        'mediaType': _mediaType,
-        'pricingType': _pricingType,
-        'budget': _calculatedCost,
-        'remainingViews': _pricingType == 'view' || _pricingType == 'both' ? qty : 999999,
-        'remainingClicks': _pricingType == 'click' || _pricingType == 'both' ? qty : 999999,
-        'viewsCount': 0,
-        'clicksCount': 0,
-        'createdAt': DateTime.now().toIso8601String(),
-        'ad_type': 'Skippable Video',
-      };
-
-      await docRef.set(adData);
-
-      setState(() {
-        _isUploading = false;
-      });
-
-      Get.back();
-      Get.snackbar(
-        "Ad Published!",
-        "Your ad has been successfully scheduled and paid.",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
+          if (response['status'] == true) {
+            Get.back();
+            Get.snackbar(
+              "Ad Published!",
+              "Your ad campaign has been published successfully.",
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
+          } else {
+            Get.snackbar(
+              "Submission Failed",
+              response['message'] ?? "Could not submit ad campaign.",
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          }
+        },
       );
     });
   }
@@ -236,6 +214,27 @@ class _PublishAdScreenState extends State<PublishAdScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Running Ads Button Above Form
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: cBlack,
+                              side: const BorderSide(color: cPrimary, width: 1.5),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            icon: const Icon(Icons.bar_chart_rounded, color: cPrimary, size: 20),
+                            label: Text(
+                              "Running Ads & Campaign Analytics",
+                              style: MyTextStyle.gilroyBold(size: 14, color: cBlack),
+                            ),
+                            onPressed: () {
+                              Get.to(() => const RunningAdsScreen());
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
                         // Ad Center Header Card
                         Container(
                           padding: const EdgeInsets.all(16),

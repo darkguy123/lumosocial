@@ -5,6 +5,8 @@ import 'package:lumosocial/localization/allLanguages.dart';
 import 'package:lumosocial/models/registration.dart';
 import 'package:lumosocial/models/setting_model.dart';
 
+import 'package:lumosocial/services/onesignal_service.dart';
+
 class SessionManager {
   static var shared = SessionManager();
   var storage = GetStorage();
@@ -62,6 +64,9 @@ class SessionManager {
 
   void setUser(User? obj) {
     storage.write("user", obj);
+    if (obj != null && obj.id != null) {
+      OneSignalService.loginUser(obj.id.toString(), email: obj.identity);
+    }
   }
 
   User? getUser() {
@@ -106,6 +111,7 @@ class SessionManager {
   }
 
   void clear() {
+    OneSignalService.logoutUser();
     storage.erase();
   }
 }

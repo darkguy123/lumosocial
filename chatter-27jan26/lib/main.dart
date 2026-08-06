@@ -21,6 +21,8 @@ import 'package:lumosocial/utilities/const.dart';
 import 'common/managers/ads/interstitial_manager.dart';
 import 'localization/languages.dart';
 
+import 'package:lumosocial/services/onesignal_service.dart';
+
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   Loggers.success("Handling a background message: ${message.data}");
@@ -49,6 +51,7 @@ void main() async {
   }
 
   await GetStorage.init();
+  await OneSignalService.initialize();
   SessionManager.shared;
   InterstitialManager.shared;
 

@@ -14,6 +14,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:lumosocial/main.dart';
 import 'package:lumosocial/screens/reels_screen/widget/reels_text_field.dart';
 import 'package:lumosocial/screens/reels_screen/widget/reels_top_bar.dart';
+import 'package:lumosocial/screens/reels_screen/reels_ad_manager.dart';
 
 
 
@@ -56,11 +57,13 @@ class _ReelsScreenState extends State<ReelsScreen> with AutomaticKeepAliveClient
   @override
   void initState() {
     super.initState();
+    ReelsAdManager.instance.resetSession();
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    ReelsAdManager.instance.resetSession();
     WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
     super.dispose();

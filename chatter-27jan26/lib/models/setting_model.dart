@@ -62,6 +62,10 @@ class Settings {
   String? playStoreDownloadLink;
   String? appStoreDownloadLink;
   int? isForceAppUpdate;
+  String? appVersion;
+  String? apkUrl;
+  String? updateNotes;
+  int? isForceUpdate;
 
   Settings({
     this.id,
@@ -103,6 +107,10 @@ class Settings {
     this.playStoreDownloadLink,
     this.appStoreDownloadLink,
     this.isForceAppUpdate,
+    this.appVersion,
+    this.apkUrl,
+    this.updateNotes,
+    this.isForceUpdate,
   });
 
   factory Settings.fromJson(Map<String, dynamic> json) => Settings(
@@ -145,6 +153,10 @@ class Settings {
         playStoreDownloadLink: json["play_store_download_link"],
         appStoreDownloadLink: json["app_store_download_link"],
         isForceAppUpdate: json["is_force_app_update"],
+        appVersion: json["app_version"] ?? json["android_app_version"],
+        apkUrl: json["apk_url"] ?? json["play_store_download_link"],
+        updateNotes: json["update_notes"],
+        isForceUpdate: json["is_force_update"] ?? json["is_force_app_update"],
       );
 
   Map<String, dynamic> toJson() => {

@@ -72,19 +72,22 @@ class _FlutterwavePaymentScreenState extends State<FlutterwavePaymentScreen> {
     if (_isFinished) return;
 
     final lowerUrl = url.toLowerCase();
-    if (lowerUrl.contains('status=successful') ||
-        lowerUrl.contains('status=completed') ||
-        lowerUrl.contains('callback') ||
-        lowerUrl.contains('flutterwave/callback') ||
-        lowerUrl.contains('tx_ref=')) {
+    
+    // Check if user reached callback URL with success status
+    bool isCallbackUrl = lowerUrl.contains('flutterwave/callback') || lowerUrl.contains('wallet/flutterwave/callback');
+    bool isSuccessStatus = lowerUrl.contains('status=successful') || lowerUrl.contains('status=completed') || lowerUrl.contains('status=success');
+
+    if (isCallbackUrl || isSuccessStatus) {
       _isFinished = true;
 
       // Extract transaction ID if present
       String? txId;
-      final uri = Uri.parse(url);
-      if (uri.queryParameters.containsKey('transaction_id')) {
-        txId = uri.queryParameters['transaction_id'];
-      }
+      try {
+        final uri = Uri.parse(url);
+        if (uri.queryParameters.containsKey('transaction_id')) {
+          txId = uri.queryParameters['transaction_id'];
+        }
+      } catch (_) {}
 
       Get.back(
         result: FlutterwavePaymentResult(

@@ -152,13 +152,69 @@ class ChattingView extends StatelessWidget {
         );
       }
 
-      return Container(
-        padding: const EdgeInsets.all(7),
-        color: cLightBg,
-        child: SafeArea(
-          top: false,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (controller.replyingMessage != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              color: cWhite,
+              child: Row(
+                children: [
+                  Container(width: 3, height: 36, color: cPrimary),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Replying to ${controller.replyingMessage!.senderId == controller.myUser?.id ? "You" : (controller.user?.fullName ?? "User")}",
+                          style: MyTextStyle.gilroyBold(size: 12, color: cPrimary),
+                        ),
+                        Text(
+                          controller.replyingMessage!.msg ?? controller.replyingMessage!.content ?? "",
+                          style: MyTextStyle.gilroyRegular(size: 12, color: cLightText),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, size: 20),
+                    onPressed: controller.cancelReply,
+                  ),
+                ],
+              ),
+            ),
+          if (controller.editingMessage != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              color: Colors.blue.withValues(alpha: 0.1),
+              child: Row(
+                children: [
+                  const Icon(Icons.edit_rounded, color: Colors.blue, size: 18),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      "Editing message...",
+                      style: MyTextStyle.gilroyBold(size: 13, color: Colors.blue),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, size: 20),
+                    onPressed: controller.cancelEdit,
+                  ),
+                ],
+              ),
+            ),
+          Container(
+            padding: const EdgeInsets.all(7),
+            color: cLightBg,
+            child: SafeArea(
+              top: false,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
                 child: Container(
@@ -237,8 +293,10 @@ class ChattingView extends StatelessWidget {
             ],
           ),
         ),
-      );
-    });
+      ),
+    ],
+  );
+});
   }
 
   Widget contentButton({required IconData iconData, required ImageSource source, required ChattingController controller}) {

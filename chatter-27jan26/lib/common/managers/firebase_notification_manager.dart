@@ -134,13 +134,16 @@ class FirebaseNotificationManager {
     String? body = message.data['body'] ?? message.notification?.body;
     if (title == null && body == null) return;
 
-    SoundManager.shared.playMessageSound();
+    try {
+      SoundManager.shared.playMessageSound();
+    } catch (_) {}
     await _ensureLocalNotificationsInitialized();
 
     final isCall = message.data['type'] == 'call';
+    final notificationId = isCall ? 999 : (DateTime.now().millisecondsSinceEpoch ~/ 1000) & 0x7FFFFFFF;
 
     await flutterLocalNotificationsPlugin.show(
-      isCall ? 999 : 1,
+      notificationId,
       title,
       body,
       NotificationDetails(
@@ -160,6 +163,7 @@ class FirebaseNotificationManager {
           enableLights: true,
           fullScreenIntent: isCall,
           ongoing: isCall,
+          icon: '@mipmap/ic_launcher',
         ),
       ),
     );

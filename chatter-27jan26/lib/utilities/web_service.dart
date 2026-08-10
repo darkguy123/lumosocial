@@ -13,6 +13,7 @@ class WebService {
   static const String dislikePost = "${apiURL}dislikePost";
   static const String deleteMyPost = "${apiURL}deleteMyPost";
   static const String addPost = "${apiURL}addPost";
+  static const String editPost = "${apiURL}editPost";
   static const String fetchPostByUser = "${apiURL}fetchPostByUser";
   static const String reportPost = "${apiURL}reportPost";
   static const String addComment = "${apiURL}addComment";

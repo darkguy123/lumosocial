@@ -11,7 +11,6 @@ import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/common/extensions/image_extension.dart';
 import 'package:lumosocial/common/extensions/int_extension.dart';
 import 'package:lumosocial/common/managers/session_manager.dart';
-import 'package:lumosocial/common/widgets/buttons/play_button.dart';
 import 'package:lumosocial/common/widgets/menu.dart';
 import 'package:lumosocial/common/widgets/my_cached_image.dart';
 import 'package:lumosocial/localization/languages.dart';
@@ -367,9 +366,20 @@ class PostTopBar extends StatelessWidget {
                     ),
 
                     // const Spacer(),
-                    Text(
-                      controller.post.date.timeAgo(),
-                      style: MyTextStyle.gilroyLight(size: 14, color: (isForVideo ? cLightIcon : cLightText)),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          controller.post.date.timeAgo(),
+                          style: MyTextStyle.gilroyLight(size: 14, color: (isForVideo ? cLightIcon : cLightText)),
+                        ),
+                        if (controller.post.isEdited == true || controller.post.editedAt != null)
+                          Text(
+                            "edited on ${(controller.post.editedAt ?? DateTime.now()).timeAgo()}",
+                            style: MyTextStyle.gilroyLight(size: 11, color: (isForVideo ? cLightIcon : cLightText).withValues(alpha: 0.8)),
+                          ),
+                      ],
                     ),
                     const SizedBox(
                       width: 10,
@@ -406,6 +416,12 @@ class PostMenuButton extends StatelessWidget {
     return Menu(
       isFromPost: true,
       items: [
+        if (SessionManager.shared.getUserID() == controller.post.userId)
+          PopupMenuItem(
+            textStyle: MyTextStyle.gilroyRegular(),
+            onTap: controller.editPost,
+            child: const Text("Edit"),
+          ),
         if (SessionManager.shared.getUserID() == controller.post.userId)
           PopupMenuItem(
             textStyle: MyTextStyle.gilroyRegular(),

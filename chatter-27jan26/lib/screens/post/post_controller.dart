@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lumosocial/common/api_service/moderator_service.dart';
 import 'package:lumosocial/common/api_service/post_service.dart';
 import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/extensions/font_extension.dart';
 import 'package:lumosocial/common/managers/session_manager.dart';
 import 'package:lumosocial/common/managers/share_manager.dart';
 import 'package:lumosocial/localization/languages.dart';
@@ -13,6 +15,7 @@ import 'package:lumosocial/screens/post/video_player_sheet.dart';
 import 'package:lumosocial/screens/report_screen/report_sheet.dart';
 import 'package:lumosocial/screens/sheets/confirmation_sheet.dart';
 import 'package:lumosocial/common/managers/sound_manager.dart';
+import 'package:lumosocial/utilities/const.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class PostController extends BaseController {
@@ -153,5 +156,88 @@ class PostController extends BaseController {
     if (post.type == PostType.audio) {
       Get.bottomSheet(AudioPlayerSheet(controller: this), isScrollControlled: true).then((value) {});
     }
+  }
+
+  void editPost() {
+    final textController = TextEditingController(text: post.desc ?? '');
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: cWhite,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Edit Post", style: MyTextStyle.gilroyBold(size: 18)),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: () => Get.back(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: textController,
+              maxLines: 5,
+              minLines: 3,
+              autofocus: true,
+              style: MyTextStyle.gilroyRegular(size: 16),
+              decoration: InputDecoration(
+                hintText: LKeys.writeHere.tr,
+                hintStyle: MyTextStyle.gilroyRegular(color: cLightText.withValues(alpha: 0.6)),
+                filled: true,
+                fillColor: cLightBg,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.all(14),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: cPrimary,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
+                ),
+                onPressed: () {
+                  final newText = textController.text.trim();
+                  if (newText.isEmpty) return;
+                  Get.back();
+                  startLoading();
+                  PostService.shared.editPost(
+                    postId: post.id ?? 0,
+                    desc: newText,
+                    completion: (status, updatedPost) {
+                      stopLoading();
+                      if (status) {
+                        post.desc = newText;
+                        post.isEdited = true;
+                        post.editedAt = DateTime.now();
+                        update();
+                        refreshView();
+                      }
+                    },
+                  );
+                },
+                child: Text("Update & Repost", style: MyTextStyle.gilroyBold(size: 16, color: cWhite)),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+    );
   }
 }

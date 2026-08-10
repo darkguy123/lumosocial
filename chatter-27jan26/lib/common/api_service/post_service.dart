@@ -307,6 +307,31 @@ class PostService {
     );
   }
 
+  void editPost({required int postId, required String desc, required Function(bool status, Post? post) completion}) {
+    var param = {
+      Param.userId: SessionManager.shared.getUserID().toString(),
+      Param.postId: postId.toString(),
+      Param.desc: desc,
+    };
+
+    ApiService.shared.call(
+      param: param,
+      url: WebService.editPost,
+      completion: (p0) {
+        if (p0['status'] == true && p0['data'] != null) {
+          try {
+            Post updatedPost = Post.fromJson(p0['data']);
+            completion(true, updatedPost);
+          } catch (e) {
+            completion(true, null);
+          }
+        } else {
+          completion(false, null);
+        }
+      },
+    );
+  }
+
   void dislikePost(int postID, Function() completion) {
     var param = {Param.userId: SessionManager.shared.getUserID(), Param.postId: postID.toString()};
 

@@ -198,6 +198,10 @@ class ChattingController extends BlockUserController {
           'msg': newText,
           'isEdited': true,
         });
+        if (messages.isNotEmpty && messages.first.id == editingMessage!.id) {
+          documentSender?.update({'lastMsg': newText});
+          documentReceiver?.update({'lastMsg': newText});
+        }
       }
       cancelEdit();
       return;

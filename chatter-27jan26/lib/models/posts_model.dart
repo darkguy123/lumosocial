@@ -45,6 +45,8 @@ class Post {
   int? contentType;
   DateTime? createdAt;
   DateTime? updatedAt;
+  bool? isEdited;
+  DateTime? editedAt;
   int? isLike;
   List<Content>? content;
   User? user;
@@ -61,6 +63,8 @@ class Post {
     this.contentType,
     this.createdAt,
     this.updatedAt,
+    this.isEdited,
+    this.editedAt,
     this.isLike,
     this.content,
     this.user,
@@ -78,6 +82,8 @@ class Post {
         contentType: json["content_type"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        isEdited: json["is_edited"] == 1 || json["is_edited"] == true,
+        editedAt: json["edited_at"] == null ? null : DateTime.tryParse(json["edited_at"].toString()),
         isLike: json["is_like"],
         content: json["content"] == null ? [] : List<Content>.from(json["content"]!.map((x) => Content.fromJson(x))),
         user: json["user"] == null ? null : User.fromJson(json["user"]),
@@ -95,6 +101,8 @@ class Post {
         "content_type": contentType,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
+        "is_edited": isEdited == true ? 1 : 0,
+        "edited_at": editedAt?.toIso8601String(),
         "is_like": isLike,
         "content": content == null ? [] : List<dynamic>.from(content!.map((x) => x.toJson())),
         "user": user?.toJson(),

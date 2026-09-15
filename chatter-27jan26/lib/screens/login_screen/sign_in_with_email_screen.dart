@@ -13,6 +13,7 @@ import 'package:lumosocial/localization/languages.dart';
 import 'package:lumosocial/screens/extra_views/logo_tag.dart';
 import 'package:lumosocial/screens/login_screen/login_controller.dart';
 import 'package:lumosocial/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:lumosocial/screens/login_screen/top_ad_banner_carousel.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class SignInWithEmailScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class SignInWithEmailScreen extends StatefulWidget {
 class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with SingleTickerProviderStateMixin {
   TextEditingController emailController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
+  TextEditingController affiliateIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
@@ -38,6 +40,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
   void initState() {
     emailController.addListener(refresh);
     fullNameController.addListener(refresh);
+    affiliateIdController.addListener(refresh);
     passwordController.addListener(refresh);
     confirmPasswordController.addListener(refresh);
     super.initState();
@@ -81,9 +84,10 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                     child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const SizedBox(height: 40),
+                      const TopAdBannerCarousel(),
+                      const SizedBox(height: 10),
                       const LogoTag(width: 100),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 20),
                       getTitle().toTextTR(MyTextStyle.gilroyBold(size: 23)),
                       const SizedBox(height: 20),
                       view(),
@@ -255,6 +259,8 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
           const SizedBox(height: 12),
           MyTextField(controller: fullNameController, placeHolder: LKeys.fullName),
           const SizedBox(height: 12),
+          MyTextField(controller: affiliateIdController, placeHolder: "Affiliate ID / Referral Code (Optional)"),
+          const SizedBox(height: 12),
           SecureTextField(
             controller: passwordController,
             placeHolder: LKeys.password,
@@ -286,6 +292,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                 await cred.user?.sendEmailVerification();
                 UserService.shared.registration(
                   name: fullNameController.text,
+                  affiliateId: affiliateIdController.text,
                   identity: emailController.text,
                   deviceToken: "deviceToken",
                   loginType: LoginType.email,

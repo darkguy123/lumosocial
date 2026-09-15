@@ -358,10 +358,13 @@ class UserService {
     );
   }
 
-  void registration({String? name, required String identity, required String deviceToken, required LoginType loginType, required Function(Registration) completion}) async {
+  void registration({String? name, String? affiliateId, required String identity, required String deviceToken, required LoginType loginType, required Function(Registration) completion}) async {
     Map<String, String> map = {};
     if (name != null) {
       map[Param.fullName] = name;
+    }
+    if (affiliateId != null && affiliateId.trim().isNotEmpty) {
+      map['affiliate_id'] = affiliateId.trim().toUpperCase();
     }
     map[Param.identity] = identity;
     map[Param.deviceToken] = deviceToken;

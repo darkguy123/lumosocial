@@ -26,27 +26,52 @@ class SplashController extends BaseController {
 
   void fetchUser(Function() completion) {
     if (SessionManager.shared.getUser()?.id != null) {
-      UserService.shared.fetchMyProfile(
-        userID: SessionManager.shared.getUser()?.id ?? 0,
-        completion: (user) {
-          SessionManager.shared.setUser(user);
-          completion();
-        },
-      );
+      try {
+        UserService.shared.fetchMyProfile(
+          userID: SessionManager.shared.getUser()?.id ?? 0,
+          completion: (user) {
+            SessionManager.shared.setUser(user);
+            completion();
+          },
+        );
+      } catch (e) {
+        debugPrint("fetchUser error: $e");
+        completion();
+      }
     } else {
       completion();
     }
   }
 
   void fetchSettings() {
-    fetchUser(() {
-      CommonService.shared.fetchGlobalSettings((p0) async {
-        if (p0) {
-          var view = await gotoView();
-          Get.offAll(() => view);
+    bool hasNavigated = false;
+    void navigateNext() async {
+      if (hasNavigated) return;
+      hasNavigated = true;
+      var view = await gotoView();
+      Get.offAll(() => view);
+    }
+
+    // Safety fallback: navigate after 5 seconds if API hangs or fails
+    Future.delayed(const Duration(seconds: 5), () {
+      navigateNext();
+    });
+
+    try {
+      fetchUser(() {
+        try {
+          CommonService.shared.fetchGlobalSettings((p0) {
+            navigateNext();
+          });
+        } catch (e) {
+          debugPrint("fetchGlobalSettings error: $e");
+          navigateNext();
         }
       });
-    });
+    } catch (e) {
+      debugPrint("fetchUser error: $e");
+      navigateNext();
+    }
   }
 
   Future<Widget> gotoView() async {

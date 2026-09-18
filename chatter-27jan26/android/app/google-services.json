@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "906920301374",
-    "project_id": "studio-5037435253-9d44b",
-    "storage_bucket": "studio-5037435253-9d44b.firebasestorage.app"
+    "project_number": "137962872130",
+    "project_id": "lumo-social",
+    "storage_bucket": "lumo-social.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:906920301374:android:c331b6c10e671ff05b526f",
+        "mobilesdk_app_id": "1:137962872130:android:1a9ffe9471e7819b593cdb",
         "android_client_info": {
           "package_name": "com.lumosocial.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "906920301374-dd7nb10vhjji50qablnqg5iftpn2nt0h.apps.googleusercontent.com",
+          "client_id": "137962872130-ubeeep9ejgf7abonc6emt47ibt773qlb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA8wCapZjlxzuIcIQ5vuWskgSAv3MIR5aA"
+          "current_key": "AIzaSyDshIAGtx8C2xeJVJ8hGyxHkTfAECjcne8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "906920301374-7d9qj8oqr7612l90ci7vu429pt4m98au.apps.googleusercontent.com",
+              "client_id": "137962872130-ubeeep9ejgf7abonc6emt47ibt773qlb.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -8,6 +8,7 @@ import 'package:lumosocial/screens/extra_views/logo_tag.dart';
 import 'package:lumosocial/screens/extra_views/top_bar.dart';
 import 'package:lumosocial/screens/login_screen/login_button.dart';
 import 'package:lumosocial/screens/login_screen/login_controller.dart';
+import 'package:lumosocial/common/managers/ads/banner_ad.dart';
 import 'package:lumosocial/screens/login_screen/top_ad_banner_carousel.dart';
 import 'package:lumosocial/utilities/const.dart';
 
@@ -22,9 +23,10 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const TopAdBannerCarousel(),
-            const SizedBox(height: 10),
-            const LogoTag(width: 140),
+            BannerAdView(top: true),
+            const TopAdBannerCarousel(placement: 'Login Page Banner'),
+            const SizedBox(height: 6),
+            const LogoTag(width: 120),
             const Spacer(),
             const TopBarForLogin(
               titleStart: LKeys.signInTo,

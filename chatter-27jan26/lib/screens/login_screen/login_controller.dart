@@ -45,15 +45,13 @@ class LoginController extends BaseController {
 
   void emailLogin() {
     Get.bottomSheet(SignInWithEmailScreen(
-      onSubmit: (fullName, identity) {
-        registerUser(identity: identity, loginType: LoginType.email, fullName: fullName);
+      onSubmit: (fullName, identity, affiliateId) {
+        registerUser(identity: identity, loginType: LoginType.email, fullName: fullName, affiliateId: affiliateId);
       },
     ), isScrollControlled: true, ignoreSafeArea: false);
   }
 
   void googleLogin() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-
     if (!kIsWeb && Platform.isAndroid) {
       String id = await getWebClientId();
       await GoogleSignIn.instance.initialize(serverClientId: id, clientId: id);
@@ -80,11 +78,12 @@ class LoginController extends BaseController {
     }
   }
 
-  void registerUser({String? fullName, required String identity, required LoginType loginType}) {
+  void registerUser({String? fullName, String? affiliateId, required String identity, required LoginType loginType}) {
     startLoading();
     FirebaseNotificationManager.shared.getNotificationToken((token) {
       UserService.shared.registration(
           name: fullName,
+          affiliateId: affiliateId,
           identity: identity,
           deviceToken: token,
           loginType: loginType,

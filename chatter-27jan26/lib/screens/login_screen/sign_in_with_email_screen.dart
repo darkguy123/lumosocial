@@ -13,11 +13,12 @@ import 'package:lumosocial/localization/languages.dart';
 import 'package:lumosocial/screens/extra_views/logo_tag.dart';
 import 'package:lumosocial/screens/login_screen/login_controller.dart';
 import 'package:lumosocial/screens/rooms_you_own/create_room_screen/create_room_screen.dart';
+import 'package:lumosocial/common/managers/ads/banner_ad.dart';
 import 'package:lumosocial/screens/login_screen/top_ad_banner_carousel.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class SignInWithEmailScreen extends StatefulWidget {
-  final Function(String? fullName, String identity) onSubmit;
+  final Function(String? fullName, String identity, String? affiliateId) onSubmit;
 
   const SignInWithEmailScreen({Key? key, required this.onSubmit}) : super(key: key);
 
@@ -34,7 +35,6 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
 
   EmailSignInType type = EmailSignInType.signIn;
   BaseController baseController = BaseController();
-  var height = Get.height / 40;
 
   @override
   void initState() {
@@ -55,22 +55,26 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
     return SafeArea(
       bottom: false,
       child: ClipSmoothRect(
-        radius: const SmoothBorderRadius.only(topRight: SmoothRadius(cornerRadius: 12, cornerSmoothing: cornerSmoothing), topLeft: SmoothRadius(cornerRadius: 12, cornerSmoothing: cornerSmoothing)),
+        radius: const SmoothBorderRadius.only(
+            topRight: SmoothRadius(cornerRadius: 16, cornerSmoothing: cornerSmoothing),
+            topLeft: SmoothRadius(cornerRadius: 16, cornerSmoothing: cornerSmoothing)),
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           body: Container(
             color: Colors.white,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                BannerAdView(top: true),
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       child: GestureDetector(
                         child: const Icon(
                           Icons.close_rounded,
                           color: cBlack,
-                          size: 30,
+                          size: 26,
                         ),
                         onTap: () {
                           Get.back();
@@ -81,20 +85,21 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                   ],
                 ),
                 Expanded(
-                    child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const TopAdBannerCarousel(),
-                      const SizedBox(height: 10),
-                      const LogoTag(width: 100),
-                      const SizedBox(height: 20),
-                      getTitle().toTextTR(MyTextStyle.gilroyBold(size: 23)),
-                      const SizedBox(height: 20),
-                      view(),
-                      const SizedBox(height: 20),
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const TopAdBannerCarousel(placement: 'Login Page Banner'),
+                        const SizedBox(height: 6),
+                        const LogoTag(width: 80),
+                        const SizedBox(height: 8),
+                        getTitle().toTextTR(MyTextStyle.gilroyBold(size: 20)),
+                        const SizedBox(height: 8),
+                        view(),
+                        const SizedBox(height: 12),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ),
           ),
@@ -168,7 +173,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                   );
                   if (credential.user?.emailVerified == true) {
                     Get.back();
-                    widget.onSubmit(fullNameController.text == "" ? null : fullNameController.text, emailController.text);
+                    widget.onSubmit(fullNameController.text == "" ? null : fullNameController.text, emailController.text, affiliateIdController.text.trim().isEmpty ? null : affiliateIdController.text.trim());
                   } else {
                     baseController.stopLoading();
                     baseController.showSnackBar(LKeys.pleaseVerifyToSignIn.tr, type: SnackBarType.error);
@@ -252,20 +257,20 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
 
   Widget signUpView() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       child: Column(
         children: [
           MyTextField(controller: emailController, placeHolder: LKeys.email),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           MyTextField(controller: fullNameController, placeHolder: LKeys.fullName),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           MyTextField(controller: affiliateIdController, placeHolder: "Affiliate ID / Referral Code (Optional)"),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           SecureTextField(
             controller: passwordController,
             placeHolder: LKeys.password,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           SecureTextField(
             controller: confirmPasswordController,
             placeHolder: LKeys.confirmPassword,
@@ -292,7 +297,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                 await cred.user?.sendEmailVerification();
                 UserService.shared.registration(
                   name: fullNameController.text,
-                  affiliateId: affiliateIdController.text,
+                  affiliateId: affiliateIdController.text.trim().isEmpty ? null : affiliateIdController.text.trim(),
                   identity: emailController.text,
                   deviceToken: "deviceToken",
                   loginType: LoginType.email,

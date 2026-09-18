@@ -5,7 +5,8 @@ import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/utilities/const.dart';
 
 class TopAdBannerCarousel extends StatefulWidget {
-  const TopAdBannerCarousel({Key? key}) : super(key: key);
+  final String placement;
+  const TopAdBannerCarousel({Key? key, this.placement = 'Login Page Banner'}) : super(key: key);
 
   @override
   State<TopAdBannerCarousel> createState() => _TopAdBannerCarouselState();
@@ -26,9 +27,9 @@ class _TopAdBannerCarouselState extends State<TopAdBannerCarousel> {
   void _fetchAds() {
     ApiService.shared.call(
       url: "${apiURL}ad/list",
-      param: {},
+      param: {'placement': widget.placement},
       completion: (response) {
-        if (mounted && response != null && response['status'] == true) {
+        if (mounted && response['status'] == true) {
           final fetched = response['data'] as List<dynamic>? ?? [];
           if (fetched.isNotEmpty) {
             setState(() {

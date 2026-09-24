@@ -361,6 +361,8 @@ class UserService {
 
   void registration({
     String? name,
+    String? profile,
+    String? password,
     String? affiliateId,
     required String identity,
     required String deviceToken,
@@ -371,6 +373,12 @@ class UserService {
     Map<String, String> map = {};
     if (name != null) {
       map[Param.fullName] = name;
+    }
+    if (profile != null && profile.isNotEmpty) {
+      map['profile'] = profile;
+    }
+    if (password != null && password.isNotEmpty) {
+      map['password'] = password;
     }
     if (affiliateId != null && affiliateId.trim().isNotEmpty) {
       map['affiliate_id'] = affiliateId.trim().toUpperCase();

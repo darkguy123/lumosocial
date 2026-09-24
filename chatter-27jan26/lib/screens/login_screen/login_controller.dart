@@ -70,6 +70,7 @@ class LoginController extends BaseController {
       registerUser(
         fullName: googleSignInAccount.displayName,
         identity: googleSignInAccount.email,
+        profile: googleSignInAccount.photoUrl,
         loginType: LoginType.google,
       );
     } catch (exception) {
@@ -88,7 +89,7 @@ class LoginController extends BaseController {
     }
   }
 
-  void registerUser({String? fullName, String? affiliateId, required String identity, required LoginType loginType}) {
+  void registerUser({String? fullName, String? profile, String? password, String? affiliateId, required String identity, required LoginType loginType}) {
     startLoading();
 
     bool hasCompleted = false;
@@ -111,6 +112,8 @@ class LoginController extends BaseController {
       FirebaseNotificationManager.shared.getNotificationToken((token) {
         UserService.shared.registration(
           name: fullName,
+          profile: profile,
+          password: password,
           affiliateId: affiliateId,
           identity: identity,
           deviceToken: token,

@@ -52,20 +52,30 @@ class LoginController extends BaseController {
   }
 
   void googleLogin() async {
-    if (!kIsWeb && Platform.isAndroid) {
-      String id = await getWebClientId();
-      await GoogleSignIn.instance.initialize(serverClientId: id, clientId: id);
-    } else {
-      await GoogleSignIn.instance.initialize();
-    }
-
+    startLoading();
     try {
+      if (!kIsWeb && Platform.isAndroid) {
+        String id = await getWebClientId();
+        await GoogleSignIn.instance.initialize(serverClientId: id);
+      } else {
+        await GoogleSignIn.instance.initialize();
+      }
+
       GoogleSignInAccount? googleSignInAccount = await GoogleSignIn.instance.authenticate(scopeHint: ['email']);
-      //
-      registerUser(fullName: googleSignInAccount.displayName, identity: googleSignInAccount.email, loginType: LoginType.google);
+      if (googleSignInAccount == null) {
+        stopLoading();
+        return;
+      }
+      
+      registerUser(
+        fullName: googleSignInAccount.displayName,
+        identity: googleSignInAccount.email,
+        loginType: LoginType.google,
+      );
     } catch (exception) {
       stopLoading();
-      Loggers.error("Firebase error: ${exception.toString()}");
+      Loggers.error("Google Sign-In error: ${exception.toString()}");
+      showSnackBar("Google Sign-In failed: ${exception.toString()}", type: SnackBarType.error);
     }
   }
 
@@ -80,24 +90,51 @@ class LoginController extends BaseController {
 
   void registerUser({String? fullName, String? affiliateId, required String identity, required LoginType loginType}) {
     startLoading();
-    FirebaseNotificationManager.shared.getNotificationToken((token) {
-      UserService.shared.registration(
+
+    bool hasCompleted = false;
+    void safeStopLoading() {
+      if (!hasCompleted) {
+        hasCompleted = true;
+        stopLoading();
+      }
+    }
+
+    // Backup safety timer to prevent infinite loading state
+    Future.delayed(const Duration(seconds: 15), () {
+      if (!hasCompleted) {
+        safeStopLoading();
+        showSnackBar("Login operation timed out. Please try again.", type: SnackBarType.error);
+      }
+    });
+
+    try {
+      FirebaseNotificationManager.shared.getNotificationToken((token) {
+        UserService.shared.registration(
           name: fullName,
           affiliateId: affiliateId,
           identity: identity,
           deviceToken: token,
           loginType: loginType,
+          onError: (errorMsg) {
+            safeStopLoading();
+            showSnackBar(errorMsg, type: SnackBarType.error);
+          },
           completion: (p0) {
+            hasCompleted = true;
             SessionManager.shared.setLogin(true);
 
             Widget w = InterestScreen();
             var user = p0.data;
             if (isPurchaseConfig) {
-              Purchases.logIn('${user?.id ?? 0}');
+              try {
+                Purchases.logIn('${user?.id ?? 0}');
+              } catch (_) {}
             }
             if (user?.isPushNotifications == 1) {
-              FirebaseNotificationManager.shared.subscribeToTopic(notificationTopic);
-              NotificationService.shared.subscribeToAllMyRoom();
+              try {
+                FirebaseNotificationManager.shared.subscribeToTopic(notificationTopic);
+                NotificationService.shared.subscribeToAllMyRoom();
+              } catch (_) {}
             }
             if (user?.isBlock == 1) {
               w = const BlockedByAdminScreen();
@@ -112,8 +149,13 @@ class LoginController extends BaseController {
             }
             Get.offAll(() => w);
             stopLoading();
-          });
-    });
+          },
+        );
+      });
+    } catch (e) {
+      safeStopLoading();
+      showSnackBar("Login error: ${e.toString()}", type: SnackBarType.error);
+    }
   }
 }
 

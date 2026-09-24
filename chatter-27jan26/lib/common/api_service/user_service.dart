@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lumosocial/common/api_service/api_service.dart';
 import 'package:lumosocial/common/controller/base_controller.dart';
+import 'package:lumosocial/common/managers/logger.dart';
 import 'package:lumosocial/common/managers/session_manager.dart';
 import 'package:lumosocial/localization/languages.dart';
 import 'package:lumosocial/models/common_response.dart';
@@ -358,7 +359,15 @@ class UserService {
     );
   }
 
-  void registration({String? name, String? affiliateId, required String identity, required String deviceToken, required LoginType loginType, required Function(Registration) completion}) async {
+  void registration({
+    String? name,
+    String? affiliateId,
+    required String identity,
+    required String deviceToken,
+    required LoginType loginType,
+    required Function(Registration) completion,
+    Function(String error)? onError,
+  }) async {
     Map<String, String> map = {};
     if (name != null) {
       map[Param.fullName] = name;
@@ -371,17 +380,31 @@ class UserService {
     map[Param.loginType] = loginType.value.toString();
     map[Param.deviceType] = (GetPlatform.isIOS ? 1 : 0).toString();
 
-    ApiService.shared.call(
-      url: WebService.addUser,
-      param: map,
-      completion: (p0) {
-        var registration = Registration.fromJson(p0);
-        var user = registration.data;
-        if (user != null) {
-          SessionManager.shared.setUser(user);
-          completion(registration);
-        }
-      },
-    );
+    try {
+      await ApiService.shared.call(
+        url: WebService.addUser,
+        param: map,
+        completion: (p0) {
+          var registration = Registration.fromJson(p0);
+          var user = registration.data;
+          if (user != null) {
+            SessionManager.shared.setUser(user);
+            completion(registration);
+          } else {
+            final msg = registration.message ?? "Registration/login failed";
+            if (onError != null) {
+              onError(msg);
+            } else {
+              completion(registration);
+            }
+          }
+        },
+      );
+    } catch (e) {
+      Loggers.error("Registration API exception: $e");
+      if (onError != null) {
+        onError(e.toString());
+      }
+    }
   }
 }

@@ -75,6 +75,7 @@ const englishStrings = {
   LKeys.logOut: 'Log out',
   LKeys.deleteMyAcc: 'Delete My Account',
   LKeys.version: 'version',
+  LKeys.referralCode: 'Referral Code / Affiliate ID (Optional)',
   LKeys.createNewRoom: 'Create New Room',
   LKeys.selectProfileImage: 'Select Profile Image',
   LKeys.selectBackgroundImage: 'Select Background Image',

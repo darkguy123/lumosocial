@@ -172,6 +172,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                     password: passwordController.text,
                   );
                   if (credential.user?.emailVerified == true) {
+                    baseController.stopLoading();
                     Get.back();
                     widget.onSubmit(fullNameController.text == "" ? null : fullNameController.text, emailController.text, affiliateIdController.text.trim().isEmpty ? null : affiliateIdController.text.trim());
                   } else {
@@ -182,7 +183,8 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                   baseController.stopLoading();
                   baseController.showSnackBar(e.message ?? '', type: SnackBarType.error);
                 } catch (e) {
-                  print(e);
+                  baseController.stopLoading();
+                  baseController.showSnackBar(e.toString(), type: SnackBarType.error);
                 }
               }),
           Row(
@@ -264,7 +266,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
           const SizedBox(height: 8),
           MyTextField(controller: fullNameController, placeHolder: LKeys.fullName),
           const SizedBox(height: 8),
-          MyTextField(controller: affiliateIdController, placeHolder: "Affiliate ID / Referral Code (Optional)"),
+          MyTextField(controller: affiliateIdController, placeHolder: LKeys.referralCode),
           const SizedBox(height: 8),
           SecureTextField(
             controller: passwordController,
@@ -284,6 +286,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
               }
               baseController.startLoading();
               if (passwordController.text != confirmPasswordController.text) {
+                baseController.stopLoading();
                 baseController.showSnackBar(LKeys.passwordMismatched.tr, type: SnackBarType.error);
                 return;
               }
@@ -301,6 +304,10 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                   identity: emailController.text,
                   deviceToken: "deviceToken",
                   loginType: LoginType.email,
+                  onError: (errorMsg) {
+                    baseController.stopLoading();
+                    baseController.showSnackBar(errorMsg, type: SnackBarType.error);
+                  },
                   completion: (p0) {
                     baseController.stopLoading();
                     baseController.showSnackBar(LKeys.verificationLinkSent.tr, type: SnackBarType.success);
@@ -313,7 +320,8 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> with Sing
                 baseController.stopLoading();
                 baseController.showSnackBar(e.message ?? '', type: SnackBarType.error);
               } catch (e) {
-                print(e);
+                baseController.stopLoading();
+                baseController.showSnackBar(e.toString(), type: SnackBarType.error);
               }
             },
           ),

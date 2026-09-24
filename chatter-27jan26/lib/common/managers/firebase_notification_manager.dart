@@ -171,7 +171,10 @@ class FirebaseNotificationManager {
 
   void getNotificationToken(Function(String token) completion) {
     try {
-      FirebaseMessaging.instance.getToken().then(
+      FirebaseMessaging.instance
+          .getToken()
+          .timeout(const Duration(seconds: 3), onTimeout: () => 'No Token')
+          .then(
         (value) {
           if (value?.isEmpty == true || value == null) {
             Loggers.error('Token: $value');
@@ -184,7 +187,9 @@ class FirebaseNotificationManager {
         onError: (e) {
           completion('No Token');
         },
-      );
+      ).catchError((_) {
+        completion('No Token');
+      });
     } catch (e) {
       completion('No Token');
     }

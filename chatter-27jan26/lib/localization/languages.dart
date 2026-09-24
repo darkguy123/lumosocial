@@ -97,6 +97,7 @@ class LKeys {
   static const logOut = "logOut";
   static const deleteMyAcc = "deleteMyAcc";
   static const version = "version";
+  static const referralCode = "referralCode";
   static const roomsInvitation = "roomsInvitation";
   static const createNewRoom = "createNewRoom";
   static const selectProfileImage = "selectProfileImage";
